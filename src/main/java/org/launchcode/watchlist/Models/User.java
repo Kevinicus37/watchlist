@@ -21,7 +21,7 @@ public class User extends AbstractEntity {
         this.passwordHash = encoder.encode(password);
     }
 
-    public boolean isMatching(String password){
+    public boolean isMatchingPassword(String password){
         return encoder.matches(password, passwordHash);
     }
 

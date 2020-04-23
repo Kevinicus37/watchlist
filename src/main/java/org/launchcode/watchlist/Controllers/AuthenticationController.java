@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Optional;
@@ -42,6 +44,13 @@ public class AuthenticationController {
 
     private static void setUserInSession(HttpSession session, User user) {
         session.setAttribute(userSessionKey, user.getId());
+    }
+
+    @GetMapping
+    public String displayLandingPage(Model model, HttpServletRequest request) {
+        model.addAttribute("user", getUserFromSession(request.getSession()));
+        model.addAttribute("title", "Wathlist");
+        return "/Authentication/index";
     }
 
     @GetMapping("/register")
@@ -91,9 +100,38 @@ public class AuthenticationController {
         return "login";
     }
 
+    @PostMapping("/login")
     public String processLoginForm(@ModelAttribute @Valid LoginFormDTO loginFormDTO, Errors errors,
                                    HttpServletRequest request, Model model){
+
+        if (errors.hasErrors()){
+            model.addAttribute("title", "Login");
+            return "login";
+        }
+
+        User user = userRepository.findByUsername(loginFormDTO.getUsername());
+
+        if (user == null){
+            errors.rejectValue("username", "username.invalid", "Username does not exist.");
+            model.addAttribute("title", "Login");
+            return "login";
+        }
+
+        if (!user.isMatchingPassword(loginFormDTO.getPassword())){
+            errors.rejectValue("password", "password.mismatch", "The provided password is invalid.");
+            model.addAttribute("title", "Login");
+            return "login";
+        }
+
+        setUserInSession(request.getSession(), user);
+
         return "redirect:";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request){
+        request.getSession().invalidate();
+        return "redirect:/login";
     }
 
 }
