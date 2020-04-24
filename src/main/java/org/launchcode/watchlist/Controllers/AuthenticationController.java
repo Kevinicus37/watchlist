@@ -46,6 +46,14 @@ public class AuthenticationController {
         session.setAttribute(userSessionKey, user.getId());
     }
 
+    private boolean isLoggedIn(HttpSession session){
+        if (getUserFromSession(session) != null){
+            return true;
+        }
+
+        return false;
+    }
+
     @GetMapping
     public String displayLandingPage(Model model, HttpServletRequest request) {
         model.addAttribute("user", getUserFromSession(request.getSession()));
@@ -54,7 +62,12 @@ public class AuthenticationController {
     }
 
     @GetMapping("/register")
-    public String displayRegistrationForm(Model model) {
+    public String displayRegistrationForm(HttpServletRequest request, Model model) {
+
+        if (isLoggedIn(request.getSession())){
+            return "redirect:";
+        }
+
         model.addAttribute(new RegisterFormDTO());
         model.addAttribute("title", "Register");
         return "register";
@@ -94,7 +107,12 @@ public class AuthenticationController {
     }
 
     @GetMapping("/login")
-    public String displayLoginForm(Model model){
+    public String displayLoginForm(HttpServletRequest request, Model model){
+
+        if (isLoggedIn(request.getSession())){
+            return "redirect:";
+        }
+
         model.addAttribute(new LoginFormDTO());
         model.addAttribute("title", "Login");
         return "login";
@@ -131,7 +149,7 @@ public class AuthenticationController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request){
         request.getSession().invalidate();
-        return "redirect:/login";
+        return "redirect:";
     }
 
 }
