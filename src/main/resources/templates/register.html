@@ -3,6 +3,8 @@
 <head th:replace="fragments :: head"></head>
 <body class="container">
 
+<nav th:replace="fragments :: navbar"></nav>
+<div class="container">
 <header th:replace="fragments :: header"></header>
 
 <form method="post">
@@ -28,6 +30,6 @@
 </form>
 
 <p>Already have an account? <a href="/login">Login</a></p>
-
+</div>
 </body>
 </html>

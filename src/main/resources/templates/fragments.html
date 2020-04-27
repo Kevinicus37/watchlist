@@ -4,21 +4,39 @@
     <meta charset="UTF-8"/>
     <title>Watchlist</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-rCA2D+D9QXuP2TomtQwd+uP50EHjpafN+wruul0sXZzX/Da7Txn4tB9aLMZV4DZm" crossorigin="anonymous">    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" th:href="@{/styles.css}">
 
 </head>
 <body>
 
 <header th:fragment="header">
-    <h1 th:text="${title}">Watchlist</h1>
-    <ul class="nav">
-<!--        <li class="nav-item"><a class="nav-link" href="/events">All Events</a></li>-->
-
-    </ul>
+    <h3 th:text="${title}">Watchlist</h3>
 </header>
+
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark navbar-inverse sticky-top">
+<!--    <div class="container">-->
+        <div class="navbar-header">
+            <a th:href="@{/}" class="navbar-brand">Watchlist</a>
+        </div>
+
+    <div class="collapse navbar-collapse" id="navbarText">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNavAltMarkup">
+                <div th:if="${user != null}" class="navbar-nav">
+                    <a class="nav-item nav-link" href="#"><span th:text="${'Hello, ' + user.username + '!'}"></span></a>
+                    <a class="nav-item nav-link" th:href="@{/logout}">Logout</a>
+                </div>
+                <div th:unless="${user != null}" class="navbar-nav">
+                    <a class="nav-item nav-link" th:href="@{/register}">Register</a>
+                    <a class="nav-item nav-link" th:href="@{/login}">Login</a>
+                </div>
+            </div>
+    </div>
+</nav>
 
 </body>
 </html>

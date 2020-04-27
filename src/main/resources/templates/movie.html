@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<header th:replace="fragments :: header"></header>
+
+<div th:each="movie : ${movies}">
+    <p th:text="${movie.getTitle()}"></p><img th:src="${movie.getPosterPath() != null ? url + movie.getPosterPath() : null}">
+</div>
+
 </body>
 </html>
