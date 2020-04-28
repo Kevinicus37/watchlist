@@ -59,8 +59,7 @@ public class AuthenticationController {
     }
 
     @GetMapping
-    public String displayLandingPage(Model model, HttpServletRequest request) {
-        model.addAttribute("user", getUserFromSession(request.getSession()));
+    public String displayLandingPage(Model model) {
         model.addAttribute("title", "Welcome to Watchlist!");
         return "/Authentication/index";
     }
