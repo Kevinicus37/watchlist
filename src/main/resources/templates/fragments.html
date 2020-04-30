@@ -5,7 +5,7 @@
     <title>Watchlist</title>
 
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-rCA2D+D9QXuP2TomtQwd+uP50EHjpafN+wruul0sXZzX/Da7Txn4tB9aLMZV4DZm" crossorigin="anonymous">    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
 
 </head>
 <body>
@@ -15,13 +15,11 @@
 </header>
 
 <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark navbar-inverse sticky-top">
-<!--    <div class="container">-->
-        <div class="navbar-header">
-            <a th:href="@{/}" class="navbar-brand">Watchlist</a>
-        </div>
-
+    <div class="navbar-header">
+        <a th:href="@{/}" class="navbar-brand">Watchlist</a>
+        <a nav-item nav-link th:href="@{/search}">Search</a>
+    </div>
     <div class="collapse navbar-collapse" id="navbarText">
-
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
