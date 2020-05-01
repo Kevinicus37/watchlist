@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<nav th:replace="fragments :: navbar"></nav>
+<div class="container">
+    <header th:replace="fragments :: header"></header>
+    <div class="row movie-index-background">
+        <div class="col-md-9 movie-index-left-background">
+            <div class="row">
+                <div class="jumbotron" id="site-description-jumbo">
+                    <div class="row">
+                        <p>Keep track of movies you want to see and all of their important details.</p>
+                        <p>***PLACEHOLDER*** Search your collection and others for titles matching your criteria.  Filters for media type, audio format, and genre, etc. make finding the right movie a breeze.</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 search-box">
+                            <form th:action="@{/search}" method="post">
+                                <div class="input-group form-group search-input">
+                                    <input type="text" class="form-control" name="searchTerm" placeholder="Search TMDb.org" />
+                                    <div class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i>Search</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p>Let your friends know what you have and let them pick something out before movie night.  No more waiting for someone to pick something before you get started.</p>
+                        <div th:if="${user == null}">
+                            <a asp-controller="Account" th:action="@{/register}">Sign Up</a> and start your collection today!<br /><br />
+                            Already a member? <a th:action="@{Login}"> Login Here </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 main-index-list">
+            <div class="row">
+                <h4>Recent Releases</h4>
+                <ul>
+                    <li th:each="movie : ${recent}">
+                        <a th:action="@{/viewMovie}" name="movie.getId()" th:text="${movie.getTitle() + ' ' + movie.getReleaseDate()"></a>
+                    </li>
+                </ul>
+            </div>
+            <hr />
+            <div class="row">
+                <h4>Coming Soon</h4>
+                <ul>
+                    <li th:each="movie : ${upcoming}">
+                        <a th:action="@{/viewMovie}" name="user.getUsername()" th:text="${user.getUsername}"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+</body>
+</html>

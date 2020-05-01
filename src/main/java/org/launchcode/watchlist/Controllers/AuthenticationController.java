@@ -58,11 +58,11 @@ public class AuthenticationController {
         return false;
     }
 
-    @GetMapping
-    public String displayLandingPage(Model model) {
-        model.addAttribute("title", "Welcome to Watchlist!");
-        return "/Authentication/index";
-    }
+//    @GetMapping
+//    public String displayLandingPage(Model model) {
+//        model.addAttribute("title", "Welcome to Watchlist!");
+//        return "/Authentication/index";
+//    }
 
     @GetMapping("/register")
     public String displayRegistrationForm(HttpServletRequest request, Model model) {
@@ -73,7 +73,7 @@ public class AuthenticationController {
 
         model.addAttribute(new RegisterFormDTO());
         model.addAttribute("title", "Register");
-        return "register";
+        return "/Authentication/register";
     }
 
     @PostMapping("/register")
@@ -83,7 +83,7 @@ public class AuthenticationController {
 
         if (errors.hasErrors()) {
             model.addAttribute("title", "Register");
-            return "register";
+            return "/Authentication/register";
         }
 
         User existingUser = userRepository.findByUsername(registerFormDTO.getUsername());
@@ -91,7 +91,7 @@ public class AuthenticationController {
         if (existingUser != null) {
             errors.rejectValue("username", "username.alreadyexists", "A user with that username already exists");
             model.addAttribute("title", "Register");
-            return "register";
+            return "/Authentication/register";
         }
 
         String password = registerFormDTO.getPassword();
@@ -99,7 +99,7 @@ public class AuthenticationController {
         if (!password.equals(verifyPassword)) {
             errors.rejectValue("password", "passwords.mismatch", "Passwords do not match");
             model.addAttribute("title", "Register");
-            return "register";
+            return "/Authentication/register";
         }
 
         User newUser = new User(registerFormDTO.getUsername(), registerFormDTO.getPassword());
@@ -118,7 +118,7 @@ public class AuthenticationController {
 
         model.addAttribute(new LoginFormDTO());
         model.addAttribute("title", "Login");
-        return "login";
+        return "/Authentication/login";
     }
 
     @PostMapping("/login")
@@ -127,7 +127,7 @@ public class AuthenticationController {
 
         if (errors.hasErrors()){
             model.addAttribute("title", "Login");
-            return "login";
+            return "/Authentication/login";
         }
 
         User user = userRepository.findByUsername(loginFormDTO.getUsername());
