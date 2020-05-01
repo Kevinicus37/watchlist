@@ -24,27 +24,29 @@ public class MovieService {
     public List<PersonCrew> getDirectors(MovieDb movie){
         List<PersonCrew> directors = new ArrayList<>();
 
-        for (PersonCrew crewMember : movie.getCrew()){
-            if (crewMember.getJob().equals("Director")){
-                directors.add(crewMember);
+        if (movie.getCrew() != null) {
+            for (PersonCrew crewMember : movie.getCrew()) {
+                if (crewMember.getJob().equals("Director")) {
+                    directors.add(crewMember);
+                }
             }
         }
-
         return directors;
     }
 
-    public List<Video> getTrailers(MovieDb movie){
-        List<Video> trailers = new ArrayList<>();
+    public void removeNonTrailers(MovieDb movie){
+        List<Video> videos = movie.getVideos();
 
-        List<Video> allVideos = movie.getVideos();
+        if (videos == null){
+            return;
+        }
+        videos.clear();
 
-        for (Video video : allVideos){
+        for (Video video : tmdbMovies.getVideos(movie.getId(), "en")){
             if (video.getType().equalsIgnoreCase("trailer")){
-                trailers.add(video);
+                videos.add(video);
             }
         }
-
-        return trailers;
     }
 
     public String getReleaseDateYearForDisplay(MovieDb movie) {
@@ -69,14 +71,15 @@ public class MovieService {
     }
 
     public List<MovieDb> searchMovies(String searchTerm) {
-        List<MovieDb> movies = search.searchMovie(searchTerm, null, "en", false, 1).getResults();
+        List<MovieDb> searchResults = search.searchMovie(searchTerm, null, "en", false, 1).getResults();
+        List<MovieDb> movies = new ArrayList<>();
 
-        for (MovieDb movie : movies){
-            movie.setCredits(tmdbMovies.getCredits(movie.getId()));
-            movie.getCredits().setCrew(getDirectors(movie));
-            movie.setReleaseDate(getReleaseDateYearForDisplay(movie));
-
-            //movie.setVideos((Video.Results) getTrailers(movie)); -- I need to debug why this causes an error
+        for (MovieDb movie : searchResults){
+            MovieDb newMovie = tmdbMovies.getMovie(movie.getId(), "en", TmdbMovies.MovieMethod.credits, TmdbMovies.MovieMethod.videos);
+            newMovie.getCredits().setCrew(getDirectors(newMovie));
+            newMovie.setReleaseDate(getReleaseDateYearForDisplay(newMovie));
+            removeNonTrailers(newMovie);
+            movies.add(newMovie);
         }
 
         return movies;
