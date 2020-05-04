@@ -34,6 +34,10 @@ public class MovieService {
         return directors;
     }
 
+    public void setDirectors(MovieDb movie){
+        movie.getCredits().setCrew(getDirectors(movie));
+    }
+
     public void removeNonTrailers(MovieDb movie){
         List<Video> videos = movie.getVideos();
 
@@ -62,7 +66,11 @@ public class MovieService {
 
     public String getBaseUrl(int size) {
 
-        // sizes 0 =
+        // sizes 0 = w92, 1 = w154, 2 = w185, 3 = w342, 4 = w500, 5 = w780, 6 = original
+
+        if (size < 0 || size > 6){
+            size = 0;
+        }
 
         String baseUrl = new TmdbApi(key).getConfiguration().getBaseUrl();
         String sizeUrl = new TmdbApi(key).getConfiguration().getPosterSizes().get(size);
@@ -75,14 +83,37 @@ public class MovieService {
         List<MovieDb> movies = new ArrayList<>();
 
         for (MovieDb movie : searchResults){
-            MovieDb newMovie = tmdbMovies.getMovie(movie.getId(), "en", TmdbMovies.MovieMethod.credits, TmdbMovies.MovieMethod.videos);
-            newMovie.getCredits().setCrew(getDirectors(newMovie));
-            newMovie.setReleaseDate(getReleaseDateYearForDisplay(newMovie));
-            removeNonTrailers(newMovie);
+            MovieDb newMovie = getMovie(movie.getId());
+            setDirectors(newMovie);
             movies.add(newMovie);
+
         }
 
         return movies;
+    }
+
+    public MovieDb getMovie(int id){
+        MovieDb movie =  tmdbMovies.getMovie(id,
+                "en",
+                TmdbMovies.MovieMethod.credits,
+                TmdbMovies.MovieMethod.videos,
+                TmdbMovies.MovieMethod.release_dates);
+        removeNonTrailers(movie);
+        movie.setReleaseDate(getReleaseDateYearForDisplay(movie));
+
+
+        return movie;
+    }
+
+    public String getTrailerUrl(MovieDb movie){
+        if (movie.getVideos().size() < 1){
+            return null;
+        }
+
+        String videoKey = movie.getVideos().get(movie.getVideos().size() -1).getKey();
+
+        return "https://www.youtube.com/embed/" + videoKey;
+
     }
 
 }

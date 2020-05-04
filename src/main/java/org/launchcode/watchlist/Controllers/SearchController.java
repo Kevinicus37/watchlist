@@ -1,5 +1,6 @@
 package org.launchcode.watchlist.Controllers;
 
+import info.movito.themoviedbapi.model.MovieDb;
 import org.launchcode.watchlist.Models.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RequestMapping("search")
 @Controller
@@ -27,8 +29,11 @@ public class SearchController {
     public String processSearchForm(String searchTerm, Model model){
 
         MovieService movieService = new MovieService();
-        model.addAttribute("movies", movieService.searchMovies(searchTerm));
+        List<MovieDb> movies = movieService.searchMovies(searchTerm);
+        model.addAttribute("movies", movies);
         model.addAttribute("url", movieService.getBaseUrl(0));
+        model.addAttribute("searchTerm", searchTerm);
+        model.addAttribute("isUserList", false);
 
         return "/search/tmdbsearch";
     }
