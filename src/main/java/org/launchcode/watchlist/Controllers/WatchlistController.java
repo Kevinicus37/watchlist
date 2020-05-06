@@ -32,7 +32,7 @@ public class WatchlistController {
         model.addAttribute("movie", movie);
         model.addAttribute("title", "Movie Details");
         model.addAttribute("trailerUrl", movieService.getTrailerUrl(movie));
-        model.addAttribute("url", movieService.getBaseUrl(2));
+        model.addAttribute("url", movieService.getBaseUrl(3));
 
         return "movie";
     }

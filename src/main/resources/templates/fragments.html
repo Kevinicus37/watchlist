@@ -46,15 +46,15 @@
                     <img th:src="${movie.getPosterPath() != null ? url + movie.getPosterPath() :''}" alt />
                 </td>
                 <td>
-                    <a th:href="@{/movie/view(id=${movie.getId()})}"><H4 th:text="${movie.getTitle() + ' ' + movie.getReleaseDate()}"></H4></a>
-                    <em th:if="${!movie.getCrew().isEmpty()}">Directed by <th:block th:each="crew : ${movie.getCrew()}">
+                    <a th:href="@{/movie/view(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.getReleaseDate()}"></H4></a>
+                    <em th:if="${!movie.crew.isEmpty()}">Directed by <th:block th:each="crew : ${movie.crew}">
                         <span th:text="${crewStat.last ? crew.getName() : crew.getName() + ', '}"></span>
                     </th:block>
                     </em>
-                    <p th:text="${movie.getOverview()}"></p>
+                    <p th:text="${movie.overview}"></p>
                 </td>
                 <td>
-                   <a th:if="${user != null and !isUserList}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.getId()})}">Add to Watchlist</a>
+                   <a th:if="${user != null and !isUserList}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add to Watchlist</a>
                 </td>
             </tr>
         </table>
@@ -65,25 +65,25 @@
     <div class="row">
         <div class="col-md-4 poster">
             <div class="center-block">
-                <img th:src="${movie.getPosterPath() != null ? url + movie.getPosterPath() :''}" class="img-fluid" alt/>
+                <img th:src="${movie.posterPath != null ? url + movie.posterPath :''}" class="img-fluid" alt/>
             </div>
         </div>
         <div class="col-md-8">
             <div class="row main-film-info margin-right-offset" style="border-bottom:3px groove gray">
                 <h1>
-                    <span style="color: ghostwhite;" th:text="${movie.getTitle()}"></span><small th:text="${movie.getReleaseDate()}"></small>
+                    <span style="color: ghostwhite;" th:text="${movie.title}"></span><small th:text="${movie.releaseDate}"></small>
                 </h1>
             </div>
-            <div th:if="${!movie.getOverview().isEmpty()}" class="row main-film-info">
+            <div th:if="${!movie.overview.isEmpty()}" class="row main-film-info">
                 <h2>Synopsis</h2>
-                <p th:text="${movie.getOverview()}"></p>
+                <p th:text="${movie.overview}"></p>
                 <br />
             </div>
-            <div th:if="${movie.getCast().size() > 0}" class="row main-film-info">
+            <div th:if="${movie.cast.size() > 0}" class="row main-film-info">
                 <h2>Top Cast Members</h2>
             </div>
             <div class="row">
-                <div th:each="castMember : ${movie.getCast()}" th:if="${castMemberStat.index < 10}" class="col-md-4 cast-display" th:text="${castMember.getName()}">
+                <div th:each="castMember : ${movie.cast}" th:if="${castMemberStat.index < 10}" class="col-md-4 cast-display" th:text="${castMember.name}">
                 </div>
             </div>
 <!--            <div th:if="${movie.getComments() != null}" class="row main-film-info">-->

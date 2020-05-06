@@ -38,10 +38,11 @@
         </div>
         <div class="col-md-3 main-index-list">
             <div class="row">
-                <h4>Recent Releases</h4>
+                <h4>Now Playing</h4>
                 <ul>
-                    <li th:each="movie : ${recent}">
-                        <a th:action="@{/viewMovie}" name="movie.getId()" th:text="${movie.getTitle() + ' ' + movie.getReleaseDate()"></a>
+                    <li th:each="movie : ${nowPlaying}" th:if="${movieStat.index < 10}">
+                        <a th:href="@{/movie/view(id=${movie.getId()})}" th:text="${movie.getTitle()}"></a>
+                        <span th:text="${movie.getReleaseDate()}"></span>
                     </li>
                 </ul>
             </div>
@@ -49,8 +50,9 @@
             <div class="row">
                 <h4>Coming Soon</h4>
                 <ul>
-                    <li th:each="movie : ${upcoming}">
-                        <a th:action="@{/viewMovie}" name="user.getUsername()" th:text="${user.getUsername}"></a>
+                    <li th:each="movie : ${upcoming}" th:if="${movieStat.index < 10}">
+                        <a th:href="@{/movie/view(id=${movie.getId()})}" th:text="${movie.getTitle()}"></a>
+                        <span th:text="${movie.getReleaseDate()}"></span>
                     </li>
                 </ul>
             </div>
