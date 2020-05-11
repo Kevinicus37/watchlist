@@ -15,10 +15,20 @@
 </header>
 
 <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark navbar-inverse sticky-top">
-    <div class="navbar-header">
-        <a th:href="@{/}" class="navbar-brand">Watchlist</a>
-        <a nav-item nav-link th:href="@{/search}">Search</a>
-    </div>
+        <a class="navbar-brand" th:href="@{/}">Watchlist</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/search}">Search</a>
+                </li>
+                <li th:if="${user != null}" class="nav-item">
+                    <a class="nav-link" th:href="@{/user/{username}(username=${user.username})}">My Page</a>
+                </li>
+            </ul>
+        </div>
     <div class="collapse navbar-collapse" id="navbarText">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -47,11 +57,11 @@
                 </td>
                 <td>
                     <a th:href="@{/movie/view(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.getReleaseDate()}"></H4></a>
-                    <em th:if="${!movie.crew.isEmpty()}">Directed by <th:block th:each="crew : ${movie.crew}">
+                    <em th:if="${movie.crew != null and !movie.crew.isEmpty()}">Directed by <th:block th:each="crew : ${movie.crew}">
                         <span th:text="${crewStat.last ? crew.getName() : crew.getName() + ', '}"></span>
                     </th:block>
                     </em>
-                    <p th:text="${movie.overview}"></p>
+                    <p style="font-size: 0.75em;" th:text="${#strings.abbreviate(movie.overview,400)}"></p>
                 </td>
                 <td>
                    <a th:if="${user != null and !isUserList}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add to Watchlist</a>

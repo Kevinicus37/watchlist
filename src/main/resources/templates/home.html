@@ -29,8 +29,8 @@
                     <div class="row">
                         <p>Let your friends know what you have and let them pick something out before movie night.  No more waiting for someone to pick something before you get started.</p>
                         <div th:if="${user == null}">
-                            <a asp-controller="Account" th:action="@{/register}">Sign Up</a> and start your collection today!<br /><br />
-                            Already a member? <a th:action="@{Login}"> Login Here </a>
+                            <a asp-controller="Account" th:href="@{/register}">Sign Up</a> and start your collection today!<br /><br />
+                            Already a member? <a th:href="@{Login}"> Login Here </a>
                         </div>
                     </div>
                 </div>

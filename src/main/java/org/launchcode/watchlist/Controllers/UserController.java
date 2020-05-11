@@ -47,6 +47,6 @@ public class UserController {
         model.addAttribute("url", movieService.getBaseUrl(0));
         model.addAttribute("movies", movies);
 
-        return "/user/index";
+        return "user/index";
     }
 }
