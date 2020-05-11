@@ -83,19 +83,24 @@
                 <h2>Top Cast Members</h2>
             </div>
             <div class="row">
-                <div th:each="castMember : ${movie.cast}" th:if="${castMemberStat.index < 10}" class="col-md-4 cast-display" th:text="${castMember.name}">
+                <div th:each="castMember : ${movie.cast}" th:if="${castMemberStat.index < 10}" class="col-md-4 cast-display">
+                    <a th:href="${'https://www.themoviedb.org/person/' + castMember.id}" th:text="${castMember.name}"></a>
                 </div>
             </div>
-<!--            <div th:if="${movie.getComments() != null}" class="row main-film-info">-->
-<!--                <h2 th:text="${'Comments from ' + user.getUsername()}"></h2>-->
-<!--                <p th:text="${movie.getComments()}"></p>-->
-<!--            </div>-->
+            <div th:if="${comments != null}" class="row main-film-info">
+                <h2 th:text="${'Comments from ' + user.username}"></h2>
+                <p th:text="${movie.getComments()}"></p>
+            </div>
         </div>
     </div>
     <br />
     <div th:if="${trailerUrl != null}" class="row embed-responsive embed-responsive-16by9 margin-right-offset">
         <iframe class="embed-responsive-item" th:src="${trailerUrl}" frameborder="0" allowfullscreen></iframe>
     </div>
+</div>
+
+<div th:fragment="secondaryInfo">
+
 </div>
 </body>
 </html>

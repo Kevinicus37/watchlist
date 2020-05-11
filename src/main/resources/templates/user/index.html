@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<nav th:replace="fragments :: navbar"></nav>
+<div class="container">
+    <header th:replace="fragments :: header"></header>
+
+    <div class="row">
+        <div class="col-md-3 profile-picture">
+            <img src="../static/images/defaultProfilePicture.png" th:src="@{images/defaultProfilePicture.png}">
+        </div>
+        <div class="col-md-6">
+            <p th:text="${user.username}"></p>
+            <a th:href="@{/user/watchlist(id=${user.id})}">Watchlist</a> <a th:href="@{/user/buylist(id=${user.id})}">Buylist</a>
+        </div>
+    </div>
+
+
+    <form th:action="@{/user/search}" method="post">
+        <div class="form-group">
+            <label>Search
+                <input type="text" class="form-control" name="searchTerm" />
+            </label>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Search" />
+    </form>
+
+    <th:block th:replace="fragments :: movielist"></th:block>
+
+</div>
+</body>
+</html>

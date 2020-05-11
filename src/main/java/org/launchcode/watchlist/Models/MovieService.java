@@ -1,8 +1,7 @@
 package org.launchcode.watchlist.Models;
 
-import info.movito.themoviedbapi.TmdbApi;
-import info.movito.themoviedbapi.TmdbMovies;
-import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.*;
+import info.movito.themoviedbapi.model.Discover;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.Video;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
@@ -19,6 +18,7 @@ public class MovieService {
 
     private TmdbMovies tmdbMovies = new TmdbApi(key).getMovies();
     private TmdbSearch search = new TmdbApi(key).getSearch();
+    private TmdbDiscover discover = new TmdbApi(key).getDiscover();
 
     public MovieService(){
     }
@@ -162,6 +162,7 @@ public class MovieService {
         for (MovieDb movie : movies){
             movie.setReleaseDate(formatReleaseDate(movie));
         }
+        int movieId = new TmdbApi(key).getPeople().getCombinedPersonCredits(500).getCast().get(0).getId();
         return movies;
     }
 
@@ -173,6 +174,7 @@ public class MovieService {
         {
             return b.getReleaseDate().compareTo(a.getReleaseDate());
         }
+
     }
 
     /* TODO - Create a movie class that extends MovieDb and move some of the formatting
