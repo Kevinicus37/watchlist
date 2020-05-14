@@ -19,9 +19,6 @@ import java.util.List;
 public class AuthenticationFilter extends HandlerInterceptorAdapter {
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     AuthenticationController authenticationController;
 
     private static final List<String> whitelist = Arrays.asList("/login", "/register",  "/css", "/search", "/error");

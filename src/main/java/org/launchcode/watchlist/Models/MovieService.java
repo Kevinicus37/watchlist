@@ -1,11 +1,16 @@
 package org.launchcode.watchlist.Models;
 
 import info.movito.themoviedbapi.*;
-import info.movito.themoviedbapi.model.Discover;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.Video;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
+import info.movito.themoviedbapi.model.people.PersonCast;
 import info.movito.themoviedbapi.model.people.PersonCrew;
+import org.launchcode.watchlist.data.CastMemberRepository;
+import org.launchcode.watchlist.data.DirectorRepository;
+import org.launchcode.watchlist.data.GenreRepository;
+import org.launchcode.watchlist.data.MovieRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,6 +24,18 @@ public class MovieService {
     private TmdbMovies tmdbMovies = new TmdbApi(key).getMovies();
     private TmdbSearch search = new TmdbApi(key).getSearch();
     private TmdbDiscover discover = new TmdbApi(key).getDiscover();
+
+    @Autowired
+    DirectorRepository directorRepository;
+
+    @Autowired
+    GenreRepository genreRepository;
+
+    @Autowired
+    MovieRepository movieRepository;
+
+    @Autowired
+    CastMemberRepository castMemberRepository;
 
     public MovieService(){
     }
@@ -122,6 +139,8 @@ public class MovieService {
             return null;
         }
 
+        removeNonTrailers(movie);
+
         String videoKey = movie.getVideos().get(movie.getVideos().size() -1).getKey();
 
         return "https://www.youtube.com/embed/" + videoKey;
@@ -180,6 +199,90 @@ public class MovieService {
     /* TODO - Create a movie class that extends MovieDb and move some of the formatting
         functions (like Date) into that class.
      */
+    public Movie convertFromMovieDb(MovieDb tmdbMovie){
+        if (tmdbMovie == null){
+            return null;
+        }
 
+        Movie movie = new Movie();
+        movie.setTitle(tmdbMovie.getTitle());
+        movie.setReleaseDate(tmdbMovie.getReleaseDate());
+        movie.setDirectors(getDirectorsFromMovieDb(tmdbMovie));
+        movie.setCast(getCastFromMovieDb(tmdbMovie));
+        movie.setRuntime(tmdbMovie.getRuntime());
+        movie.setPosterPath(tmdbMovie.getPosterPath());
+        movie.setTrailerUrl(getTrailerUrl(tmdbMovie));
+        movie.setTmdbId(tmdbMovie.getId());
+        movie.setOverview(tmdbMovie.getOverview());
+        movie.setTmdbId(tmdbMovie.getId());
+        movie.setGenres(getGenresFromMovieDb(tmdbMovie));
+
+        return movie;
+    }
+
+    private List<Director> getDirectorsFromMovieDb(MovieDb tmdbMovie){
+        if (tmdbMovie == null){
+            return null;
+        }
+
+        List<Director> directors = new ArrayList<>();
+
+        if (tmdbMovie.getCrew() != null) {
+            for (PersonCrew crewMember : tmdbMovie.getCrew()) {
+                if (crewMember.getJob().equals("Director")) {
+
+                    Director director= directorRepository.findByName(crewMember.getName());
+
+                    if (director == null){
+                        director = new Director(crewMember.getName());
+                        directorRepository.save(director);
+                    }
+
+                    directors.add(director);
+                }
+            }
+        }
+
+        return directors;
+    }
+
+    private List<CastMember> getCastFromMovieDb(MovieDb tmdbMovie){
+        if (tmdbMovie == null){
+            return null;
+        }
+
+        List<CastMember> cast = new ArrayList<>();
+
+        if (tmdbMovie.getCast() != null) {
+            for (PersonCast castMember : tmdbMovie.getCast()) {
+
+                CastMember newMember = castMemberRepository.findByCastId(castMember.getId());
+
+                if (newMember == null){
+                    newMember = new CastMember(castMember.getName(), castMember.getId());
+                    castMemberRepository.save(newMember);
+                }
+                cast.add(newMember);
+            }
+        }
+
+        return cast;
+    }
+
+    private List<Genre> getGenresFromMovieDb(MovieDb tmdbMovie){
+        List<Genre> genres = new ArrayList<>();
+
+        for (info.movito.themoviedbapi.model.Genre genre: tmdbMovie.getGenres()){
+            Genre newGenre = genreRepository.findByName(genre.getName());
+
+            if (newGenre == null){
+                newGenre = new Genre(genre.getName());
+                genreRepository.save(newGenre);
+            }
+            genres.add(newGenre);
+        }
+
+        return genres;
+    }
 
 }

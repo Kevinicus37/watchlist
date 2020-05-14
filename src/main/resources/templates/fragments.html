@@ -56,7 +56,8 @@
                     <img th:src="${movie.getPosterPath() != null ? url + movie.getPosterPath() :''}" alt />
                 </td>
                 <td>
-                    <a th:href="@{/movie/view(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.getReleaseDate()}"></H4></a>
+                    <a th:if="${!isUserList}" th:href="@{/movie/tmdb/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.getReleaseDate()}"></H4></a>
+                    <a th:unless="${!isUserList}" th:href="@{/movie/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.getReleaseDate()}"></H4></a>
                     <em th:if="${movie.crew != null and !movie.crew.isEmpty()}">Directed by <th:block th:each="crew : ${movie.crew}">
                         <span th:text="${crewStat.last ? crew.getName() : crew.getName() + ', '}"></span>
                     </th:block>
@@ -81,7 +82,7 @@
         <div class="col-md-8">
             <div class="row main-film-info margin-right-offset" style="border-bottom:3px groove gray">
                 <h1>
-                    <span style="color: ghostwhite;" th:text="${movie.title}"></span><small th:text="${movie.releaseDate}"></small>
+                    <span style="color: ghostwhite;" th:text="${movie.title}"></span> <small th:text="${movie.releaseDate}"></small>
                 </h1>
             </div>
             <div th:if="${!movie.overview.isEmpty()}" class="row main-film-info">
@@ -94,7 +95,8 @@
             </div>
             <div class="row">
                 <div th:each="castMember : ${movie.cast}" th:if="${castMemberStat.index < 10}" class="col-md-4 cast-display">
-                    <a th:href="${'https://www.themoviedb.org/person/' + castMember.id}" th:text="${castMember.name}"></a>
+                    <a th:if="${!isUserMovie}" th:href="${'https://www.themoviedb.org/person/' + castMember.id}" th:text="${castMember.name}"></a>
+                    <a th:unless="${!isUserMovie}" th:href="${'https://www.themoviedb.org/person/' + castMember.castId}" th:text="${castMember.name}"></a>
                 </div>
             </div>
             <div th:if="${comments != null}" class="row main-film-info">
