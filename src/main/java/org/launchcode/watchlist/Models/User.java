@@ -19,7 +19,9 @@ public class User extends AbstractEntity {
     private String passwordHash;
 
     @OneToMany(mappedBy="user")
-    private List<Movie> movies = new ArrayList<>();
+    private List<Movie> watchlist = new ArrayList<>();
+
+    private String profilePicturePath;
 
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -43,11 +45,27 @@ public class User extends AbstractEntity {
     }
 
     public List<Movie> getMovies() {
-        return movies;
+        return watchlist;
     }
 
     public void setMovies(List<Movie> movies) {
-        this.movies = movies;
+        this.watchlist = movies;
+    }
+
+    public List<Movie> getWatchlist() {
+        return watchlist;
+    }
+
+    public void setWatchlist(List<Movie> watchlist) {
+        this.watchlist = watchlist;
+    }
+
+    public String getProfilePicturePath() {
+        return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+        this.profilePicturePath = profilePicturePath;
     }
 
     @Override

@@ -42,10 +42,10 @@ textarea {
 }
 
 .profilePicture{
-    display:block;
-    max-width: 200px;
-    max-height:200px;
-    padding:15px;
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 15px;
     width: auto;
     height: auto;
 }
@@ -253,12 +253,19 @@ textarea {
 
 .search-results {
     color:white;
+
 }
 
-.table.search-results > tbody > tr > td {
+table.search-results {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+table.search-results > tbody > tr > td {
     border-bottom: solid 1px #1c1e22;
     vertical-align:middle;
 }
+
 .search-results-poster {
     border-left: solid 1px #1c1e22;
 }
@@ -278,7 +285,7 @@ textarea {
 
 #profile-picture {
     padding:0;
-    max-width:100%;
+    max-width: 150px;
 }
 
 .profile-picture-input {
@@ -289,4 +296,8 @@ textarea {
 
 .shift-up {
     margin-top: -15px;
+}
+
+.center-text {
+    text-align: center;
 }

@@ -285,4 +285,16 @@ public class MovieService {
         return genres;
     }
 
+    public List<Movie> getMoviesFromTitleSearch(List<Movie> movies, String searchTerm){
+        List<Movie> output = new ArrayList<>();
+
+        for (Movie movie : movies){
+            if (movie.getTitle().toLowerCase().contains(searchTerm.toLowerCase())){
+                output.add(movie);
+            }
+        }
+
+        return output;
+    }
+
 }

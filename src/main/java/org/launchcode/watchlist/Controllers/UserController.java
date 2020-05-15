@@ -1,6 +1,7 @@
 package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
+import org.launchcode.watchlist.Models.Movie;
 import org.launchcode.watchlist.Models.MovieService;
 import org.launchcode.watchlist.Models.User;
 import org.launchcode.watchlist.data.UserRepository;
@@ -24,8 +25,12 @@ public class UserController {
     @Autowired
     AuthenticationController authenticationController;
 
+    @Autowired
+    MovieService movieService;
+
     @GetMapping("/{username}")
     public String displayUser(@PathVariable String username, HttpServletRequest request, Model model){
+
         // Check if provided user exists - if not go to home page?
         User providedUser = userRepository.findByUsername(username);
 
@@ -34,15 +39,13 @@ public class UserController {
         }
 
         // Check if provided user matches current user in session - if not, return to current user's page.
-        User user = authenticationController.getUserFromSession(request.getSession());
+//        User user = authenticationController.getUserFromSession(request.getSession());
+//
+//        if (user.getUsername() != providedUser.getUsername()){
+//            return "redirect:/" + user.getUsername();
+//        }
 
-        if (user.getUsername() != providedUser.getUsername()){
-            return "redirect:/" + user.getUsername();
-        }
-
-        // *** MOCK DATA ***
-        MovieService movieService = new MovieService();
-        List<MovieDb> movies = movieService.searchMovies("Matrix");
+        List<Movie> movies = providedUser.getWatchlist();
         model.addAttribute("isUserList", true);
         model.addAttribute("url", movieService.getBaseUrl(0));
         model.addAttribute("movies", movies);

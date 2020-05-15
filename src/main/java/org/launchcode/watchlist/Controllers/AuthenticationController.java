@@ -103,6 +103,7 @@ public class AuthenticationController {
         }
 
         User newUser = new User(registerFormDTO.getUsername(), registerFormDTO.getPassword());
+        newUser.setProfilePicturePath("defaultProfilePicture.png");
         userRepository.save(newUser);
         setUserInSession(request.getSession(), newUser);
 

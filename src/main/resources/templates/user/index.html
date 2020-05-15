@@ -11,26 +11,14 @@
         <div class="col-md-9">
 
             <div class="row">
-                <div class="col-md-4 profile-picture">
-                    <img src="../static/images/defaultProfilePicture.png" th:src="@{/images/defaultProfilePicture.png}">
-                </div>
                 <div class="col-md-8">
-                    <H2 th:text="${user.username}"></H2>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <a th:href="@{/user/watchlist(id=${user.id})}">Watchlist</a>
-                        </div>
-                        <div class="col-md-2">
-                            <a th:href="@{/user/buylist(id=${user.id})}">Buylist</a>
-                        </div>
-                    </div>
                     <form th:action="@{/watchlist/search}" method="post">
                         <div class="form-group">
-                            <label>Search
+                            <label>Search Watchlist
                                 <input type="text" class="form-control" name="searchTerm" />
                             </label>
                         </div>
-
+                        <input type="hidden" name="username" th:value="${user.username}" />
                         <input type="submit" class="btn btn-primary" value="Search" />
                     </form>
                 </div>
@@ -38,17 +26,15 @@
             </div>
 
 
-        <th:block th:replace="fragments :: movielist"></th:block>
+            <th:block th:replace="fragments :: movielist"></th:block>
 
         </div>
         <div class="col-md-3" style="background-color: black;">
-
+            <div th:replace="fragments :: userInfo"></div>
         </div>
 
     </div>
-
-
-
 </div>
+<th:block th:replace="fragments :: scripts"></th:block>
 </body>
 </html>

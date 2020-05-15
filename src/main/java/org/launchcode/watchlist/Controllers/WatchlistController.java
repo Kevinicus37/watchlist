@@ -48,43 +48,13 @@ public class WatchlistController {
         User user = authenticationController.getUserFromSession(request.getSession());
 
         if (tmdbMovie != null){
-
             // Check to see if user already has this movie in their list.
             Movie movie = movieRepository.findByTitleAndUserId(tmdbMovie.getTitle(), user.getId());
 
             if (movie == null) {
                movie = movieService.convertFromMovieDb(tmdbMovie);
-
-//                for (Director director : movie.getDirectors()) {
-//                    if (directorRepository.findByName(director.getName()) == null) {
-//                        directorRepository.save(director);
-//                    }
-//                }
-//
-//                for (CastMember castMember : movie.getCast()) {
-//                    CastMember existing = castMemberRepository.findByCastId(castMember.getCastId());
-//
-//                    if (existing == null) {
-//                        castMemberRepository.save(castMember);
-//                    }
-//                    else{
-//                        castMember = existing;
-//                    }
-//                }
-//
-//                for (Genre genre : movie.getGenres()) {
-//                    Genre existingGenre = genreRepository.findByName(genre.getName());
-//
-//                    if (existingGenre == null) {
-//                        genreRepository.save(genre);
-//                    }
-//                    else{
-//                        genre = existingGenre;
-//                    }
-//                }
-
-                movie.setUser(user);
-                movieRepository.save(movie);
+               movie.setUser(user);
+               movieRepository.save(movie);
             }
 
             model.addAttribute("movie", movie);
@@ -99,31 +69,17 @@ public class WatchlistController {
     }
 
     @PostMapping("search")
-    public String searchWatchlist(String searchTerm, HttpServletRequest request, Model model){
+    public String searchWatchlist(String searchTerm, String username, HttpServletRequest request, Model model){
+        List<Movie> movies = new ArrayList<>();
 
-        MovieService movieService = new MovieService();
+        User user = userRepository.findByUsername(username);
 
-        User user = authenticationController.getUserFromSession(request.getSession());
-
-        List<MovieDb> movies = new ArrayList<>();
-
-        MovieDb movie = new MovieDb();
-        movie.setTitle("This is my Movie");
-        movie.setReleaseDate("6-6-20");
-        movie.setOverview("This is a made up movie, used for mock data.");
-        movie.setPosterPath("oHg5SJYRHA0");
-        movies.add(movie);
-
-        movie = new MovieDb();
-        movie.setTitle("This is my other Movie");
-        movie.setReleaseDate("8-20-20");
-        movie.setOverview("This is another made up movie, used for mock data.");
-        movie.setPosterPath("oHg5SJYRHA0");
-        movies.add(movie);
+        movies = movieService.getMoviesFromTitleSearch(user.getWatchlist(), searchTerm);
 
         model.addAttribute("movies", movies);
         model.addAttribute("isUserList", true);
         model.addAttribute("url", movieService.getBaseUrl(0));
+
         return "/user/index";
     }
 
