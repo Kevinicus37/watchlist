@@ -37,4 +37,15 @@ public class SearchController {
 
         return "/search/tmdbsearch";
     }
+
+    @GetMapping("actor")
+    public String getActorMoviesTest(Model model){
+        MovieService movieService = new MovieService();
+
+        model.addAttribute("movies", movieService.searchForActor(500));
+        model.addAttribute("url", movieService.getBaseUrl(0));
+        model.addAttribute("isUserList", false);
+
+        return "/search/tmdbsearch";
+    }
 }

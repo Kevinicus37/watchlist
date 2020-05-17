@@ -1,5 +1,9 @@
 package org.launchcode.watchlist.Models;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.Video;
@@ -11,7 +15,8 @@ import org.launchcode.watchlist.data.DirectorRepository;
 import org.launchcode.watchlist.data.GenreRepository;
 import org.launchcode.watchlist.data.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.web.client.RestTemplate;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +25,9 @@ public class MovieService {
 
     // Need to make this secure.
     private final static String key = "9950b6bfd3eef8b5c9b7343ead080098";
+    private final static String apiBaseUrl = "https://api.themoviedb.org/3/";
+    private final static String options = "&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false";
+
 
     private TmdbMovies tmdbMovies = new TmdbApi(key).getMovies();
     private TmdbSearch search = new TmdbApi(key).getSearch();
@@ -38,6 +46,36 @@ public class MovieService {
     CastMemberRepository castMemberRepository;
 
     public MovieService(){
+    }
+
+    public List<MovieDb> searchForActor(int id){
+        return searchForActor(id, 1);
+    }
+
+    public List<MovieDb> searchForActor(int id, int page){
+
+        if (page < 1){
+            page = 1;
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = apiBaseUrl + "discover/movie?api_key=" + key + options + "&page=" + page + "&with_cast=" + id;
+        String response = restTemplate.getForObject(url, String.class);
+
+        JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
+        JsonArray jArr = jobj.getAsJsonArray("results");
+        Type listType = new TypeToken<List<MovieDb>>(){}.getType();
+        List<MovieDb> movies = new Gson().fromJson(jArr, listType);
+
+        List<MovieDb> output = new ArrayList<>();
+
+        for (MovieDb movie : movies) {
+            MovieDb newMovie = getMovie(movie.getId());
+            setDirectors(newMovie);
+            output.add(newMovie);
+        }
+
+        return output;
     }
 
     public List<PersonCrew> getDirectors(MovieDb movie){
