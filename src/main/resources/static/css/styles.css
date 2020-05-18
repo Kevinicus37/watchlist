@@ -301,3 +301,7 @@ table.search-results > tbody > tr > td {
 .center-text {
     text-align: center;
 }
+
+#user-links {
+    display : block;
+}

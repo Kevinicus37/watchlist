@@ -26,9 +26,11 @@ public class MovieController {
     @Autowired
     AuthenticationController authenticationController;
 
+    @Autowired
+    MovieService movieService;
+
     @GetMapping("tmdb/{id}")
     public String viewTmdbMovieDetails(@PathVariable int id, Model model){
-        MovieService movieService = new MovieService();
         MovieDb movie = movieService.getMovie(id);
 
         model.addAttribute("movie", movie);
@@ -42,18 +44,17 @@ public class MovieController {
     @GetMapping("{id}")
     public String viewWatchlistMovie(@PathVariable int id, HttpServletRequest request, Model model){
         Optional<Movie> result = movieRepository.findById(id);
-        MovieService movieService = new MovieService();
 
         User user = authenticationController.getUserFromSession(request.getSession());
 
         if (!result.isPresent()){
-            return "redirect:";
+            return "redirect:/user/" + user.getUsername();
         }
 
         Movie movie = result.get();
 
         if (!user.equals(movie.getUser())){
-            return "redirect:";
+            return "redirect:/user/" + user.getUsername();
         }
 
         model.addAttribute("movie", movie);
@@ -61,6 +62,6 @@ public class MovieController {
         model.addAttribute("url", movieService.getBaseUrl(3));
         model.addAttribute("isUserMovie", true);
 
-        return "redirect:";
+        return "movie";
     }
 }

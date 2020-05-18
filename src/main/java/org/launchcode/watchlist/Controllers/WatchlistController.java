@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("watchlist")
@@ -81,6 +82,21 @@ public class WatchlistController {
         model.addAttribute("url", movieService.getBaseUrl(0));
 
         return "/user/index";
+    }
+
+    @PostMapping("remove")
+    public String removeFromWatchlist(int id, HttpServletRequest request, Model model){
+        User user = authenticationController.getUserFromSession(request.getSession());
+        Optional<Movie> result = movieRepository.findById(id);
+
+        if (result.isPresent()){
+            Movie movie = result.get();
+            if (movie.getUser().equals(user)){
+                movieRepository.delete(movie);
+            }
+        }
+
+        return "redirect:/user/" + user.getUsername();
     }
 
 }
