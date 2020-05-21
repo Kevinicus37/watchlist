@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.ReleaseDate;
+import info.movito.themoviedbapi.model.ReleaseInfo;
 import info.movito.themoviedbapi.model.Video;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import info.movito.themoviedbapi.model.people.PersonCast;
@@ -17,9 +19,9 @@ import org.launchcode.watchlist.data.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class MovieService {
 
@@ -70,7 +72,7 @@ public class MovieService {
         List<MovieDb> output = new ArrayList<>();
 
         for (MovieDb movie : movies) {
-            MovieDb newMovie = getMovie(movie.getId());
+            MovieDb newMovie = getTmdbMovie(movie.getId());
             setDirectors(newMovie);
             output.add(newMovie);
         }
@@ -110,9 +112,7 @@ public class MovieService {
         }
     }
 
-    public String getReleaseDateYearForDisplay(MovieDb movie) {
-
-        String date = movie.getReleaseDate();
+    public String getReleaseDateYearForDisplay(String date) {
 
         if (date != null && !date.isEmpty()){
              return "(" + date.split("-")[0] + ")";
@@ -121,17 +121,10 @@ public class MovieService {
         return "";
     }
 
-    public String formatReleaseDate(MovieDb movie){
-
+    public String getFormattedReleaseDate(MovieDb movie){
         String date = movie.getReleaseDate();
 
-        if (date != null && !date.isEmpty()){
-            String[] dateParts = date.split("-");
-            dateParts[0] = dateParts[0].substring(2);
-            return dateParts[1] + '-' + dateParts[2] + '-' + dateParts[0];
-        }
-
-        return date;
+        return getFormattedDate(date);
     }
 
     public String getBaseUrl(int size) {
@@ -154,20 +147,20 @@ public class MovieService {
     public List<MovieDb> getComingSoon(){
         List<MovieDb> movies = tmdbMovies.getUpcoming("en", 1, "US").getResults();
         for (MovieDb movie : movies){
-            movie.setReleaseDate(formatReleaseDate(movie));
+            movie.setReleaseDate(getFormattedReleaseDate(movie));
         }
 
         return movies;
     }
 
-    public MovieDb getMovie(int id){
+    public MovieDb getTmdbMovie(int id){
         MovieDb movie =  tmdbMovies.getMovie(id,
                 "en",
                 TmdbMovies.MovieMethod.credits,
                 TmdbMovies.MovieMethod.videos,
-                TmdbMovies.MovieMethod.release_dates);
+                TmdbMovies.MovieMethod.release_dates,
+                TmdbMovies.MovieMethod.releases);
         removeNonTrailers(movie);
-        movie.setReleaseDate(getReleaseDateYearForDisplay(movie));
 
         return movie;
     }
@@ -205,8 +198,9 @@ public class MovieService {
         List<MovieDb> movies = new ArrayList<>();
 
         for (MovieDb movie : searchResults){
-            MovieDb newMovie = getMovie(movie.getId());
+            MovieDb newMovie = getTmdbMovie(movie.getId());
             setDirectors(newMovie);
+            newMovie.setReleaseDate(getReleaseDateYearForDisplay(newMovie.getReleaseDate()));
             movies.add(newMovie);
         }
 
@@ -215,28 +209,33 @@ public class MovieService {
 
     public List<MovieDb> getNowPlaying(){
         List<MovieDb> movies = tmdbMovies.getNowPlayingMovies("en", 1, "US").getResults();
-        movies.sort(new SortByDate());
+        movies.sort(new SortMovieDbByDate());
         for (MovieDb movie : movies){
-            movie.setReleaseDate(formatReleaseDate(movie));
+            movie.setReleaseDate(getFormattedReleaseDate(movie));
         }
         int movieId = new TmdbApi(key).getPeople().getCombinedPersonCredits(500).getCast().get(0).getId();
         return movies;
     }
 
-    class SortByDate implements Comparator<MovieDb>
-    {
-        // Used for sorting in descending order of
-        // release date
-        public int compare(MovieDb a, MovieDb b)
-        {
-            return b.getReleaseDate().compareTo(a.getReleaseDate());
+    public List<Movie> getWatchlistUpcoming(List<Movie> movies){
+        List<Movie> output = new ArrayList<>();
+        LocalDateTime date = LocalDateTime.now();
+        String month = date.getMonthValue() < 10? "0" + date.getMonthValue() : "" + date.getMonthValue();
+        String dateStr = date.getYear() + "-" + month + "-" + date.getDayOfMonth();
+        movies.sort(new SortMovieByDate());
+        for (Movie movie : movies){
+            if (movie.getReleaseDate().compareTo(dateStr) < 0 || output.size() >= 10){
+                break;
+            }
+            output.add(movie);
         }
 
+        return output;
     }
-
     /* TODO - Create a movie class that extends MovieDb and move some of the formatting
         functions (like Date) into that class.
      */
+
     public Movie convertFromMovieDb(MovieDb tmdbMovie){
         if (tmdbMovie == null){
             return null;
@@ -334,5 +333,78 @@ public class MovieService {
 
         return output;
     }
+
+    public void setUpcomingWatchlistHomeReleases(List<Movie> watchlistMovies){
+        for (Movie movie : watchlistMovies){
+
+           List<ReleaseDate> dates = getReleaseDates(movie);
+           for (ReleaseDate date : dates) {
+               if (date.getType().equals("4")) {
+                   movie.setDigitalReleaseDate(getFormattedDate(date.getReleaseDate()));
+               }
+               if (date.getType().equals("5")) {
+                   movie.setPhysicalReleaseDate(getFormattedDate(date.getReleaseDate()));
+               }
+           }
+        }
+    }
+
+    public void setUpcomingWatchListTheaterRelease(List<Movie> watchlistMovies){
+        for (Movie movie : watchlistMovies){
+            List<ReleaseDate> releaseDates = getReleaseDates(movie);
+
+                for (ReleaseDate date : releaseDates) {
+                    if (date.getType().equals("3")) {
+                        movie.setReleaseDate(getFormattedDate(date.getReleaseDate()));
+                    }
+                }
+        }
+    }
+
+    public List<ReleaseDate> getReleaseDates(Movie movie){
+        List<ReleaseInfo> releases = tmdbMovies.getReleaseInfo(movie.getTmdbId(), "US");
+
+        for (ReleaseInfo info : releases) {
+            if (info.getCountry().equals("US")){
+                return info.getReleaseDates();
+            }
+        }
+
+        return null;
+    }
+
+    public String getFormattedDate(String dateString){
+        int index = dateString.indexOf('T');
+
+        if (index >= 0){
+            dateString = dateString.substring(0,index);
+        }
+
+        if (dateString != null && !dateString.isEmpty()){
+            String[] dateParts = dateString.split("-");
+            dateParts[0] = dateParts[0].substring(2);
+            return dateParts[1] + '-' + dateParts[2] + '-' + dateParts[0];
+        }
+
+        return dateString;
+    }
+
+    class SortMovieDbByDate implements Comparator<MovieDb>
+    {
+        // Used for sorting in descending order of
+        // release date
+        public int compare(MovieDb a, MovieDb b)
+        {
+            return b.getReleaseDate().compareTo(a.getReleaseDate());
+        }
+
+    }
+
+    class SortMovieByDate implements Comparator<Movie>{
+        public int compare(Movie a, Movie b){
+            return b.getReleaseDate().compareTo(a.getReleaseDate());
+        }
+    }
+
 
 }

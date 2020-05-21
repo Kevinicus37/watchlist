@@ -5,6 +5,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -15,7 +16,11 @@ public class Movie extends AbstractEntity{
 
     private String releaseDate;
 
+    private String releaseYear;
+
     private String physicalReleaseDate;
+
+    private String digitalReleaseDate;
 
     private String overview;
 
@@ -57,6 +62,16 @@ public class Movie extends AbstractEntity{
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+        setReleaseYear(this.releaseDate);
+    }
+
+    public String getReleaseYear() {
+        return releaseYear;
+    }
+
+    private void setReleaseYear(String releaseYear) {
+        MovieService movieService = new MovieService();
+        this.releaseYear = movieService.getReleaseDateYearForDisplay(this.getReleaseDate());
     }
 
     public String getOverview() {
@@ -150,4 +165,13 @@ public class Movie extends AbstractEntity{
     public void setPhysicalReleaseDate(String physicalReleaseDate) {
         this.physicalReleaseDate = physicalReleaseDate;
     }
+
+    public String getDigitalReleaseDate() {
+        return digitalReleaseDate;
+    }
+
+    public void setDigitalReleaseDate(String digitalReleaseDate) {
+        this.digitalReleaseDate = digitalReleaseDate;
+    }
+
 }

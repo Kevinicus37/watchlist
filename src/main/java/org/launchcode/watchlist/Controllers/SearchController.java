@@ -19,6 +19,9 @@ public class SearchController {
     @Autowired
     AuthenticationController authenticationController;
 
+    @Autowired
+    MovieService movieService;
+
     @GetMapping
     public String displaySearchForm(HttpServletRequest request, Model model){
         model.addAttribute("title", "Search");
@@ -27,9 +30,9 @@ public class SearchController {
 
     @PostMapping
     public String processSearchForm(String searchTerm, Model model){
-
-        MovieService movieService = new MovieService();
         List<MovieDb> movies = movieService.searchMovies(searchTerm);
+
+
         model.addAttribute("movies", movies);
         model.addAttribute("url", movieService.getBaseUrl(0));
         model.addAttribute("searchTerm", searchTerm);
@@ -40,8 +43,6 @@ public class SearchController {
 
     @GetMapping("actor")
     public String getActorMoviesTest(Model model){
-        MovieService movieService = new MovieService();
-
         model.addAttribute("movies", movieService.searchForActor(500));
         model.addAttribute("url", movieService.getBaseUrl(0));
         model.addAttribute("isUserList", false);

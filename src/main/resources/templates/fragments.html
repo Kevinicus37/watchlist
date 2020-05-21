@@ -61,8 +61,8 @@
                     <img th:src="${movie.getPosterPath() != null ? url + movie.getPosterPath() :''}" alt />
                 </td>
                 <td>
-                    <a th:if="${!isUserList}" th:href="@{/movie/tmdb/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.getReleaseDate()}"></H4></a>
-                    <a th:unless="${!isUserList}" th:href="@{/movie/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.getReleaseDate()}"></H4></a>
+                    <a th:if="${!isUserList}" th:href="@{/movie/tmdb/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.releaseDate}"></H4></a>
+                    <a th:unless="${!isUserList}" th:href="@{/movie/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.releaseYear}"></H4></a>
                     <em th:if="${movie.crew != null and !movie.crew.isEmpty()}">Directed by <th:block th:each="crew : ${movie.crew}">
                         <span th:text="${crewStat.last ? crew.getName() : crew.getName() + ', '}"></span>
                     </th:block>
@@ -70,7 +70,11 @@
                     <p style="font-size: 0.75em;" th:text="${#strings.abbreviate(movie.overview,400)}"></p>
                 </td>
                 <td>
-                   <a th:if="${user != null and !isUserList}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add to Watchlist</a>
+                    <th:block th:if="${user != null}">
+                        <a th:if="${!isUserList}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add to Watchlist</a>
+                        <a th:if="${isUserList and user.id == movie.user.id}" th:href="@{/watchlist/remove(id=${movie.id})}">Remove from Watchlist</a>
+                    </th:block>
+
                 </td>
             </tr>
         </table>
@@ -88,18 +92,15 @@
             <div class="row main-film-info margin-right-offset" style="border-bottom:3px groove gray">
                 <div class="col-md-8">
                     <h1>
-                        <span style="color: ghostwhite;" th:text="${movie.title}"></span> <small th:text="${movie.releaseDate}"></small>
+                        <span style="color: ghostwhite;" th:text="${movie.title}"></span> <small th:text="${isUserMovie? movie.releaseYear : movie.releaseDate}"></small>
                     </h1>
                 </div>
                 <div class="col-md-4">
                     <div th:if="${isUserMovie and user.id == movie.user.id}" class="row">
-                        <form method="post" th:action="@{/watchlist/remove}">
-                            <input name="id" th:value="${movie.id}" type="hidden">
-                            <button class="btn btn-primary" type="submit">Remove from Watchlist</button>
-                        </form>
+                        <a class="btn btn-danger" th:href="@{/watchlist/remove(id=${movie.id})}">Remove From Watchlist</a>
                     </div>
                     <div th:unless="${isUserMovie and user.id == movie.user.id}" class="row">
-                        <a class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add to Watchlist</a>
+                        <a class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add To Watchlist</a>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -31,7 +30,8 @@ public class MovieController {
 
     @GetMapping("tmdb/{id}")
     public String viewTmdbMovieDetails(@PathVariable int id, Model model){
-        MovieDb movie = movieService.getMovie(id);
+        MovieDb movie = movieService.getTmdbMovie(id);
+        movie.setReleaseDate(movieService.getReleaseDateYearForDisplay(movie.getReleaseDate()));
 
         model.addAttribute("movie", movie);
         model.addAttribute("trailerUrl", movieService.getTrailerUrl(movie));

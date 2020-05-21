@@ -6,10 +6,7 @@ import org.launchcode.watchlist.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -45,7 +42,7 @@ public class WatchlistController {
     public String addMovie(@RequestParam int id, HttpServletRequest request, Model model){
 
         //MovieService movieService = new MovieService();
-        MovieDb tmdbMovie = movieService.getMovie(id);
+        MovieDb tmdbMovie = movieService.getTmdbMovie(id);
         User user = authenticationController.getUserFromSession(request.getSession());
 
         if (tmdbMovie != null){
@@ -63,6 +60,8 @@ public class WatchlistController {
             model.addAttribute("url", movieService.getBaseUrl(3));
             model.addAttribute("isUserMovie", true);
 
+
+
             return "movie";
         }
 
@@ -75,7 +74,10 @@ public class WatchlistController {
 
         User user = userRepository.findByUsername(username);
 
-        movies = movieService.getMoviesFromTitleSearch(user.getWatchlist(), searchTerm);
+        List<Movie> userMovies = user.getWatchlist();
+        movies = movieService.getMoviesFromTitleSearch(userMovies, searchTerm);
+        List<Movie> upcomingMovies = movieService.getWatchlistUpcoming(userMovies);
+        // movieService.setUpcomingWatchlistHomeReleases(movies);
 
         model.addAttribute("movies", movies);
         model.addAttribute("isUserList", true);
@@ -84,8 +86,8 @@ public class WatchlistController {
         return "/user/index";
     }
 
-    @PostMapping("remove")
-    public String removeFromWatchlist(int id, HttpServletRequest request, Model model){
+    @GetMapping("remove")
+    public String removeFromWatchlist(@PathVariable int id, HttpServletRequest request, Model model){
         User user = authenticationController.getUserFromSession(request.getSession());
         Optional<Movie> result = movieRepository.findById(id);
 
@@ -98,5 +100,7 @@ public class WatchlistController {
 
         return "redirect:/user/" + user.getUsername();
     }
+
+
 
 }
