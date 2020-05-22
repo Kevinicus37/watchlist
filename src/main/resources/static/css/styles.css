@@ -305,3 +305,7 @@ table.search-results > tbody > tr > td {
 #user-links {
     display : block;
 }
+
+hr {
+    border-color: white;
+}

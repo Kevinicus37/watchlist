@@ -17,23 +17,25 @@ import org.launchcode.watchlist.data.DirectorRepository;
 import org.launchcode.watchlist.data.GenreRepository;
 import org.launchcode.watchlist.data.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+@Service
 public class MovieService {
 
-    // Need to make this secure.
-    private final static String key = "9950b6bfd3eef8b5c9b7343ead080098";
-    private final static String apiBaseUrl = "https://api.themoviedb.org/3/";
-    private final static String options = "&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false";
+    private static String key;
 
+    private static String apiBaseUrl = "https://api.themoviedb.org/3/";
+    private static String options = "&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false";
 
-    private TmdbMovies tmdbMovies = new TmdbApi(key).getMovies();
-    private TmdbSearch search = new TmdbApi(key).getSearch();
-    private TmdbDiscover discover = new TmdbApi(key).getDiscover();
+    private TmdbMovies tmdbMovies;
+    private TmdbSearch search;
+    private TmdbDiscover discover;
 
     @Autowired
     DirectorRepository directorRepository;
@@ -47,8 +49,17 @@ public class MovieService {
     @Autowired
     CastMemberRepository castMemberRepository;
 
-    public MovieService(){
+    //public MovieService(){}
+
+    public MovieService(@Value("${api.key}") String key){
+        this.key = key;
+        TmdbApi api = new TmdbApi(key);
+        this.tmdbMovies = api.getMovies();
+        this.search = api.getSearch();
+        this.discover = api.getDiscover();
     }
+
+    // MovieDb specific methods
 
     public List<MovieDb> searchForActor(int id){
         return searchForActor(id, 1);
@@ -112,34 +123,6 @@ public class MovieService {
         }
     }
 
-    public String getReleaseDateYearForDisplay(String date) {
-
-        if (date != null && !date.isEmpty()){
-             return "(" + date.split("-")[0] + ")";
-        }
-
-        return "";
-    }
-
-    public String getFormattedReleaseDate(MovieDb movie){
-        String date = movie.getReleaseDate();
-
-        return getFormattedDate(date);
-    }
-
-    public String getBaseUrl(int size) {
-        // sizes 0 = w92, 1 = w154, 2 = w185, 3 = w342, 4 = w500, 5 = w780, 6 = original
-
-        if (size < 0 || size > 6){
-            size = 0;
-        }
-
-        String baseUrl = new TmdbApi(key).getConfiguration().getBaseUrl();
-        String sizeUrl = new TmdbApi(key).getConfiguration().getPosterSizes().get(size);
-
-        return baseUrl + sizeUrl;
-    }
-
     public List<MovieDb> searchMovies(String searchTerm) {
         return getResultsFromPage(getSearchResultsPage(searchTerm));
     }
@@ -177,14 +160,6 @@ public class MovieService {
         return "https://www.youtube.com/embed/" + videoKey;
     }
 
-    public int getSearchResultsPages(String searchTerm){
-        return getSearchResultsPage(searchTerm).getTotalPages();
-    }
-
-    public int getTotalResultsCount(String searchTerm, int page){
-        return getSearchResultsPage(searchTerm, page).getTotalResults();
-    }
-
     public MovieResultsPage getSearchResultsPage(String searchTerm, int page){
         return search.searchMovie(searchTerm, null, "en", false, page);
     }
@@ -207,6 +182,35 @@ public class MovieService {
         return movies;
     }
 
+    public int getSearchResultsPageCount(String searchTerm){
+        return getSearchResultsPage(searchTerm).getTotalPages();
+    }
+
+    public int getTotalResultsCount(String searchTerm, int page){
+        return getSearchResultsPage(searchTerm, page).getTotalResults();
+    }
+
+    public String getFormattedReleaseDate(MovieDb movie){
+        String date = movie.getReleaseDate();
+
+        return getFormattedDate(date);
+    }
+
+    // TMDB.org Utility Methods
+
+    public String getBaseUrl(int size) {
+        // sizes 0 = w92, 1 = w154, 2 = w185, 3 = w342, 4 = w500, 5 = w780, 6 = original
+
+        if (size < 0 || size > 6){
+            size = 0;
+        }
+
+        String baseUrl = new TmdbApi(key).getConfiguration().getBaseUrl();
+        String sizeUrl = new TmdbApi(key).getConfiguration().getPosterSizes().get(size);
+
+        return baseUrl + sizeUrl;
+    }
+
     public List<MovieDb> getNowPlaying(){
         List<MovieDb> movies = tmdbMovies.getNowPlayingMovies("en", 1, "US").getResults();
         movies.sort(new SortMovieDbByDate());
@@ -216,6 +220,8 @@ public class MovieService {
         int movieId = new TmdbApi(key).getPeople().getCombinedPersonCredits(500).getCast().get(0).getId();
         return movies;
     }
+
+    // Movie methods
 
     public List<Movie> getWatchlistUpcoming(List<Movie> movies){
         List<Movie> output = new ArrayList<>();
@@ -232,9 +238,6 @@ public class MovieService {
 
         return output;
     }
-    /* TODO - Create a movie class that extends MovieDb and move some of the formatting
-        functions (like Date) into that class.
-     */
 
     public Movie convertFromMovieDb(MovieDb tmdbMovie){
         if (tmdbMovie == null){
@@ -373,6 +376,17 @@ public class MovieService {
         return null;
     }
 
+    // General Utility methods
+
+    public String getReleaseDateYearForDisplay(String date) {
+
+        if (date != null && !date.isEmpty()){
+            return "(" + date.split("-")[0] + ")";
+        }
+
+        return "";
+    }
+
     public String getFormattedDate(String dateString){
         int index = dateString.indexOf('T');
 
@@ -388,6 +402,8 @@ public class MovieService {
 
         return dateString;
     }
+
+    // Classes
 
     class SortMovieDbByDate implements Comparator<MovieDb>
     {

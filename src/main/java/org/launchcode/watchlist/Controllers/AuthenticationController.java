@@ -1,9 +1,6 @@
 package org.launchcode.watchlist.Controllers;
 
-import info.movito.themoviedbapi.TmdbApi;
-import info.movito.themoviedbapi.TmdbMovies;
-import info.movito.themoviedbapi.model.MovieDb;
-import info.movito.themoviedbapi.model.core.MovieResultsPage;
+
 import org.launchcode.watchlist.Models.User;
 import org.launchcode.watchlist.Models.dto.LoginFormDTO;
 import org.launchcode.watchlist.Models.dto.RegisterFormDTO;
@@ -15,10 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Optional;
@@ -57,12 +51,6 @@ public class AuthenticationController {
 
         return false;
     }
-
-//    @GetMapping
-//    public String displayLandingPage(Model model) {
-//        model.addAttribute("title", "Welcome to Watchlist!");
-//        return "/Authentication/index";
-//    }
 
     @GetMapping("/register")
     public String displayRegistrationForm(HttpServletRequest request, Model model) {

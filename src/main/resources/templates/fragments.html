@@ -22,7 +22,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" th:href="@{/search}">Search</a>
+                    <a class="nav-link" th:href="@{/search}">Search TMDb.org</a>
                 </li>
                 <li th:if="${user != null}" class="nav-item">
                     <a class="nav-link" th:href="@{/user/{username}(username=${user.username})}">My Page</a>
@@ -35,7 +35,7 @@
             </button>
             <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNavAltMarkup">
                 <div th:if="${user != null}" class="navbar-nav">
-                    <a class="nav-item nav-link" href="#"><span th:text="${'Hello, ' + user.username + '!'}"></span></a>
+                    <a class="nav-item nav-link" th:href="@{/user/manage}"><span th:text="${'Hello, ' + user.username + '!'}"></span></a>
                     <a class="nav-item nav-link" th:href="@{/logout}">Logout</a>
                 </div>
                 <div th:unless="${user != null}" class="navbar-nav">
@@ -72,7 +72,7 @@
                 <td>
                     <th:block th:if="${user != null}">
                         <a th:if="${!isUserList}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add to Watchlist</a>
-                        <a th:if="${isUserList and user.id == movie.user.id}" th:href="@{/watchlist/remove(id=${movie.id})}">Remove from Watchlist</a>
+                        <a th:if="${isUserList and user.id == movie.user.id}" class="btn btn-danger" th:href="@{/watchlist/remove(id=${movie.id})}">Remove from Watchlist</a>
                     </th:block>
 
                 </td>
@@ -136,7 +136,7 @@
 
 <div th:fragment="userInfo">
     <div class="row profilePicture">
-        <img class="img-fluid rounded mx-auto d-block" id="profile-picture" src="../static/images/defaultProfilePicture.png" th:src="@{${'/images/' + user.profilePicturePath}}">
+        <img class="img-fluid rounded mx-auto d-block" id="profile-picture" src="../static/images/profilepictures/defaultProfilePicture.png" th:src="@{${'/images/profilepictures/' + user.profilePicturePath}}">
     </div>
     <H4 class="center-text" th:text="${user.username}"><small th:text=" (${movies.)"></small></H4>
     <div class="row center-text" id="user-links">

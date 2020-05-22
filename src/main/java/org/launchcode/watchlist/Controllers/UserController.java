@@ -1,19 +1,21 @@
 package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
+import org.hibernate.annotations.common.util.impl.LoggerFactory;
 import org.launchcode.watchlist.Models.Movie;
 import org.launchcode.watchlist.Models.MovieService;
 import org.launchcode.watchlist.Models.User;
+import org.launchcode.watchlist.Models.UserService;
 import org.launchcode.watchlist.data.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
 
 @Controller
 @RequestMapping("user")
@@ -28,6 +30,9 @@ public class UserController {
     @Autowired
     MovieService movieService;
 
+    @Autowired
+    UserService userService;
+
     @GetMapping("/{username}")
     public String displayUser(@PathVariable String username, HttpServletRequest request, Model model){
 
@@ -38,18 +43,30 @@ public class UserController {
             return "redirect:";
         }
 
-        // Check if provided user matches current user in session - if not, return to current user's page.
-//        User user = authenticationController.getUserFromSession(request.getSession());
-//
-//        if (user.getUsername() != providedUser.getUsername()){
-//            return "redirect:/" + user.getUsername();
-//        }
-
         List<Movie> movies = providedUser.getWatchlist();
         model.addAttribute("isUserList", true);
         model.addAttribute("url", movieService.getBaseUrl(0));
         model.addAttribute("movies", movies);
 
         return "user/index";
+    }
+
+    @GetMapping("manage")
+    public String displayManagePage(HttpServletRequest request, Model model){
+
+        return "user/manage";
+    }
+
+    @PostMapping("uploadImage")
+    public String uploadImage(@RequestParam("imageFile") MultipartFile imageFile, HttpServletRequest request){
+        User user = authenticationController.getUserFromSession(request.getSession());
+
+        try{
+                userService.saveProfilePicture(user, imageFile);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        return "user/manage";
     }
 }
