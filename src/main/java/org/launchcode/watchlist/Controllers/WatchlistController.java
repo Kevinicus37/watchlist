@@ -87,7 +87,7 @@ public class WatchlistController {
     }
 
     @GetMapping("remove")
-    public String removeFromWatchlist(@PathVariable int id, HttpServletRequest request, Model model){
+    public String removeFromWatchlist(@RequestParam int id, HttpServletRequest request, Model model){
         User user = authenticationController.getUserFromSession(request.getSession());
         Optional<Movie> result = movieRepository.findById(id);
 
