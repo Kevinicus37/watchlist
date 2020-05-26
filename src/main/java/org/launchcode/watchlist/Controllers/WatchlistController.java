@@ -74,6 +74,7 @@ public class WatchlistController {
         movies = movieService.getMoviesFromTitleSearch(userMovies, searchTerm);
         List<Movie> upcomingMovies = movieService.getWatchlistUpcoming(userMovies);
 
+        model.addAttribute("upcoming", upcomingMovies);
         model.addAttribute("movies", movies);
         model.addAttribute("isUserList", true);
         model.addAttribute("url", movieService.getBaseUrl(0));

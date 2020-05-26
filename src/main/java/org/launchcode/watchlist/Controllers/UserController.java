@@ -45,6 +45,9 @@ public class UserController {
         }
 
         List<Movie> movies = providedUser.getWatchlist();
+        List<Movie> upcomingMovies = movieService.getWatchlistUpcoming(movies);
+
+        model.addAttribute("upcoming", upcomingMovies);
         model.addAttribute("isUserList", true);
         model.addAttribute("url", movieService.getBaseUrl(0));
         model.addAttribute("movies", movies);

@@ -47,15 +47,7 @@
                 </ul>
             </div>
             <hr />
-            <div class="row">
-                <h4>Coming Soon</h4>
-                <ul>
-                    <li th:each="movie : ${upcoming}" th:if="${movieStat.index < 10}">
-                        <a th:href="@{/movie/view(id=${movie.getId()})}" th:text="${movie.getTitle()}"></a>
-                        <span th:text="${movie.getReleaseDate()}"></span>
-                    </li>
-                </ul>
-            </div>
+            <div th:replace="fragments :: upcoming"></div>
         </div>
 
 

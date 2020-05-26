@@ -61,11 +61,11 @@ public class MovieService {
 
     // MovieDb specific methods
 
-    public List<MovieDb> searchForActor(int id){
-        return searchForActor(id, 1);
+    public List<MovieDb> searchForCastMember(int id){
+        return searchForCastMember(id, 1);
     }
 
-    public List<MovieDb> searchForActor(int id, int page){
+    public List<MovieDb> searchForCastMember(int id, int page){
 
         if (page < 1){
             page = 1;
@@ -228,13 +228,16 @@ public class MovieService {
         LocalDateTime date = LocalDateTime.now();
         String month = date.getMonthValue() < 10? "0" + date.getMonthValue() : "" + date.getMonthValue();
         String dateStr = date.getYear() + "-" + month + "-" + date.getDayOfMonth();
-        movies.sort(new SortMovieByDate());
+        movies.sort(new SortMovieByDateDesc());
+
         for (Movie movie : movies){
             if (movie.getReleaseDate().compareTo(dateStr) < 0 || output.size() >= 10){
                 break;
             }
             output.add(movie);
         }
+
+        output.sort(new SortMovieByDate());
 
         return output;
     }
@@ -416,9 +419,15 @@ public class MovieService {
 
     }
 
-    class SortMovieByDate implements Comparator<Movie>{
+    class SortMovieByDateDesc implements Comparator<Movie>{
         public int compare(Movie a, Movie b){
             return b.getReleaseDate().compareTo(a.getReleaseDate());
+        }
+    }
+
+    class SortMovieByDate implements Comparator<Movie>{
+        public int compare(Movie a, Movie b){
+            return a.getReleaseDate().compareTo(b.getReleaseDate());
         }
     }
 

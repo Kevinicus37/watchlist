@@ -25,7 +25,7 @@
                     <a class="nav-link" th:href="@{/search}">Search TMDb.org</a>
                 </li>
                 <li th:if="${user != null}" class="nav-item">
-                    <a class="nav-link" th:href="@{/user/{username}(username=${user.username})}">My Page</a>
+                    <a class="nav-link" th:href="@{/user/{username}(username=${user.username})}">My Watchlist</a>
                 </li>
             </ul>
         </div>
@@ -143,6 +143,17 @@
         <a th:href="@{${'/user/' + user.username}}">Watchlist</a>
     </div>
     <!--    Put upcoming releases here -->
+</div>
+
+<div th:fragment="upcoming" class="row">
+    <h4>Coming Soon</h4>
+    <ul>
+        <li th:each="movie : ${upcoming}" th:if="${movieStat.index < 10}">
+            <a th:if="!isUserList" th:href="@{${'/movie/tmdb/' + movie.tmdbId}}" th:text="${movie.getTitle()}"></a>
+            <a th:unless="!isUserList" th:href="@{${'/movie/' + movie.id}}" th:text="${movie.getTitle()}"></a>
+            <span th:text="${movie.getReleaseDate()}"></span>
+        </li>
+    </ul>
 </div>
 
 <th:block th:fragment="scripts">

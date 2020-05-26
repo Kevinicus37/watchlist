@@ -44,7 +44,7 @@ public class SearchController {
     @GetMapping("cast/{castId}")
     public String getMovieDbsByCastMember(@PathVariable int castId, Model model){
         // castId should be the id for the cast Member on TMDb.org
-        model.addAttribute("movies", movieService.searchForActor(castId));
+        model.addAttribute("movies", movieService.searchForCastMember(castId));
         model.addAttribute("url", movieService.getBaseUrl(0));
         model.addAttribute("isUserList", false);
 
