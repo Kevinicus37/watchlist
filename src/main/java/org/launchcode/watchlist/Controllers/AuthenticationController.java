@@ -124,13 +124,13 @@ public class AuthenticationController {
         if (user == null){
             errors.rejectValue("username", "username.invalid", "Username does not exist.");
             model.addAttribute("title", "Login");
-            return "login";
+            return "Authentication/login";
         }
 
         if (!user.isMatchingPassword(loginFormDTO.getPassword())){
             errors.rejectValue("password", "password.mismatch", "The provided password is invalid.");
             model.addAttribute("title", "Login");
-            return "login";
+            return "Authentication/login";
         }
 
         setUserInSession(request.getSession(), user);

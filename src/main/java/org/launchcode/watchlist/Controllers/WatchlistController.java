@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +40,11 @@ public class WatchlistController {
     @GetMapping("add")
     public String addMovie(@RequestParam int id, HttpServletRequest request, Model model){
 
-        //MovieService movieService = new MovieService();
         MovieDb tmdbMovie = movieService.getTmdbMovie(id);
         User user = authenticationController.getUserFromSession(request.getSession());
 
+        // Check to see if user already has this movie in their list.
         if (tmdbMovie != null){
-            // Check to see if user already has this movie in their list.
             Movie movie = movieRepository.findByTitleAndUserId(tmdbMovie.getTitle(), user.getId());
 
             if (movie == null) {
@@ -59,8 +57,6 @@ public class WatchlistController {
             model.addAttribute("trailerUrl", movie.getTrailerUrl());
             model.addAttribute("url", movieService.getBaseUrl(3));
             model.addAttribute("isUserMovie", true);
-
-
 
             return "movie";
         }
@@ -77,7 +73,6 @@ public class WatchlistController {
         List<Movie> userMovies = user.getWatchlist();
         movies = movieService.getMoviesFromTitleSearch(userMovies, searchTerm);
         List<Movie> upcomingMovies = movieService.getWatchlistUpcoming(userMovies);
-        // movieService.setUpcomingWatchlistHomeReleases(movies);
 
         model.addAttribute("movies", movies);
         model.addAttribute("isUserList", true);
@@ -100,7 +95,5 @@ public class WatchlistController {
 
         return "redirect:/user/" + user.getUsername();
     }
-
-
 
 }

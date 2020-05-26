@@ -47,7 +47,7 @@
 </nav>
 
 <div th:fragment="errors">
-    <p th:each="error : ${errors}" th:text="${error}" style="color : red"></p>
+    <p th:each="error : ${errorMessages}" th:text="${error}" style="color : red"></p>
 </div>
 
 <th:block th:fragment="movielist" th:if="${movies != null}">
@@ -142,7 +142,6 @@
     <div class="row center-text" id="user-links">
         <a th:href="@{${'/user/' + user.username}}">Watchlist</a>
     </div>
-    <hr>
     <!--    Put upcoming releases here -->
 </div>
 

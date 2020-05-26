@@ -7,7 +7,6 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class User extends AbstractEntity {
@@ -68,5 +67,7 @@ public class User extends AbstractEntity {
         this.profilePicturePath = profilePicturePath;
     }
 
-
+    public void setPasswordHash(String password) {
+        this.passwordHash = encoder.encode(password);
+    }
 }

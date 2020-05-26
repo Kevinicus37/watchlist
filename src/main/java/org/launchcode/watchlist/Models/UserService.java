@@ -18,17 +18,21 @@ public class UserService {
     public UserService(){}
 
     public void saveProfilePicture(User user, MultipartFile imageFile) throws Exception{
-        Path currentPath = Paths.get(".");
-        Path absolutePath = currentPath.toAbsolutePath();
-        String fileName = imageFile.getOriginalFilename();
-        int separatorIndex = fileName.lastIndexOf(".");
-        fileName = user.getUsername() + fileName.substring(separatorIndex);
 
-        byte[] bytes = imageFile.getBytes();
-        Path path = Paths.get(absolutePath + "/src/main/resources/static/images/profilepictures/" + fileName);
-        Files.write(path,bytes);
+        if (imageFile.getContentType().startsWith("image")) {
 
-        user.setProfilePicturePath(fileName);
-        userRepository.save(user);
+            Path currentPath = Paths.get(".");
+            Path absolutePath = currentPath.toAbsolutePath();
+            String fileName = imageFile.getOriginalFilename();
+            int separatorIndex = fileName.lastIndexOf(".");
+            fileName = user.getUsername() + fileName.substring(separatorIndex);
+
+            byte[] bytes = imageFile.getBytes();
+            Path path = Paths.get(absolutePath + "/src/main/resources/static/images/profilepictures/" + fileName);
+            Files.write(path, bytes);
+
+            user.setProfilePicturePath(fileName);
+            userRepository.save(user);
+        }
     }
 }
