@@ -15,6 +15,7 @@ public class HomeController {
     @GetMapping()
     public String displayLandingPage(Model model) {
         model.addAttribute("title", "Welcome to Watchlist!");
+        model.addAttribute("isUserList", false);
         model.addAttribute("upcoming", movieService.getComingSoon());
         model.addAttribute("nowPlaying", movieService.getNowPlaying());
 

@@ -163,14 +163,28 @@
 </div>
 
 <div th:fragment="upcoming" class="row">
-    <h4>Coming Soon</h4>
-    <ul>
-        <li th:each="movie : ${upcoming}" th:if="${movieStat.index < 10}">
-            <a th:if="!isUserList" th:href="@{${'/movie/tmdb/' + movie.tmdbId}}" th:text="${movie.getTitle()}"></a>
-            <a th:unless="!isUserList" th:href="@{${'/movie/' + movie.id}}" th:text="${movie.getTitle()}"></a>
-            <span th:text="${movie.getReleaseDate()}"></span>
-        </li>
-    </ul>
+    <h4 class="center-text">Coming Soon</h4>
+
+    <table class="table-list">
+        <tr>
+            <th>Title</th>
+            <th>Release</th>
+        </tr>
+        <tr th:each="movie : ${upcoming}">
+            <td><a th:if="!isUserList" th:href="@{${'/movie/tmdb/' + movie.tmdbId}}" th:text="${movie.title}"></a>
+                <a th:unless="!isUserList" th:href="@{${'/movie/' + movie.id}}" th:text="${movie.title}"></a>
+            </td>
+            <td th:text="${isUserList ? movie.formattedReleaseDate : movie.releaseDate}"></td>
+<!--            <td th:unless="!isUserList" th:text="${movie.formattedReleaseDate}"></td>-->
+        </tr>
+    </table>
+<!--    <ul>-->
+<!--        <li th:each="movie : ${upcoming}" th:if="${movieStat.index < 10}">-->
+<!--            <a th:if="!isUserList" th:href="@{${'/movie/tmdb/' + movie.tmdbId}}" th:text="${movie.title}"></a>-->
+<!--            <a th:unless="!isUserList" th:href="@{${'/movie/' + movie.id}}" th:text="${movie.title}"></a>-->
+<!--            <span th:text="${movie.releaseDate}"></span>-->
+<!--        </li>-->
+<!--    </ul>-->
 </div>
 
 <th:block th:fragment="scripts">

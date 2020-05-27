@@ -225,6 +225,7 @@ public class MovieService {
 
     public List<Movie> getWatchlistUpcoming(List<Movie> movies){
         List<Movie> output = new ArrayList<>();
+
         LocalDateTime date = LocalDateTime.now();
         String month = date.getMonthValue() < 10? "0" + date.getMonthValue() : "" + date.getMonthValue();
         String dateStr = date.getYear() + "-" + month + "-" + date.getDayOfMonth();
@@ -234,10 +235,12 @@ public class MovieService {
             if (movie.getReleaseDate().compareTo(dateStr) < 0 || output.size() >= 10){
                 break;
             }
+
             output.add(movie);
         }
 
         output.sort(new SortMovieByDate());
+        updateithFormattedReleaseDate(output);
 
         return output;
     }
@@ -377,6 +380,14 @@ public class MovieService {
         }
 
         return null;
+    }
+
+    public void updateithFormattedReleaseDate(List<Movie> movies){
+        for (Movie movie : movies){
+            String date = movie.getReleaseDate();
+            String formattedDate = getFormattedDate(date);
+            movie.setFormattedReleaseDate();
+        }
     }
 
     // General Utility methods

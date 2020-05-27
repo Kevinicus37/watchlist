@@ -311,3 +311,13 @@ table.search-results > tbody > tr > td {
 hr {
     border-color: white;
 }
+
+td {
+  padding: 0.5em;
+  padding-right: 1em;
+}
+
+.table-list {
+    margin : 1rem;
+    font-size : .75rem;
+}
