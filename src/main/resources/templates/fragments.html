@@ -15,34 +15,34 @@
 </header>
 
 <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark navbar-inverse sticky-top">
-        <a class="navbar-brand" th:href="@{/}">Watchlist</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" th:href="@{/}">Watchlist</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/search}">Search TMDb.org</a>
+            </li>
+            <li th:if="${user != null}" class="nav-item">
+                <a class="nav-link" th:href="@{/user/{username}(username=${user.username})}">My Watchlist</a>
+            </li>
+        </ul>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" th:href="@{/search}">Search TMDb.org</a>
-                </li>
-                <li th:if="${user != null}" class="nav-item">
-                    <a class="nav-link" th:href="@{/user/{username}(username=${user.username})}">My Watchlist</a>
-                </li>
-            </ul>
-        </div>
-    <div class="collapse navbar-collapse" id="navbarText">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNavAltMarkup">
-                <div th:if="${user != null}" class="navbar-nav">
-                    <a class="nav-item nav-link" th:href="@{/user/manage}"><span th:text="${'Hello, ' + user.username + '!'}"></span></a>
-                    <a class="nav-item nav-link" th:href="@{/logout}">Logout</a>
-                </div>
-                <div th:unless="${user != null}" class="navbar-nav">
-                    <a class="nav-item nav-link" th:href="@{/register}">Register</a>
-                    <a class="nav-item nav-link" th:href="@{/login}">Login</a>
-                </div>
+        <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNavAltMarkup">
+            <div th:if="${user != null}" class="navbar-nav">
+                <a class="nav-item nav-link" th:href="@{/user/manage}"><span th:text="${'Hello, ' + user.username + '!'}"></span></a>
+                <a class="nav-item nav-link" th:href="@{/logout}">Logout</a>
             </div>
+            <div th:unless="${user != null}" class="navbar-nav">
+                <a class="nav-item nav-link" th:href="@{/register}">Register</a>
+                <a class="nav-item nav-link" th:href="@{/login}">Login</a>
+            </div>
+        </div>
     </div>
 </nav>
 
@@ -64,7 +64,7 @@
                     <a th:if="${!isUserList}" th:href="@{/movie/tmdb/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.releaseDate}"></H4></a>
                     <a th:unless="${!isUserList}" th:href="@{/movie/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.releaseYear}"></H4></a>
                     <em th:if="${movie.crew != null and !movie.crew.isEmpty()}">Directed by <th:block th:each="crew : ${movie.crew}">
-                        <span th:text="${crewStat.last ? crew.getName() : crew.getName() + ', '}"></span>
+                        <span th:text="${crewStat.last ? crew.name : crew.name + ', '}"></span>
                     </th:block>
                     </em>
                     <p style="font-size: 0.75em;" th:text="${#strings.abbreviate(movie.overview,400)}"></p>
@@ -130,19 +130,36 @@
     </div>
 </div>
 
-<div th:fragment="secondaryInfo">
-
+<div th:fragment="secondaryInfo" class="col-md-2 extra-film-info">
+    <div th:replace="fragments :: userInfo"></div>
+    <hr />
+    <div class="film-stats">
+        <div class="row">
+            <b>Directed By:</b>
+            <p th:if="${isUserMovie}" th:each="director : ${movie.directors}" th:text="${director.name}"></p>
+            <p th:unless="${isUserMovie}" th:each="crew : ${movie.crew}" th:text="${crew.name}"></p>
+        </div>
+        <div class="row">
+            <b>Runtime:</b>
+            <p th:text="${movie.runtime + ' min.'}"></p>
+        </div>
+        <div th:if="${movie.genres != null and !movie.genres.isEmpty()}" >
+            <b>Genres:</b>
+            <ul>
+                <li th:each="genre : ${movie.genres}" th:text="${genre.name}"></li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <div th:fragment="userInfo">
     <div class="row profilePicture">
         <img class="img-fluid rounded mx-auto d-block" id="profile-picture" src="../static/images/profilepictures/defaultProfilePicture.png" th:src="@{${'/images/profilepictures/' + user.profilePicturePath}}">
     </div>
-    <H4 class="center-text" th:text="${user.username}"><small th:text=" (${movies.)"></small></H4>
+    <H4 class="center-text" th:text="${user.username}"></H4>
     <div class="row center-text" id="user-links">
         <a th:href="@{${'/user/' + user.username}}">Watchlist</a>
     </div>
-    <!--    Put upcoming releases here -->
 </div>
 
 <div th:fragment="upcoming" class="row">

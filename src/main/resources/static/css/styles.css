@@ -1,6 +1,9 @@
 body {
-    padding-top: 50px;
     padding-bottom: 20px;
+}
+
+h3 {
+    padding-top:10px;
 }
 
 /* Wrapping element */
@@ -213,8 +216,7 @@ textarea {
 }
 
 #site-description-jumbo {
-    margin-bottom:0px;
-    margin-top:20px;
+    margin:1rem;
 }
 
 #site-description-jumbo a {
