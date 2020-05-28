@@ -106,7 +106,6 @@ public class UserController {
                 e.printStackTrace();
             }
 
-
         return "user/manage";
     }
 }

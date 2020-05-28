@@ -37,14 +37,19 @@
             </div>
         </div>
         <div class="col-md-3 main-index-list">
-            <div class="row">
-                <h4>Now Playing</h4>
-                <ul>
-                    <li th:each="movie : ${nowPlaying}" th:if="${movieStat.index < 10}">
-                        <a th:href="@{/movie/view(id=${movie.getId()})}" th:text="${movie.getTitle()}"></a>
-                        <span th:text="${movie.getReleaseDate()}"></span>
-                    </li>
-                </ul>
+            <div>
+                <h4 class="center-text">Now Playing</h4>
+                <table class="table-list">
+                    <tr>
+                        <th>Title</th>
+                        <th>Release</th>
+                    </tr>
+                    <tr th:each="movie : ${nowPlaying}">
+                        <td><a th:href="@{${'/movie/tmdb/' + movie.id}}" th:text="${movie.title}"></a>
+                        </td>
+                        <td th:text="${movie.releaseDate}"></td>
+                    </tr>
+                </table>
             </div>
             <hr />
             <div th:replace="fragments :: upcoming"></div>

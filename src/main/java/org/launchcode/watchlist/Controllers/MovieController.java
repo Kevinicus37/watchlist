@@ -38,7 +38,7 @@ public class MovieController {
         model.addAttribute("url", movieService.getBaseUrl(3));
         model.addAttribute("isUserMovie", false);
 
-        return "movie";
+        return "movie/movie";
     }
 
     @GetMapping("{id}")
@@ -62,6 +62,6 @@ public class MovieController {
         model.addAttribute("url", movieService.getBaseUrl(3));
         model.addAttribute("isUserMovie", true);
 
-        return "movie";
+        return "movie/movie";
     }
 }

@@ -318,6 +318,7 @@ td {
 }
 
 .table-list {
-    margin : 1rem;
+    margin : .5rem;
+    margin-top: 1.5rem;
     font-size : .75rem;
 }

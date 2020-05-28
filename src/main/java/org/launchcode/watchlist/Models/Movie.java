@@ -18,10 +18,6 @@ public class Movie extends AbstractEntity{
 
     private String releaseYear;
 
-    private String formattedReleaseDate;
-
-
-
     private String physicalReleaseDate;
 
     private String digitalReleaseDate;
@@ -67,7 +63,7 @@ public class Movie extends AbstractEntity{
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
         setReleaseYear();
-        setFormattedReleaseDate();
+//        setFormattedReleaseDate();
     }
 
     public String getReleaseYear() {
@@ -76,29 +72,6 @@ public class Movie extends AbstractEntity{
 
     private void setReleaseYear() {
         this.releaseYear =  "(" + getReleaseDate().split("-")[0] + ")";
-    }
-
-    public String getFormattedReleaseDate() {
-        return formattedReleaseDate;
-    }
-
-    public void setFormattedReleaseDate() {
-        int index = this.releaseDate.indexOf('T');
-        this.formattedReleaseDate = "";
-
-        if (index >= 0){
-            this.formattedReleaseDate = this.releaseDate.substring(0,index);
-        }
-        else {
-            this.formattedReleaseDate = this.releaseDate;
-        }
-
-        if (!this.formattedReleaseDate.isEmpty()){
-            String[] dateParts = this.formattedReleaseDate.split("-");
-            dateParts[0] = dateParts[0].substring(2);
-            this.formattedReleaseDate = dateParts[1] + '-' + dateParts[2] + '-' + dateParts[0];
-        }
-
     }
 
     public String getOverview() {

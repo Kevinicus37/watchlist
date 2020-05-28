@@ -100,7 +100,6 @@ public class AuthenticationController {
 
     @GetMapping("/login")
     public String displayLoginForm(HttpServletRequest request, Model model){
-
         if (isLoggedIn(request.getSession())){
             return "redirect:";
         }

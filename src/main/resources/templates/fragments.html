@@ -162,29 +162,20 @@
     </div>
 </div>
 
-<div th:fragment="upcoming" class="row">
+<div th:fragment="upcoming">
     <h4 class="center-text">Coming Soon</h4>
-
     <table class="table-list">
         <tr>
             <th>Title</th>
             <th>Release</th>
         </tr>
         <tr th:each="movie : ${upcoming}">
-            <td><a th:if="!isUserList" th:href="@{${'/movie/tmdb/' + movie.tmdbId}}" th:text="${movie.title}"></a>
-                <a th:unless="!isUserList" th:href="@{${'/movie/' + movie.id}}" th:text="${movie.title}"></a>
+            <td><a th:if="${!isUserList}" th:href="@{${'/movie/tmdb/' + movie.id}}" th:text="${movie.title}"></a>
+                <a th:unless="${!isUserList}" th:href="@{${'/movie/' + movie.id}}" th:text="${movie.title}"></a>
             </td>
-            <td th:text="${isUserList ? movie.formattedReleaseDate : movie.releaseDate}"></td>
-<!--            <td th:unless="!isUserList" th:text="${movie.formattedReleaseDate}"></td>-->
+            <td th:text="${movie.releaseDate}"></td>
         </tr>
     </table>
-<!--    <ul>-->
-<!--        <li th:each="movie : ${upcoming}" th:if="${movieStat.index < 10}">-->
-<!--            <a th:if="!isUserList" th:href="@{${'/movie/tmdb/' + movie.tmdbId}}" th:text="${movie.title}"></a>-->
-<!--            <a th:unless="!isUserList" th:href="@{${'/movie/' + movie.id}}" th:text="${movie.title}"></a>-->
-<!--            <span th:text="${movie.releaseDate}"></span>-->
-<!--        </li>-->
-<!--    </ul>-->
 </div>
 
 <th:block th:fragment="scripts">
