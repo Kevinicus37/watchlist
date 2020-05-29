@@ -77,16 +77,16 @@ public class MovieService {
 
         JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
         JsonArray jArr = jobj.getAsJsonArray("results");
-        Type listType = new TypeToken<List<MovieDb>>(){}.getType();
-        List<MovieDb> movies = new Gson().fromJson(jArr, listType);
+        Type listType = new TypeToken<List<Movie>>(){}.getType();
+        List<Movie> movies = new Gson().fromJson(jArr, listType);
 
         List<MovieDb> output = new ArrayList<>();
-
-        for (MovieDb movie : movies) {
-            MovieDb newMovie = getTmdbMovie(movie.getId());
-            setDirectors(newMovie);
-            output.add(newMovie);
-        }
+//
+//        for (MovieDb movie : movies) {
+//            MovieDb newMovie = getTmdbMovie(movie.getId());
+//            setDirectors(newMovie);
+//            output.add(newMovie);
+//        }
 
         return output;
     }

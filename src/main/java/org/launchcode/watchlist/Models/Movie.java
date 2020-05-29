@@ -1,5 +1,7 @@
 package org.launchcode.watchlist.Models;
 
+import com.google.gson.annotations.SerializedName;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -14,6 +16,7 @@ public class Movie extends AbstractEntity{
     @NotNull
     private String title;
 
+    @SerializedName("release_date")
     private String releaseDate;
 
     private String releaseYear;
@@ -26,12 +29,14 @@ public class Movie extends AbstractEntity{
 
     private String trailerUrl;
 
+    @SerializedName("poster_path")
     private String posterPath;
 
     private int runtime;
 
     private String comment;
 
+    @SerializedName("id")
     private int tmdbId;
 
     @ManyToOne
