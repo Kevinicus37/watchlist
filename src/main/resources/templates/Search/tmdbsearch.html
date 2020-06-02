@@ -6,21 +6,20 @@
 <nav th:replace="fragments :: navbar"></nav>
 
 <div class="container">
-
     <header th:replace="fragments :: header"></header>
-
     <form th:action="@{/search}" method="post">
-        <div class="form-group">
-            <label>Search
-                <input type="text" class="form-control" name="searchTerm" />
-            </label>
+        <div class="input-group mb-3">
+            <select class="custom-select input-group-prepend" name="searchOption" id="input-group-select">
+                <option value="title">Title</option>
+                <option value="cast">Cast</option>
+            </select>
+            <input type="text" name="searchTerm" class="form-control">
+            <div class="input-group-append">
+                <input type="submit" class="btn btn-primary" value="Search" />
+            </div>
         </div>
-
-        <input type="submit" class="btn btn-primary" value="Search" />
     </form>
-
     <th:block th:replace="fragments :: movielist"></th:block>
-
 </div>
 <th:block th:replace="fragments :: scripts"></th:block>
 </body>

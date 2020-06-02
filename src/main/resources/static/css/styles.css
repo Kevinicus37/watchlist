@@ -176,7 +176,7 @@ textarea {
 }
 
 .film-stats > .row {
-    margin-top:20px;
+    margin-top:10px;
 }
 
 .film-stats > .row button, p {
@@ -321,4 +321,8 @@ td {
     margin : .5rem;
     margin-top: 1.5rem;
     font-size : .75rem;
+}
+
+#input-group-select {
+    max-width : 20%;
 }

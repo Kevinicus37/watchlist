@@ -10,6 +10,7 @@ import info.movito.themoviedbapi.model.ReleaseDate;
 import info.movito.themoviedbapi.model.ReleaseInfo;
 import info.movito.themoviedbapi.model.Video;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
+import info.movito.themoviedbapi.model.people.Person;
 import info.movito.themoviedbapi.model.people.PersonCast;
 import info.movito.themoviedbapi.model.people.PersonCrew;
 import org.launchcode.watchlist.data.CastMemberRepository;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -61,11 +61,11 @@ public class MovieService {
 
     // MovieDb specific methods
 
-    public List<MovieDb> searchForCastMember(int id){
-        return searchForCastMember(id, 1);
+    public List<MovieDb> searchForMovieDbByCastMember(int id){
+        return searchForMovieDbByCastMember(id, 1);
     }
 
-    public List<MovieDb> searchForCastMember(int id, int page){
+    public List<MovieDb> searchForMovieDbByCastMember(int id, int page){
 
         if (page < 1){
             page = 1;
@@ -77,16 +77,29 @@ public class MovieService {
 
         JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
         JsonArray jArr = jobj.getAsJsonArray("results");
-        Type listType = new TypeToken<List<Movie>>(){}.getType();
-        List<Movie> movies = new Gson().fromJson(jArr, listType);
+        Type listType = new TypeToken<List<MovieDb>>(){}.getType();
+        List<MovieDb> movies = new Gson().fromJson(jArr, listType);
 
         List<MovieDb> output = new ArrayList<>();
-//
-//        for (MovieDb movie : movies) {
-//            MovieDb newMovie = getTmdbMovie(movie.getId());
-//            setDirectors(newMovie);
-//            output.add(newMovie);
-//        }
+
+        for (MovieDb movie : movies) {
+            MovieDb newMovie = getTmdbMovie(movie.getId());
+            setDirectors(newMovie);
+            newMovie.setReleaseDate(getReleaseDateYearForDisplay(newMovie.getReleaseDate()));
+            output.add(newMovie);
+        }
+
+        return output;
+    }
+
+    public List<Integer> searchForCastMember(String searchTerm){
+        List<Integer> output = new ArrayList<>();
+        List<Person> personList = search.searchPerson(searchTerm,false, 0).getResults();
+        for (Person person : personList){
+            if (person.getId() > 0){
+                output.add(person.getId());
+            }
+        }
 
         return output;
     }
@@ -105,6 +118,8 @@ public class MovieService {
     }
 
     public void setDirectors(MovieDb movie){
+        // Sets the Crew to only the Directors
+
         movie.getCredits().setCrew(getDirectors(movie));
     }
 
@@ -488,5 +503,28 @@ public class MovieService {
         }
     }
 
+    class SortMovieByTitle implements Comparator<Movie>{
+        public int compare(Movie a, Movie b){
+            return a.getTitle().compareTo(b.getTitle());
+        }
+    }
+
+    class SortMovieByTitleDesc implements Comparator<Movie>{
+        public int compare(Movie a, Movie b){
+            return b.getTitle().compareTo(a.getTitle());
+        }
+    }
+
+    class SortMovieDbByTitle implements Comparator<MovieDb>{
+        public int compare(MovieDb a, MovieDb b){
+            return a.getTitle().compareTo(b.getTitle());
+        }
+    }
+
+    class SortMovieDbByTitleDesc implements Comparator<MovieDb>{
+        public int compare(MovieDb a, MovieDb b){
+            return b.getTitle().compareTo(a.getTitle());
+        }
+    }
 
 }

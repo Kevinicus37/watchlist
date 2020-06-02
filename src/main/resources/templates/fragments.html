@@ -136,14 +136,18 @@
     <div class="film-stats">
         <div class="row">
             <b>Directed By:</b>
-            <p th:if="${isUserMovie}" th:each="director : ${movie.directors}" th:text="${director.name}"></p>
-            <p th:unless="${isUserMovie}" th:each="crew : ${movie.crew}" th:text="${crew.name}"></p>
+            <th:block th:if="${isUserMovie}">
+                <p th:each="director : ${movie.directors}" th:text="${director.name}"></p>
+            </th:block>
+            <th:block th:unless="${isUserMovie}">
+                <p th:each="crew : ${movie.crew}" th:text="${crew.name}"></p>
+            </th:block>
         </div>
         <div class="row">
             <b>Runtime:</b>
             <p th:text="${movie.runtime + ' min.'}"></p>
         </div>
-        <div th:if="${movie.genres != null and !movie.genres.isEmpty()}" >
+        <div class="row" th:if="${movie.genres != null and !movie.genres.isEmpty()}" >
             <b>Genres:</b>
             <ul>
                 <li th:each="genre : ${movie.genres}" th:text="${genre.name}"></li>

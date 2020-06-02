@@ -31,6 +31,7 @@ public class MovieController {
     @GetMapping("tmdb/{id}")
     public String viewTmdbMovieDetails(@PathVariable int id, Model model){
         MovieDb movie = movieService.getTmdbMovie(id);
+        movieService.setDirectors(movie);
         movie.setReleaseDate(movieService.getReleaseDateYearForDisplay(movie.getReleaseDate()));
 
         model.addAttribute("movie", movie);

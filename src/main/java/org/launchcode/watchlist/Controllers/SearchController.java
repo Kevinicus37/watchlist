@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("search")
@@ -25,18 +26,30 @@ public class SearchController {
 
     @GetMapping
     public String displaySearchForm(HttpServletRequest request, Model model){
-        model.addAttribute("title", "Search");
+        model.addAttribute("title", "Search TMDb.org by:");
         return "/search/tmdbsearch";
     }
 
     @PostMapping
-    public String processSearchForm(String searchTerm, Model model){
-        List<MovieDb> movies = movieService.searchMovies(searchTerm);
+    public String processSearchForm(String searchTerm, String searchOption, Model model){
+        List<MovieDb> movies = new ArrayList<>();
+
+        if (searchOption.equals("title")){
+            movies = movieService.searchMovies(searchTerm);
+        }
+        else if (searchOption.equals("cast")){
+            List<Integer> castIds = movieService.searchForCastMember(searchTerm);
+            if (castIds.size() > 0){
+                movies = movieService.searchForMovieDbByCastMember(castIds.get(0));
+            }
+
+        }
 
         model.addAttribute("movies", movies);
         model.addAttribute("url", movieService.getBaseUrl(0));
         model.addAttribute("searchTerm", searchTerm);
         model.addAttribute("isUserList", false);
+        model.addAttribute("title", "Search TMDB.org by:");
 
         return "/search/tmdbsearch";
     }
@@ -44,7 +57,7 @@ public class SearchController {
     @GetMapping("cast/{castId}")
     public String getMovieDbsByCastMember(@PathVariable int castId, Model model){
         // castId should be the id for the cast Member on TMDb.org
-        model.addAttribute("movies", movieService.searchForCastMember(castId));
+        model.addAttribute("movies", movieService.searchForMovieDbByCastMember(castId));
         model.addAttribute("url", movieService.getBaseUrl(0));
         model.addAttribute("isUserList", false);
 
