@@ -76,7 +76,7 @@ public class Movie extends AbstractEntity{
     }
 
     private void setReleaseYear() {
-        this.releaseYear =  "(" + getReleaseDate().split("-")[0] + ")";
+        this.releaseYear =  "(" + getReleaseDate().split("-")[2] + ")";
     }
 
     public String getOverview() {

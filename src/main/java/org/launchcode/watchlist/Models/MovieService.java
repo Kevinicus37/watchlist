@@ -251,24 +251,21 @@ public class MovieService {
 
     public List<Movie> getWatchlistUpcoming(List<Movie> movies){
         List<Movie> output = new ArrayList<>();
-        List<Movie> listToSort = new ArrayList<>();
-        String dateStr = getCurrentDateFormatted();
+        String currentDate = getCurrentDateFormatted();
 
         for (Movie movie : movies){
-            if (movie.getReleaseDate().compareTo(dateStr) < 0){
-                listToSort.add(movie);
-            }
-        }
-
-        listToSort.sort(new SortMovieByDate());
-
-        for (Movie movie : listToSort){
-            if (output.size() <= 10){
+            String sortDate = getSortByDate(movie.getReleaseDate());
+            if (sortDate.compareTo(currentDate) > 0){
                 output.add(movie);
             }
         }
 
-        return output;
+        output.sort(new SortMovieByDate());
+        int endIndex = 9;
+        if (output.size() < 10){
+            endIndex = output.size();
+        }
+        return output.subList(0,endIndex);
     }
 
     public Movie convertFromMovieDb(MovieDb tmdbMovie){
@@ -428,7 +425,7 @@ public class MovieService {
 
         if (dateString != null && !dateString.isEmpty()){
             String[] dateParts = dateString.split("-");
-            dateParts[0] = dateParts[0].substring(2);
+            //dateParts[0] = dateParts[0].substring(2);
             return dateParts[1] + '-' + dateParts[2] + '-' + dateParts[0];
         }
 
@@ -444,7 +441,7 @@ public class MovieService {
 
         if (dateString != null && !dateString.isEmpty()){
             String[] dateParts = dateString.split("-");
-            dateParts[2] = dateParts[2].substring(2);
+            //dateParts[2] = dateParts[2].substring(2);
             return dateParts[2] + '-' + dateParts[0] + '-' + dateParts[1];
         }
 
@@ -454,7 +451,8 @@ public class MovieService {
     public String getCurrentDateFormatted(){
         LocalDateTime date = LocalDateTime.now();
         String month = date.getMonthValue() < 10? "0" + date.getMonthValue() : "" + date.getMonthValue();
-        String dateStr = date.getYear() + "-" + month + "-" + date.getDayOfMonth();
+        String day = date.getDayOfMonth() < 10? "0" + date.getDayOfMonth() : "" + date.getDayOfMonth();
+        String dateStr = date.getYear() + "-" + month + "-" + day;
 
         return dateStr;
     }

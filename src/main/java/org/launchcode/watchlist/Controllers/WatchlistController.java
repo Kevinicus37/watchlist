@@ -58,7 +58,7 @@ public class WatchlistController {
             model.addAttribute("url", movieService.getBaseUrl(3));
             model.addAttribute("isUserMovie", true);
 
-            return "movie";
+            return "movie/movie";
         }
 
         return "redirect:/user/" + user.getUsername();
