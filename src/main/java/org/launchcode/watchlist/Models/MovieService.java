@@ -249,7 +249,7 @@ public class MovieService {
 
     // Movie methods
 
-    public List<Movie> getWatchlistUpcoming(List<Movie> movies){
+    public List<Movie> getUnreleasedMovies(List<Movie> movies){
         List<Movie> output = new ArrayList<>();
         String currentDate = getCurrentDateFormatted();
 
@@ -260,12 +260,20 @@ public class MovieService {
             }
         }
 
+        return output;
+    }
+
+    public List<Movie> getWatchlistUpcoming(List<Movie> movies){
+        int startIndex = 0;
+        int endIndex = 10;
+        List<Movie> output = getUnreleasedMovies(movies);
         output.sort(new SortMovieByDate());
-        int endIndex = 9;
-        if (output.size() < 10){
+
+        if (output.size() < endIndex){
             endIndex = output.size();
         }
-        return output.subList(0,endIndex);
+
+        return output.subList(startIndex,endIndex);
     }
 
     public Movie convertFromMovieDb(MovieDb tmdbMovie){
@@ -405,6 +413,22 @@ public class MovieService {
         return null;
     }
 
+    public void sortMoviesByDate(List<Movie> movies){
+        movies.sort(new SortMovieByDate());
+    }
+
+    public void sortMoviesByDateDesc(List<Movie> movies){
+        movies.sort(new SortMovieByDateDesc());
+    }
+
+    public void sortMovieByTitle(List<Movie> movies){
+        movies.sort(new SortMovieByTitle());
+    }
+
+    public void sortMovieByTitleDesc(List<Movie> movies){
+        movies.sort(new SortMovieByTitleDesc());
+    }
+
     // General Utility methods
 
     public String getReleaseDateYearForDisplay(String date) {
@@ -457,7 +481,7 @@ public class MovieService {
         return dateStr;
     }
 
-    // Classes
+    // Comparator Classes
 
     class SortMovieDbByDate implements Comparator<MovieDb>
     {
@@ -478,6 +502,18 @@ public class MovieService {
             String dateB = getSortByDate(b.getReleaseDate());
 
             return dateB.compareTo(dateA);
+        }
+    }
+
+    class SortMovieDbByTitle implements Comparator<MovieDb>{
+        public int compare(MovieDb a, MovieDb b){
+            return a.getTitle().compareTo(b.getTitle());
+        }
+    }
+
+    class SortMovieDbByTitleDesc implements Comparator<MovieDb>{
+        public int compare(MovieDb a, MovieDb b){
+            return b.getTitle().compareTo(a.getTitle());
         }
     }
 
@@ -513,16 +549,6 @@ public class MovieService {
         }
     }
 
-    class SortMovieDbByTitle implements Comparator<MovieDb>{
-        public int compare(MovieDb a, MovieDb b){
-            return a.getTitle().compareTo(b.getTitle());
-        }
-    }
 
-    class SortMovieDbByTitleDesc implements Comparator<MovieDb>{
-        public int compare(MovieDb a, MovieDb b){
-            return b.getTitle().compareTo(a.getTitle());
-        }
-    }
 
 }

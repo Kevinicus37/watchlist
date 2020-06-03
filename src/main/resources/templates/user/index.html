@@ -11,7 +11,7 @@
         <div class="col-md-9">
 
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-5">
                     <form th:action="@{/watchlist/search}" method="post">
                         <div class="form-group">
                             <label>Search Watchlist
@@ -20,6 +20,25 @@
                         </div>
                         <input type="hidden" name="username" th:value="${user.username}" />
                         <input type="submit" class="btn btn-primary" value="Search" />
+                    </form>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-5">
+                    <form>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text">Sort By...</label>
+                        </div>
+                        <select class="custom-select" name="sortOption">
+                            <option value="title">Title</option>
+                            <option value="titleDesc">Title - Descending</option>
+                            <option value="releaseDate">Release Date</option>
+                            <option value="releaseDateDesc">Release Date - Descending</option>
+                        </select>
+                        <div class="input-group-append">
+                            <input type="submit" class="btn btn-primary" value="Sort" />
+                        </div>
+                    </div>
                     </form>
                 </div>
 

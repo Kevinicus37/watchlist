@@ -35,7 +35,7 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/{username}")
-    public String displayUser(@PathVariable String username, HttpServletRequest request, Model model){
+    public String displayUser(@PathVariable String username, @RequestParam(defaultValue = "title") String sortOption, HttpServletRequest request, Model model){
 
         // Check if provided user exists - if not go to home page?
         User providedUser = userRepository.findByUsername(username);
@@ -45,6 +45,20 @@ public class UserController {
         }
 
         List<Movie> movies = providedUser.getWatchlist();
+
+        if (sortOption.equals("releaseDate")){
+            movieService.sortMoviesByDate(movies);
+        }
+        else if (sortOption.equals("releaseDateDesc")){
+            movieService.sortMoviesByDateDesc(movies);
+        }
+        else if (sortOption.equals("titleDesc")){
+            movieService.sortMovieByTitleDesc(movies);
+        }
+        else {
+            movieService.sortMovieByTitle(movies);
+        }
+
         List<Movie> upcomingMovies = movieService.getWatchlistUpcoming(movies);
 
         model.addAttribute("upcoming", upcomingMovies);
@@ -54,6 +68,8 @@ public class UserController {
 
         return "user/index";
     }
+
+
 
     @GetMapping("manage")
     public String displayManagePage(HttpServletRequest request, Model model){
