@@ -52,6 +52,12 @@ public class UserController {
         else if (sortOption.equals("releaseDateDesc")){
             movieService.sortMoviesByDateDesc(movies);
         }
+        else if (sortOption.equals("dateAdded")){
+            movieService.sortMovieByDateAdded(movies);
+        }
+        else if (sortOption.equals("dateAddedDesc")){
+            movieService.sortMovieByDateAddedDesc(movies);
+        }
         else if (sortOption.equals("titleDesc")){
             movieService.sortMovieByTitleDesc(movies);
         }

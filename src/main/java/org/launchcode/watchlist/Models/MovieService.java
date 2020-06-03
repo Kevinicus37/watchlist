@@ -429,6 +429,14 @@ public class MovieService {
         movies.sort(new SortMovieByTitleDesc());
     }
 
+    public void sortMovieByDateAdded(List<Movie> movies){
+        movies.sort(new SortMovieByDateAdded());
+    }
+
+    public void sortMovieByDateAddedDesc(List<Movie> movies){
+        movies.sort(new SortMovieByDateAddedDesc());
+    }
+
     // General Utility methods
 
     public String getReleaseDateYearForDisplay(String date) {
@@ -549,6 +557,16 @@ public class MovieService {
         }
     }
 
+    class SortMovieByDateAdded implements Comparator<Movie>{
+        public int compare(Movie a, Movie b){
+            return a.getDateAdded().compareTo(b.getDateAdded());
+        }
+    }
 
+    class SortMovieByDateAddedDesc implements Comparator<Movie>{
+        public int compare(Movie a, Movie b){
+            return b.getDateAdded().compareTo(a.getDateAdded());
+        }
+    }
 
 }

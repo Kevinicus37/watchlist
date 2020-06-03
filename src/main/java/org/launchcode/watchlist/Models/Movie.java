@@ -6,8 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -51,7 +51,12 @@ public class Movie extends AbstractEntity{
     @ManyToMany
     private List<CastMember> cast = new ArrayList<>();
 
-    public Movie(){}
+    private String dateAdded;
+
+    public Movie(){
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        this.dateAdded= currentDateTime.toString();
+    }
 
     public String getTitle() {
         return title;
@@ -179,4 +184,11 @@ public class Movie extends AbstractEntity{
         this.digitalReleaseDate = digitalReleaseDate;
     }
 
+    public String getDateAdded() {
+        return dateAdded;
+    }
+
+    private void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
+    }
 }
