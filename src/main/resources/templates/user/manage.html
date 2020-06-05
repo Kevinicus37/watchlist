@@ -4,11 +4,9 @@
 <body class="container">
 
 <nav th:replace="fragments :: navbar"></nav>
-<div class="container">
-    <header th:replace="fragments :: header"></header>
-
+<div>
     <h3 th:if="${success != null}" th:text="${success}"></h3>
-
+    <header th:replace="fragments :: header"></header>
     <div class="row">
         <div class="col-md-8">
             <form method="post">
@@ -30,25 +28,31 @@
                     </label>
                     <p class="error" th:errors="${newPasswordFormDTO.verifyPassword}"></p>
                 </div>
-
                 <input type="submit" class="btn btn-primary" value="Update Password" />
             </form>
         </div>
         <div class="col-md-4">
-            <div th:replace="fragments :: userInfo"></div>
+            <div class="user-info-manage">
+                <div th:replace="fragments :: userInfo"></div>
+            </div>
         </div>
     </div>
-
     <hr />
-    <form method="post" enctype="multipart/form-data" th:action="@{/user/uploadImage}">
-        <div class="form-group">
-            <label> Update Profile Picture <br>
-                <input class="form-control" type="file" name="imageFile">
-                <input type="submit" class="btn btn-primary" value="Upload">
-            </label>
+    <div class="row">
+        <div class="col-md-5">
+            <form method="post" enctype="multipart/form-data" th:action="@{/user/uploadImage}">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-primary" type="submit">Set Profile Picture</button>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="imageFile" id="inputGroupFile04">
+                        <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
-
+    </div>
 </div>
 <th:block th:replace="fragments :: scripts"></th:block>
 </body>

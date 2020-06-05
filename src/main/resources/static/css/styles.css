@@ -146,7 +146,6 @@ textarea {
 }
 
 .main-index-list {
-    padding-left:30px;
     padding-top:30px;
 }
 
@@ -314,13 +313,20 @@ hr {
 
 td {
   padding: 0.5em;
-  padding-right: 1em;
+  padding-right: .5em;
 }
 
 .table-list {
     margin : .5rem;
     margin-top: 1.5rem;
     font-size : .75rem;
+}
+
+.user-info-manage{
+    margin : 1 rem;
+    background-color : black;
+    border-radius : 5px;
+    padding-bottom : 2rem;
 }
 
 #input-group-select {

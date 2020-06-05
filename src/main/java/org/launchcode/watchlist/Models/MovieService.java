@@ -142,17 +142,6 @@ public class MovieService {
         return getResultsFromPage(getSearchResultsPage(searchTerm));
     }
 
-    public List<MovieDb> getComingSoon(){
-        List<MovieDb> movies = tmdbMovies.getUpcoming("en", 1, "US").getResults();
-        for (MovieDb movie : movies){
-            movie.setReleaseDate(getFormattedReleaseDate(movie));
-        }
-
-        movies.sort(new SortMovieDbByDate());
-
-        return movies;
-    }
-
     public MovieDb getTmdbMovie(int id){
         MovieDb movie =  tmdbMovies.getMovie(id,
                 "en",
@@ -228,12 +217,14 @@ public class MovieService {
         return baseUrl + sizeUrl;
     }
 
-    public List<MovieDb> getNowPlaying(){
-        List<MovieDb> movies = tmdbMovies.getNowPlayingMovies("en", 1, "US").getResults();
+    public List<MovieDb> getNowPlaying(int page){
+        if (page < 1){
+            page = 1;
+        }
+
+        List<MovieDb> movies = tmdbMovies.getNowPlayingMovies("en", page, "US").getResults();
         List<MovieDb> output = new ArrayList<>();
         String dateStr = getCurrentDateFormatted();
-
-//        movies.sort(new SortMovieDbByDateDesc());
 
         for (MovieDb movie : movies){
             if (movie.getReleaseDate().compareTo(dateStr) <= 0){
@@ -245,6 +236,30 @@ public class MovieService {
         output.sort(new SortMovieDbByDateDesc());
 
         return output;
+    }
+
+    public List<MovieDb> getNowPlaying(){
+        return getNowPlaying(1);
+    }
+
+    public List<MovieDb> getComingSoon(int page){
+
+        if (page < 1){
+            page = 1;
+        }
+
+        List<MovieDb> movies = tmdbMovies.getUpcoming("en", page, "US").getResults();
+        for (MovieDb movie : movies){
+            movie.setReleaseDate(getFormattedReleaseDate(movie));
+        }
+
+        movies.sort(new SortMovieDbByDate());
+
+        return movies;
+    }
+
+    public List<MovieDb> getComingSoon(){
+        return getComingSoon(1);
     }
 
     // Movie methods

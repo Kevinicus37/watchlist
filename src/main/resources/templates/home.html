@@ -27,10 +27,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <p>Let your friends know what you have and let them pick something out before movie night.  No more waiting for someone to pick something before you get started.</p>
+                        <p>Search and Sort your watchlist and never have to worry about forgetting that movie you want to see!</p>
                         <div th:if="${user == null}">
                             <a asp-controller="Account" th:href="@{/register}">Sign Up</a> and start your collection today!<br /><br />
-                            Already a member? <a th:href="@{Login}"> Login Here </a>
+                            Already have an account? <a th:href="@{Login}"> Login Here </a>
                         </div>
                     </div>
                 </div>
