@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head th:fragment="head">
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <title>Watchlist</title>
 
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-rCA2D+D9QXuP2TomtQwd+uP50EHjpafN+wruul0sXZzX/Da7Txn4tB9aLMZV4DZm" crossorigin="anonymous">
@@ -11,7 +13,7 @@
 <body>
 
 <header th:fragment="header">
-    <h3 th:text="${title}">Watchlist</h3>
+    <h3 th:text="${title}"></h3>
 </header>
 
 <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark navbar-inverse sticky-top">

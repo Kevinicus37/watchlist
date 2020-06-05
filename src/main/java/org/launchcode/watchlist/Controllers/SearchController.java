@@ -34,15 +34,14 @@ public class SearchController {
     public String processSearchForm(String searchTerm, String searchOption, Model model){
         List<MovieDb> movies = new ArrayList<>();
 
-        if (searchOption.equals("title")){
-            movies = movieService.searchMovies(searchTerm);
-        }
-        else if (searchOption.equals("cast")){
+        if (searchOption != null && searchOption.equals("cast")){
             List<Integer> castIds = movieService.searchForCastMember(searchTerm);
             if (castIds.size() > 0){
                 movies = movieService.searchForMovieDbByCastMember(castIds.get(0));
             }
-
+        }
+        else {
+            movies = movieService.searchMovies(searchTerm);
         }
 
         model.addAttribute("movies", movies);
