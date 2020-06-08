@@ -75,10 +75,8 @@ public class UserController {
         return "user/index";
     }
 
-
-
     @GetMapping("manage")
-    public String displayManagePage(HttpServletRequest request, Model model){
+    public String displayManagePage(Model model){
         model.addAttribute("title", "Manage User Account");
         model.addAttribute(new NewPasswordFormDTO());
         return "user/manage";
@@ -127,6 +125,8 @@ public class UserController {
         catch (Exception e) {
                 e.printStackTrace();
             }
+
+        model.addAttribute(new NewPasswordFormDTO());
 
         return "user/manage";
     }

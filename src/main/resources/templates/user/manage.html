@@ -9,24 +9,24 @@
     <header th:replace="fragments :: header"></header>
     <div class="row">
         <div class="col-md-8">
-            <form method="post">
+            <form method="post" th:object="${newPasswordFormDTO}">
                 <div class="form-group">
                     <label>Current Password
-                        <input class="form-control" th:field="${newPasswordFormDTO.oldPassword}" type="password" />
+                        <input class="form-control" th:field="*{oldPassword}" type="password" />
                     </label>
-                    <p class="error" th:errors="${newPasswordFormDTO.oldPassword}"></p>
+                    <p class="error" th:errors="*{oldPassword}"></p>
                 </div>
                 <div class="form-group">
                     <label>New Password
-                        <input class="form-control" th:field="${newPasswordFormDTO.newPassword}" type="password" />
+                        <input class="form-control" th:field="*{newPassword}" type="password" />
                     </label>
-                    <p class="error" th:errors="${newPasswordFormDTO.newPassword}"></p>
+                    <p class="error" th:errors="*{newPassword}"></p>
                 </div>
                 <div class="form-group">
                     <label>Verify New Password
-                        <input class="form-control" th:field="${newPasswordFormDTO.verifyPassword}" type="password" />
+                        <input class="form-control" th:field="*{verifyPassword}" type="password" />
                     </label>
-                    <p class="error" th:errors="${newPasswordFormDTO.verifyPassword}"></p>
+                    <p class="error" th:errors="*{verifyPassword}"></p>
                 </div>
                 <input type="submit" class="btn btn-primary" value="Update Password" />
             </form>
@@ -47,7 +47,7 @@
                     </div>
                     <div class="custom-file">
                         <input type="file" class="custom-file-input" name="imageFile" id="inputGroupFile04">
-                        <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
+                        <label id="file-label" class="custom-file-label" for="inputGroupFile04">Choose file</label>
                     </div>
                 </div>
             </form>
@@ -55,5 +55,8 @@
     </div>
 </div>
 <th:block th:replace="fragments :: scripts"></th:block>
+<script>document.querySelector("#inputGroupFile04").onchange = function(){
+  document.querySelector("#file-label").textContent = this.files[0].name;
+}</script>
 </body>
 </html>
