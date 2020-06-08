@@ -54,9 +54,9 @@ public class MovieController {
 
         Movie movie = result.get();
 
-        if (!user.equals(movie.getUser())){
-            return "redirect:/user/" + user.getUsername();
-        }
+//        if (!user.equals(movie.getUser())){
+//            return "redirect:/user/" + user.getUsername();
+//        }
 
         model.addAttribute("movie", movie);
         model.addAttribute("trailerUrl", movie.getTrailerUrl());
