@@ -102,8 +102,8 @@
                         <a class="btn btn-danger" th:href="@{/watchlist/remove(id=${movie.id})}">Remove From Watchlist</a>
                     </div>
                     <div th:unless="${isUserMovie and user.id == movie.user.id}" class="row">
-                        <a th:if="${user.id == movie.user.id}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add To Watchlist</a>
-                        <a th:unless="${user.id == movie.user.id}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.tmdbId})}">Add To Watchlist</a>
+                        <a th:if="${!isUserMovie}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add To Watchlist</a>
+                        <a th:if="${isUserMovie and user.id != movie.user.id}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.tmdbId})}">Add To Watchlist</a>
                     </div>
                 </div>
             </div>

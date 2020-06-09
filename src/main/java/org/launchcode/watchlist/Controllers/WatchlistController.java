@@ -45,6 +45,7 @@ public class WatchlistController {
 
         // Check to see if user already has this movie in their list.
         if (tmdbMovie != null){
+            // TODO a better search here would be for tmdbId instead of title.
             Movie movie = movieRepository.findByTitleAndUserId(tmdbMovie.getTitle(), user.getId());
 
             if (movie == null) {
