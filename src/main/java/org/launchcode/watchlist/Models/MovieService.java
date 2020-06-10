@@ -13,14 +13,12 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import info.movito.themoviedbapi.model.people.Person;
 import info.movito.themoviedbapi.model.people.PersonCast;
 import info.movito.themoviedbapi.model.people.PersonCrew;
-import org.launchcode.watchlist.data.CastMemberRepository;
-import org.launchcode.watchlist.data.DirectorRepository;
-import org.launchcode.watchlist.data.GenreRepository;
-import org.launchcode.watchlist.data.MovieRepository;
+import org.launchcode.watchlist.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -49,17 +47,23 @@ public class MovieService {
     @Autowired
     CastMemberRepository castMemberRepository;
 
-    //public MovieService(){}
+    @Autowired
+    ApiKeyRepository apiKeyRepository;
 
-    public MovieService(@Value("${api.key}") String key){
-        this.key = key;
-        TmdbApi api = new TmdbApi(key);
+    public MovieService(){}
+
+    @PostConstruct
+    private void postConstruct(){
+        ApiKey apiKey = apiKeyRepository.findByName("tmdb");
+        this.key = apiKey.getValue();
+
+        TmdbApi api = new TmdbApi(this.key);
         this.tmdbMovies = api.getMovies();
         this.search = api.getSearch();
         this.discover = api.getDiscover();
     }
 
-    // MovieDb specific methods
+     // MovieDb specific methods
 
     public List<MovieDb> searchForMovieDbByCastMember(int id){
         return searchForMovieDbByCastMember(id, 1);
