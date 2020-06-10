@@ -21,7 +21,7 @@
                             </div>
                         </div>
                     </form>
-                    <form>
+                    <form th:action="@{${'/user/'+ user.username}}">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <label class="input-group-text">Sort By...</label>
