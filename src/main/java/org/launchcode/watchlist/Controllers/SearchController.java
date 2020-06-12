@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequestMapping("search")
 @Controller
-public class SearchController {
+public class SearchController extends AbstractBaseController{
 
     @Autowired
     AuthenticationController authenticationController;

@@ -67,6 +67,10 @@ public class User extends AbstractEntity {
         this.profilePicturePath = profilePicturePath;
     }
 
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
     public void setPasswordHash(String password) {
         this.passwordHash = encoder.encode(password);
     }

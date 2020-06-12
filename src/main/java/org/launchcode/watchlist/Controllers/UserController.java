@@ -20,7 +20,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("user")
-public class UserController {
+public class UserController extends AbstractBaseController {
 
     @Autowired
     UserRepository userRepository;

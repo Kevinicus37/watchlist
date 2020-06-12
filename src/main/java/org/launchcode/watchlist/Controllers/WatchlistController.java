@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("watchlist")
-public class WatchlistController {
+public class WatchlistController extends AbstractBaseController{
 
     @Autowired
     UserRepository userRepository;

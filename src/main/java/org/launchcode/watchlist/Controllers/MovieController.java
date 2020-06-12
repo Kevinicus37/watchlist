@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("movie")
-public class MovieController {
+public class MovieController extends AbstractBaseController {
 
     @Autowired
     MovieRepository movieRepository;

@@ -132,7 +132,7 @@ public class AuthenticationController {
             return "Authentication/login";
         }
 
-        setUserInSession(request.getSession(), user);
+        //setUserInSession(request.getSession(), user);
 
         return "redirect:/user/" + user.getUsername();
     }
