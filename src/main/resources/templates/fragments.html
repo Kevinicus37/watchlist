@@ -70,7 +70,7 @@
         <table class="table table-striped table-hover search-results">
             <tr th:each="movie : ${movies}">
                 <td class="search-results-poster">
-                    <img th:src="${movie.getPosterPath() != null ? url + movie.getPosterPath() :''}" alt />
+                    <img th:src="${movie.getPosterPath() != null ? url + movie.getPosterPath() :'/images/filmposterdefault.jpg'}" alt />
                 </td>
                 <td>
                     <a th:if="${!isUserList}" th:href="@{/movie/tmdb/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.releaseDate}"></H4></a>
@@ -97,7 +97,7 @@
     <div class="row">
         <div class="col-md-4 poster">
             <div class="center-block">
-                <img th:src="${movie.posterPath != null ? url + movie.posterPath :''}" class="img-fluid" alt/>
+                <img th:src="${movie.posterPath != null ? url + movie.posterPath :'/images/filmposterdefault.jpg'}" class="img-fluid" alt/>
             </div>
         </div>
         <div class="col-md-8">

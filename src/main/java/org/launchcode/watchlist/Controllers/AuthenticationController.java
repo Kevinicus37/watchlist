@@ -4,6 +4,13 @@ import org.launchcode.watchlist.Models.User;
 import org.launchcode.watchlist.Models.dto.RegisterFormDTO;
 import org.launchcode.watchlist.data.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -11,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
@@ -21,6 +29,10 @@ public class AuthenticationController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Lazy
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     private static final String userSessionKey = "user";
 
@@ -65,9 +77,10 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public String processRegistrationForm(@ModelAttribute @Valid RegisterFormDTO registerFormDTO,
-                                          Errors errors, HttpServletRequest request,
+                                          Errors errors, HttpServletRequest request, HttpServletResponse response,
                                           Model model) {
 
+        // verify valid and new registration
         if (errors.hasErrors()) {
             model.addAttribute("title", "Register");
             return "/Authentication/register";
@@ -89,9 +102,20 @@ public class AuthenticationController {
             return "/Authentication/register";
         }
 
+        // Create and save new user
         User newUser = new User(registerFormDTO.getUsername(), registerFormDTO.getPassword());
         newUser.setProfilePicturePath("defaultProfilePicture.png");
         userRepository.save(newUser);
+
+        // Log in the new user
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
+                registerFormDTO.getUsername(), registerFormDTO.getPassword());
+
+        Authentication authentication = authenticationManager.authenticate(authRequest);
+
+        if (authentication.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
 
         return "redirect:";
     }
