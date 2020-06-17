@@ -5,9 +5,12 @@
 
 <nav th:replace="fragments :: navbar"></nav>
 <div class="container">
-<header th:replace="fragments :: header"></header>
 
-<form method="post">
+    <header th:replace="fragments :: header"></header>
+
+    <div th:replace="fragments :: messages"></div>
+
+    <form method="post">
     <div class="form-group">
         <label>Username
             <input class="form-control" name="username" />
@@ -25,7 +28,7 @@
     <input type="submit" class="btn btn-primary" value="Login" />
 </form>
 
-    <p>Don't have an account? <a href="/register">Register for one.</a></p>
+    <p class="top-and-bottom">Don't have an account? <a href="/register">Register for one.</a></p>
 </div>
 <th:block th:replace="fragments :: scripts"></th:block>
 </body>
