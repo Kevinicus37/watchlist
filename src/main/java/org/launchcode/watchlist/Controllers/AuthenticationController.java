@@ -1,8 +1,6 @@
 package org.launchcode.watchlist.Controllers;
 
-
 import org.launchcode.watchlist.Models.User;
-import org.launchcode.watchlist.Models.dto.LoginFormDTO;
 import org.launchcode.watchlist.Models.dto.RegisterFormDTO;
 import org.launchcode.watchlist.data.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Optional;
 
 @Controller
@@ -93,48 +92,30 @@ public class AuthenticationController {
         User newUser = new User(registerFormDTO.getUsername(), registerFormDTO.getPassword());
         newUser.setProfilePicturePath("defaultProfilePicture.png");
         userRepository.save(newUser);
-        setUserInSession(request.getSession(), newUser);
 
         return "redirect:";
     }
 
     @GetMapping("/login")
-    public String displayLoginForm(HttpServletRequest request, Model model){
+    public String displayLoginForm(HttpServletRequest request, Model model, Principal user, String error, String logout){
+
         if (isLoggedIn(request.getSession())){
             return "redirect:";
         }
 
-        model.addAttribute(new LoginFormDTO());
-        model.addAttribute("title", "Login");
+        if (user != null) {
+            return "redirect:/";
+        }
+
+        if (error != null) {
+            model.addAttribute("message", "danger|Your username and password are invalid");
+        }
+
+        if (logout != null) {
+            model.addAttribute("message", "info|You have logged out");
+        }
+
         return "/Authentication/login";
-    }
-
-    @PostMapping("/login")
-    public String processLoginForm(@ModelAttribute @Valid LoginFormDTO loginFormDTO, Errors errors,
-                                   HttpServletRequest request, Model model){
-
-        if (errors.hasErrors()){
-            model.addAttribute("title", "Login");
-            return "/Authentication/login";
-        }
-
-        User user = userRepository.findByUsername(loginFormDTO.getUsername());
-
-        if (user == null){
-            errors.rejectValue("username", "username.invalid", "Username does not exist.");
-            model.addAttribute("title", "Login");
-            return "Authentication/login";
-        }
-
-        if (!user.isMatchingPassword(loginFormDTO.getPassword())){
-            errors.rejectValue("password", "password.mismatch", "The provided password is invalid.");
-            model.addAttribute("title", "Login");
-            return "Authentication/login";
-        }
-
-        //setUserInSession(request.getSession(), user);
-
-        return "redirect:/user/" + user.getUsername();
     }
 
     @GetMapping("/logout")
@@ -142,8 +123,5 @@ public class AuthenticationController {
         request.getSession().invalidate();
         return "redirect:";
     }
-
-
-
 
 }

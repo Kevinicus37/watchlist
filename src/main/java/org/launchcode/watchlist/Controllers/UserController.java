@@ -45,26 +45,7 @@ public class UserController extends AbstractBaseController {
         }
 
         List<Movie> movies = providedUser.getWatchlist();
-
-        if (sortOption.equals("releaseDate")){
-            movieService.sortMoviesByDate(movies);
-        }
-        else if (sortOption.equals("releaseDateDesc")){
-            movieService.sortMoviesByDateDesc(movies);
-        }
-        else if (sortOption.equals("dateAdded")){
-            movieService.sortMovieByDateAdded(movies);
-        }
-        else if (sortOption.equals("dateAddedDesc")){
-            movieService.sortMovieByDateAddedDesc(movies);
-        }
-        else if (sortOption.equals("titleDesc")){
-            movieService.sortMovieByTitleDesc(movies);
-        }
-        else {
-            movieService.sortMovieByTitle(movies);
-        }
-
+        movieService.sortMovies(movies, sortOption);
         List<Movie> upcomingMovies = movieService.getWatchlistUpcoming(movies);
 
         model.addAttribute("upcoming", upcomingMovies);

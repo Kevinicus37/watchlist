@@ -54,10 +54,6 @@ public class MovieController extends AbstractBaseController {
 
         Movie movie = result.get();
 
-//        if (!user.equals(movie.getUser())){
-//            return "redirect:/user/" + user.getUsername();
-//        }
-
         model.addAttribute("movie", movie);
         model.addAttribute("trailerUrl", movie.getTrailerUrl());
         model.addAttribute("url", movieService.getBaseUrl(3));

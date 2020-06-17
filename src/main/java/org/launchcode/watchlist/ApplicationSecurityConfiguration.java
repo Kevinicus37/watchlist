@@ -4,7 +4,9 @@ import org.launchcode.watchlist.Models.WatchListUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,7 +39,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/css/*").permitAll()
+                .antMatchers("/", "/css/*", "/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -46,6 +48,10 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .logout().invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login");
+                .logoutSuccessUrl("/login?logout")
+                .and()
+                .rememberMe()
+                .key("uniqueAndSecret")
+                .userDetailsService(userDetailsService);
     }
 }
