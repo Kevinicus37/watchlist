@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ public class Movie extends AbstractEntity{
     private String physicalReleaseDate;
 
     private String digitalReleaseDate;
+
+    private String sortByDate;
 
     private String overview;
 
@@ -73,7 +76,8 @@ public class Movie extends AbstractEntity{
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
         setReleaseYear();
-//        setFormattedReleaseDate();
+        String[] sorted = this.releaseDate.split("-");
+        setSortByDate(sorted[2]+ "-" + sorted[0] + "-" + sorted[1]);
     }
 
     public String getReleaseYear() {
@@ -190,5 +194,17 @@ public class Movie extends AbstractEntity{
 
     private void setDateAdded(String dateAdded) {
         this.dateAdded = dateAdded;
+    }
+
+    public void setReleaseYear(String releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public String getSortByDate() {
+        return sortByDate;
+    }
+
+    public void setSortByDate(String sortByDate) {
+        this.sortByDate = sortByDate;
     }
 }

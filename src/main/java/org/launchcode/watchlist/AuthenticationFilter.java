@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AuthenticationFilter extends HandlerInterceptorAdapter {
+    // **** THIS IS NO LONGER USED ****
+
 
     @Autowired
     AuthenticationController authenticationController;

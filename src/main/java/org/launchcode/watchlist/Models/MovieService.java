@@ -16,6 +16,10 @@ import info.movito.themoviedbapi.model.people.PersonCrew;
 import org.launchcode.watchlist.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
@@ -477,6 +481,14 @@ public class MovieService {
         movies.sort(new SortMovieByDateAddedDesc());
     }
 
+    public List<Movie> findPaginatedByUserId(int id, int pageNo, int pageSize, Sort sort) {
+
+        Pageable paging = PageRequest.of(pageNo, pageSize, sort);
+        Page<Movie> pagedResult = movieRepository.findByUserId(id, paging);
+
+        return pagedResult.toList();
+    }
+
     // General Utility methods
 
     public String getReleaseDateYearForDisplay(String date) {
@@ -489,15 +501,10 @@ public class MovieService {
     }
 
     public String getFormattedDate(String dateString){
-        int index = dateString.indexOf('T');
-
-        if (index >= 0){
-            dateString = dateString.substring(0,index);
-        }
+        truncateDate(dateString);
 
         if (dateString != null && !dateString.isEmpty()){
             String[] dateParts = dateString.split("-");
-            //dateParts[0] = dateParts[0].substring(2);
             return dateParts[1] + '-' + dateParts[2] + '-' + dateParts[0];
         }
 
@@ -505,19 +512,24 @@ public class MovieService {
     }
 
     public String getSortByDate(String dateString){
+
+        truncateDate(dateString);
+
+        if (dateString != null && !dateString.isEmpty()){
+            String[] dateParts = dateString.split("-");
+            return dateParts[2] + '-' + dateParts[0] + '-' + dateParts[1];
+        }
+
+        return dateString;
+    }
+
+    public void truncateDate(String dateString){
         int index = dateString.indexOf('T');
 
         if (index >= 0){
             dateString = dateString.substring(0,index);
         }
 
-        if (dateString != null && !dateString.isEmpty()){
-            String[] dateParts = dateString.split("-");
-            //dateParts[2] = dateParts[2].substring(2);
-            return dateParts[2] + '-' + dateParts[0] + '-' + dateParts[1];
-        }
-
-        return dateString;
     }
 
     public String getCurrentDateFormatted(){
