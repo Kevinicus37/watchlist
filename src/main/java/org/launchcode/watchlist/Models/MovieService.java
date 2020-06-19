@@ -436,6 +436,26 @@ public class MovieService {
         return null;
     }
 
+    public Sort getSort(String sortOption){
+        Boolean isDescending = false;
+
+        if (sortOption == null){
+            sortOption = "title";
+        }
+
+        if (sortOption.endsWith("Desc")){
+            isDescending = true;
+            sortOption = sortOption.replace("Desc", "");
+        }
+
+        Sort sort = Sort.by(sortOption);
+        if (isDescending){
+            sort = sort.descending();
+        }
+
+        return sort;
+    }
+
     public void sortMovies(List<Movie> movies, String sortOption){
         if (sortOption.equals("releaseDate")){
             sortMoviesByDate(movies);
