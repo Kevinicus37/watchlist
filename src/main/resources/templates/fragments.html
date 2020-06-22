@@ -195,6 +195,25 @@
     </table>
 </div>
 
+<nav th:fragment="pager">
+    <ul class="pagination">
+        <th:block th:if="${dto.currentPage > 0}">
+            <li  class="page-item">
+                <button class="page-link" name="page" th:value="0">First</button>
+            </li>
+            <li class="page-item"><button class="page-link" name="page" th:value="${dto.currentPage - 1}" th:text="${dto.currentPage}"></button></li>
+        </th:block>
+        <li class="page-item"><button class="page-link" name="page" th:value="${dto.currentPage}" th:text="${dto.currentPage + 1}"></button></li>
+        <th:block th:if="${dto.currentPage < dto.pages -1}">
+            <li class="page-item"><button class="page-link" name="page" th:value="${dto.currentPage + 1}" th:text="${dto.currentPage + 2}"></button></li>
+            <li class="page-item">
+                <button class="page-link" name="page" th:value="${dto.pages - 1}">Last</button>
+            </li>
+        </th:block>
+
+    </ul>
+</nav>
+
 <th:block th:fragment="scripts">
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

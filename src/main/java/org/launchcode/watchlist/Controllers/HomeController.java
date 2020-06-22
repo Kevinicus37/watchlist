@@ -3,6 +3,7 @@ package org.launchcode.watchlist.Controllers;
 import info.movito.themoviedbapi.model.MovieDb;
 import org.launchcode.watchlist.Models.ApiKey;
 import org.launchcode.watchlist.Models.MovieService;
+import org.launchcode.watchlist.Models.dto.HomePageDTO;
 import org.launchcode.watchlist.data.ApiKeyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,10 +38,13 @@ public class HomeController extends AbstractBaseController{
             nowPlayingEndIndex = 10;
         }
 
+        HomePageDTO dto = new HomePageDTO();
+        dto.setNowPlaying(nowPlaying.subList(0, nowPlayingEndIndex));
+        dto.setUpcoming(upcoming.subList(0,upcomingEndIndex));
+        dto.setUserList(false);
+
         model.addAttribute("title", "Welcome to Watchlist!");
-        model.addAttribute("isUserList", false);
-        model.addAttribute("upcoming", upcoming.subList(0,upcomingEndIndex));
-        model.addAttribute("nowPlaying", nowPlaying.subList(0,nowPlayingEndIndex));
+        model.addAttribute("dto", dto);
 
         return "home";
     }

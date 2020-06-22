@@ -439,8 +439,8 @@ public class MovieService {
     public Sort getSort(String sortOption){
         Boolean isDescending = false;
 
-        if (sortOption == null){
-            sortOption = "title";
+        if (sortOption == null || sortOption.isBlank()){
+            sortOption = "dateAdded";
         }
 
         if (sortOption.endsWith("Desc")){
@@ -456,26 +456,26 @@ public class MovieService {
         return sort;
     }
 
-    public void sortMovies(List<Movie> movies, String sortOption){
-        if (sortOption.equals("releaseDate")){
-            sortMoviesByDate(movies);
-        }
-        else if (sortOption.equals("releaseDateDesc")){
-            sortMoviesByDateDesc(movies);
-        }
-        else if (sortOption.equals("dateAdded")){
-            sortMovieByDateAdded(movies);
-        }
-        else if (sortOption.equals("dateAddedDesc")){
-            sortMovieByDateAddedDesc(movies);
-        }
-        else if (sortOption.equals("titleDesc")){
-            sortMovieByTitleDesc(movies);
-        }
-        else {
-            sortMovieByTitle(movies);
-        }
-    }
+//    public void sortMovies(List<Movie> movies, String sortOption){
+//        if (sortOption.equals("releaseDate")){
+//            sortMoviesByDate(movies);
+//        }
+//        else if (sortOption.equals("releaseDateDesc")){
+//            sortMoviesByDateDesc(movies);
+//        }
+//        else if (sortOption.equals("dateAdded")){
+//            sortMovieByDateAdded(movies);
+//        }
+//        else if (sortOption.equals("dateAddedDesc")){
+//            sortMovieByDateAddedDesc(movies);
+//        }
+//        else if (sortOption.equals("titleDesc")){
+//            sortMovieByTitleDesc(movies);
+//        }
+//        else {
+//            sortMovieByTitle(movies);
+//        }
+//    }
 
     public void sortMoviesByDate(List<Movie> movies){
         movies.sort(new SortMovieByDate());

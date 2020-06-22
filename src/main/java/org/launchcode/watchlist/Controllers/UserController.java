@@ -51,7 +51,7 @@ public class UserController extends AbstractBaseController {
         // Check if provided user exists - if not go to home page?
         int userId = userRepository.findIdByUsername(username);
         if (userId < 1){
-            return "redirect:";
+            return "redirect:/";
         }
 
         Page<Movie> userMovieResults = movieRepository.findByUserId(userId, PageRequest.of(page,size));
@@ -66,10 +66,9 @@ public class UserController extends AbstractBaseController {
         movieListDTO.setUserList(true);
         movieListDTO.setUrl(movieService.getBaseUrl(0));
 
-        Sort sort = Sort.by("sortByDate");
         Page<Movie> upcoming = movieRepository.findByUserIdAndSortByDateAfter(userId,
                 movieService.getCurrentDateFormatted(),
-                PageRequest.of(0,10,sort));
+                PageRequest.of(0,10,Sort.by("sortByDate")));
         movieListDTO.setUpcoming(upcoming.toList());
 
         model.addAttribute("dto", movieListDTO);
@@ -81,6 +80,7 @@ public class UserController extends AbstractBaseController {
     public String processWatchlistSortAndSearch(@PathVariable String username,
                                                 @ModelAttribute MovieListDTO movieListDto,
                                                 @RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "20") int size,
                                                 Model model){
 
         int userId = userRepository.findIdByUsername(username);
@@ -91,14 +91,14 @@ public class UserController extends AbstractBaseController {
         Sort sort = movieService.getSort(movieListDto.getSortOption());
         Page<Movie> userMovieResults = movieRepository.findByUserIdAndTitleContaining(userId,
                 movieListDto.getSearchTerm(),
-                PageRequest.of(page,20, sort));
+                PageRequest.of(page,size, sort));
         List<Movie> movies = new ArrayList<>(userMovieResults.toList());
 
         movieListDto.setPages(userMovieResults.getTotalPages());
         movieListDto.setMovieCount(userMovieResults.getTotalElements());
         movieListDto.setMovies(movies);
         movieListDto.setCurrentPage(page);
-        movieListDto.setFirstElement((page * 20) + 1);
+        movieListDto.setFirstElement((page * size) + 1);
         movieListDto.setUserList(true);
 
         model.addAttribute("dto", movieListDto);
