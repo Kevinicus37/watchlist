@@ -1,22 +1,23 @@
 package org.launchcode.watchlist.Models.dto;
 
+import info.movito.themoviedbapi.model.MovieDb;
 import org.launchcode.watchlist.Models.Movie;
 
 import java.util.List;
 
-public class MovieListDTO extends AbstractMovieListDTO{
+public class MovieDbListDTO extends AbstractMovieListDTO {
 
-    private List<Movie> movies;
+    private List<MovieDb> movies;
 
     private List<Movie> upcoming;
 
     private final int firstPage = 0;
 
-    public List<Movie> getMovies() {
+    public List<MovieDb> getMovies() {
         return movies;
     }
 
-    public void setMovies(List<Movie> movies) {
+    public void setMovies(List<MovieDb> movies) {
         this.movies = movies;
     }
 

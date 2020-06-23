@@ -196,21 +196,26 @@
 </div>
 
 <nav th:fragment="pager">
+    <input type="hidden" th:field="${dto.searchOption}">
+    <input type="hidden" th:field="${dto.searchTerm}">
+    <input type="hidden" th:field="${dto.sortOption}">
+    <input type="hidden" th:field="${dto.username}">
+    <input type="hidden" th:field="${dto.url}">
+    <input type="hidden" th:field="${dto.upcoming}">
     <ul class="pagination">
-        <th:block th:if="${dto.currentPage > 0}">
-            <li  class="page-item">
-                <button class="page-link" name="page" th:value="0">First</button>
-            </li>
+        <li  class="page-item">
+            <button class="page-link" name="page" th:value=dto.firstPage>First</button>
+        </li>
+        <th:block th:if="${dto.currentPage > dto.firstPage}">
             <li class="page-item"><button class="page-link" name="page" th:value="${dto.currentPage - 1}" th:text="${dto.currentPage}"></button></li>
         </th:block>
         <li class="page-item"><button class="page-link" name="page" th:value="${dto.currentPage}" th:text="${dto.currentPage + 1}"></button></li>
         <th:block th:if="${dto.currentPage < dto.pages -1}">
             <li class="page-item"><button class="page-link" name="page" th:value="${dto.currentPage + 1}" th:text="${dto.currentPage + 2}"></button></li>
-            <li class="page-item">
-                <button class="page-link" name="page" th:value="${dto.pages - 1}">Last</button>
-            </li>
         </th:block>
-
+        <li class="page-item">
+            <button class="page-link" name="page" th:value="${dto.pages - 1}">Last</button>
+        </li>
     </ul>
 </nav>
 

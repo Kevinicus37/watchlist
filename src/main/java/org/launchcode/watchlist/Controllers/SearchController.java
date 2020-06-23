@@ -1,15 +1,15 @@
 package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import org.launchcode.watchlist.Models.MovieService;
+import org.launchcode.watchlist.Models.dto.MovieDbListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.naming.directory.SearchResult;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,27 +27,44 @@ public class SearchController extends AbstractBaseController{
     @GetMapping
     public String displaySearchForm(HttpServletRequest request, Model model){
         model.addAttribute("title", "Search TMDb.org by:");
+        model.addAttribute("dto", new MovieDbListDTO());
+
         return "/search/tmdbsearch";
     }
 
     @PostMapping
-    public String processSearchForm(String searchTerm, String searchOption, Model model){
-        List<MovieDb> movies = new ArrayList<>();
+    public String processSearchForm(@ModelAttribute MovieDbListDTO dto,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "20") int size,
+                                    Model model){
 
-        if (searchOption != null && searchOption.equals("cast")){
-            List<Integer> castIds = movieService.searchForCastMember(searchTerm);
+        List<MovieDb> movies = new ArrayList<>();
+        MovieResultsPage results;
+
+        if (dto.getSearchOption() != null && dto.getSearchOption().equals("cast")){
+
+            List<Integer> castIds = movieService.searchForCastMember(dto.getSearchTerm());
             if (castIds.size() > 0){
-                movies = movieService.searchForMovieDbByCastMember(castIds.get(0));
+                results = movieService.searchForMovieDbByCastMember(castIds.get(0), page + 1);
+                movies = movieService.getResultsFromPage(results);
+                dto.setPages(results.getTotalPages());
+                dto.setMovieCount(results.getTotalResults());
             }
         }
         else {
-            movies = movieService.searchMovies(searchTerm);
+            results = movieService.getSearchResultsPage(dto.getSearchTerm(), page + 1);
+            movies = movieService.getResultsFromPage(results);
+            dto.setMovieCount(results.getTotalResults());
+            dto.setPages(results.getTotalPages());
         }
 
-        model.addAttribute("movies", movies);
-        model.addAttribute("url", movieService.getBaseUrl(0));
-        model.addAttribute("searchTerm", searchTerm);
-        model.addAttribute("isUserList", false);
+        dto.setMovies(movies);
+        dto.setCurrentPage(page);
+        dto.setFirstElement((page * size) + 1);
+        dto.setUrl(movieService.getBaseUrl(0));
+        dto.setUserList(false);
+
+        model.addAttribute("dto", dto);
         model.addAttribute("title", "Search TMDB.org by:");
 
         return "/search/tmdbsearch";

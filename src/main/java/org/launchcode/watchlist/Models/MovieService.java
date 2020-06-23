@@ -69,11 +69,11 @@ public class MovieService {
 
      // MovieDb specific methods
 
-    public List<MovieDb> searchForMovieDbByCastMember(int id){
+    public MovieResultsPage searchForMovieDbByCastMember(int id){
         return searchForMovieDbByCastMember(id, 1);
     }
 
-    public List<MovieDb> searchForMovieDbByCastMember(int id, int page){
+    public MovieResultsPage searchForMovieDbByCastMember(int id, int page){
 
         if (page < 1){
             page = 1;
@@ -84,20 +84,25 @@ public class MovieService {
         String response = restTemplate.getForObject(url, String.class);
 
         JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
-        JsonArray jArr = jobj.getAsJsonArray("results");
-        Type listType = new TypeToken<List<MovieDb>>(){}.getType();
-        List<MovieDb> movies = new Gson().fromJson(jArr, listType);
+        //JsonArray jArr = jobj.getAsJsonArray("results");
+        //Type castType = new TypeToken<MovieResultsPage>(){}.getType();
+        //MovieResultsPage results = new Gson().fromJson(jobj, castType);
+        MovieResultsPage results = new Gson().fromJson(jobj.toString(), MovieResultsPage.class);
+        results.setTotalPages(new Gson().fromJson(jobj.get("total_pages"), Integer.class));
+        results.setTotalResults(new Gson().fromJson(jobj.get("total_results"), Integer.class));
+//        Type listType = new TypeToken<List<MovieDb>>(){}.getType();
+//        List<MovieDb> movies = new Gson().fromJson(jArr, listType);
+//
+//        List<MovieDb> output = new ArrayList<>();
+//
+//        for (MovieDb movie : movies) {
+//            MovieDb newMovie = getTmdbMovie(movie.getId());
+//            setDirectors(newMovie);
+//            newMovie.setReleaseDate(getReleaseDateYearForDisplay(newMovie.getReleaseDate()));
+//            output.add(newMovie);
+//        }
 
-        List<MovieDb> output = new ArrayList<>();
-
-        for (MovieDb movie : movies) {
-            MovieDb newMovie = getTmdbMovie(movie.getId());
-            setDirectors(newMovie);
-            newMovie.setReleaseDate(getReleaseDateYearForDisplay(newMovie.getReleaseDate()));
-            output.add(newMovie);
-        }
-
-        return output;
+        return results;
     }
 
     public List<Integer> searchForCastMember(String searchTerm){

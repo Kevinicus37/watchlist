@@ -9,17 +9,26 @@
     <header th:replace="fragments :: header"></header>
     <form th:action="@{/search}" method="post">
         <div class="input-group mb-3">
-            <select class="custom-select input-group-prepend" name="searchOption" id="input-group-select">
+            <select class="custom-select input-group-prepend" th:field="${dto.searchOption}" id="input-group-select">
                 <option value="title">Title</option>
                 <option value="cast">Cast</option>
             </select>
-            <input type="text" name="searchTerm" class="form-control">
+            <input type="text" th:field="${dto.searchTerm}" class="form-control">
             <div class="input-group-append">
                 <input type="submit" class="btn btn-primary" value="Search" />
             </div>
         </div>
     </form>
-    <th:block th:replace="fragments :: movielist"></th:block>
+    <th:block th:if="${dto.movies != null}">
+        <form th:action="@{/search}" method="post">
+            <nav th:replace="fragments :: pager"></nav>
+        </form>
+        <th:block th:replace="fragments :: movielist"></th:block>
+        <form th:action="@{/search}" method="post">
+            <nav th:replace="fragments :: pager"></nav>
+        </form>
+    </th:block>
+
 </div>
 <th:block th:replace="fragments :: scripts"></th:block>
 </body>
