@@ -67,6 +67,8 @@ public class WatchlistController extends AbstractBaseController{
 
     @PostMapping("search")
     public String searchWatchlist(String searchTerm, String username, HttpServletRequest request, Model model){
+        // TODO add a dto to this to include pagination.
+
         List<Movie> movies = new ArrayList<>();
 
         User user = userRepository.findByUsername(username);

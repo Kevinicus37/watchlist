@@ -4,6 +4,7 @@ import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import org.launchcode.watchlist.Models.MovieService;
 import org.launchcode.watchlist.Models.dto.MovieDbListDTO;
+import org.launchcode.watchlist.Services.PagingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.naming.directory.SearchResult;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @RequestMapping("search")
@@ -23,6 +26,9 @@ public class SearchController extends AbstractBaseController{
 
     @Autowired
     MovieService movieService;
+
+    @Autowired
+    PagingService pagingService;
 
     @GetMapping
     public String displaySearchForm(HttpServletRequest request, Model model){
@@ -39,25 +45,23 @@ public class SearchController extends AbstractBaseController{
                                     Model model){
 
         List<MovieDb> movies = new ArrayList<>();
-        MovieResultsPage results;
+        MovieResultsPage results = new MovieResultsPage();
 
         if (dto.getSearchOption() != null && dto.getSearchOption().equals("cast")){
 
             List<Integer> castIds = movieService.searchForCastMember(dto.getSearchTerm());
             if (castIds.size() > 0){
                 results = movieService.searchForMovieDbByCastMember(castIds.get(0), page + 1);
-                movies = movieService.getResultsFromPage(results);
-                dto.setPages(results.getTotalPages());
-                dto.setMovieCount(results.getTotalResults());
             }
         }
         else {
             results = movieService.getSearchResultsPage(dto.getSearchTerm(), page + 1);
-            movies = movieService.getResultsFromPage(results);
-            dto.setMovieCount(results.getTotalResults());
-            dto.setPages(results.getTotalPages());
         }
 
+        movies = movieService.getResultsFromPage(results);
+        dto.setMovieCount(results.getTotalResults());
+        dto.setPages(results.getTotalPages());
+        dto.setPageNumbers(pagingService.getDisplayedPageNumbers(page, results.getTotalPages()));
         dto.setMovies(movies);
         dto.setCurrentPage(page);
         dto.setFirstElement((page * size) + 1);
@@ -70,13 +74,15 @@ public class SearchController extends AbstractBaseController{
         return "/search/tmdbsearch";
     }
 
-    @GetMapping("cast/{castId}")
-    public String getMovieDbsByCastMember(@PathVariable int castId, Model model){
-        // castId should be the id for the cast Member on TMDb.org
-        model.addAttribute("movies", movieService.searchForMovieDbByCastMember(castId));
-        model.addAttribute("url", movieService.getBaseUrl(0));
-        model.addAttribute("isUserList", false);
-
-        return "/search/tmdbsearch";
-    }
+//    Was used for testing
+//    @GetMapping("cast/{castId}")
+//    public String getMovieDbsByCastMember(@PathVariable int castId, Model model){
+//        // castId should be the id for the cast Member on TMDb.org
+//        model.addAttribute("movies", movieService.searchForMovieDbByCastMember(castId));
+//        model.addAttribute("url", movieService.getBaseUrl(0));
+//        model.addAttribute("isUserList", false);
+//
+//        return "/search/tmdbsearch";
+//    }
+//
 }

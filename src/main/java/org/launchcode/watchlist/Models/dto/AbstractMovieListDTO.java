@@ -2,6 +2,7 @@ package org.launchcode.watchlist.Models.dto;
 
 import org.launchcode.watchlist.Models.Movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AbstractMovieListDTO {
@@ -17,6 +18,8 @@ public class AbstractMovieListDTO {
     private int currentPage;
 
     private int pages;
+
+    private List<Integer> pageNumbers = new ArrayList<>();
 
     private boolean isUserList;
 
@@ -72,6 +75,14 @@ public class AbstractMovieListDTO {
 
     public void setPages(int pages) {
         this.pages = pages;
+    }
+
+    public List<Integer> getPageNumbers() {
+        return pageNumbers;
+    }
+
+    public void setPageNumbers(List<Integer> pageNumbers) {
+        this.pageNumbers = pageNumbers;
     }
 
     public boolean isUserList() {

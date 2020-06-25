@@ -6,6 +6,7 @@ import org.launchcode.watchlist.Models.User;
 import org.launchcode.watchlist.Models.UserService;
 import org.launchcode.watchlist.Models.dto.MovieListDTO;
 import org.launchcode.watchlist.Models.dto.NewPasswordFormDTO;
+import org.launchcode.watchlist.Services.PagingService;
 import org.launchcode.watchlist.data.MovieRepository;
 import org.launchcode.watchlist.data.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class UserController extends AbstractBaseController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    PagingService pagingService;
+
     @GetMapping("/{username}")
     public String displayUser(@PathVariable String username,
                               @RequestParam(defaultValue = "0") int page,
@@ -55,23 +59,17 @@ public class UserController extends AbstractBaseController {
         }
 
         Page<Movie> userMovieResults = movieRepository.findByUserId(userId, PageRequest.of(page,size));
-
-        MovieListDTO movieListDTO = new MovieListDTO();
-        movieListDTO.setUsername(username);
-        movieListDTO.setPages(userMovieResults.getTotalPages());
-        movieListDTO.setMovieCount(userMovieResults.getTotalElements());
-        movieListDTO.setFirstElement((page * size) + 1);
-        movieListDTO.setMovies(userMovieResults.toList());
-        movieListDTO.setCurrentPage(page);
-        movieListDTO.setUserList(true);
-        movieListDTO.setUrl(movieService.getBaseUrl(0));
-
         Page<Movie> upcoming = movieRepository.findByUserIdAndSortByDateAfter(userId,
                 movieService.getCurrentDateFormatted(),
                 PageRequest.of(0,10,Sort.by("sortByDate")));
-        movieListDTO.setUpcoming(upcoming.toList());
 
-        model.addAttribute("dto", movieListDTO);
+        MovieListDTO movieListDto = new MovieListDTO();
+        movieListDto.setUsername(username);
+        updateDTOfromPage(userMovieResults, movieListDto, page, size);
+        movieListDto.setUrl(movieService.getBaseUrl(0));
+        movieListDto.setUpcoming(upcoming.toList());
+
+        model.addAttribute("dto", movieListDto);
 
         return "user/index";
     }
@@ -89,17 +87,12 @@ public class UserController extends AbstractBaseController {
         }
 
         Sort sort = movieService.getSort(movieListDto.getSortOption());
+
         Page<Movie> userMovieResults = movieRepository.findByUserIdAndTitleContaining(userId,
                 movieListDto.getSearchTerm(),
                 PageRequest.of(page,size, sort));
-        List<Movie> movies = new ArrayList<>(userMovieResults.toList());
 
-        movieListDto.setPages(userMovieResults.getTotalPages());
-        movieListDto.setMovieCount(userMovieResults.getTotalElements());
-        movieListDto.setMovies(movies);
-        movieListDto.setCurrentPage(page);
-        movieListDto.setFirstElement((page * size) + 1);
-        movieListDto.setUserList(true);
+        updateDTOfromPage(userMovieResults, movieListDto, page, size);
 
         model.addAttribute("dto", movieListDto);
 
@@ -160,5 +153,15 @@ public class UserController extends AbstractBaseController {
         model.addAttribute(new NewPasswordFormDTO());
 
         return "user/manage";
+    }
+
+    private void updateDTOfromPage(Page results, MovieListDTO movieListDto, int page, int size){
+        movieListDto.setPages(results.getTotalPages());
+        movieListDto.setMovieCount(results.getTotalElements());
+        movieListDto.setMovies(results.toList());
+        movieListDto.setCurrentPage(page);
+        movieListDto.setFirstElement((page * size) + 1);
+        movieListDto.setUserList(true);
+        movieListDto.setPageNumbers(pagingService.getDisplayedPageNumbers(page, results.getTotalPages()));
     }
 }

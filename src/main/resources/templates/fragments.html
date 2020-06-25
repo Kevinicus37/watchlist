@@ -158,7 +158,7 @@
         </div>
         <div class="row">
             <b>Runtime:</b>
-            <p th:text="${movie.runtime == 0 ? 'unknown' : movie.runtime + ' min.'}"></p>
+            <p th:text="${movie.runtime == 0 ? ' unknown' : movie.runtime + ' min.'}"></p>
         </div>
         <div class="row" th:if="${movie.genres != null and !movie.genres.isEmpty()}" >
             <h6 class="w-100">Genres:</h6>
@@ -195,7 +195,7 @@
     </table>
 </div>
 
-<nav th:fragment="pager">
+<nav th:fragment="pager" th:if="${dto.pages > 1}">
     <input type="hidden" th:field="${dto.searchOption}">
     <input type="hidden" th:field="${dto.searchTerm}">
     <input type="hidden" th:field="${dto.sortOption}">
@@ -203,17 +203,19 @@
     <input type="hidden" th:field="${dto.url}">
     <input type="hidden" th:field="${dto.upcoming}">
     <ul class="pagination">
-        <li  class="page-item">
-            <button class="page-link" name="page" th:value=dto.firstPage>First</button>
+        <li  th:if="${dto.currentPage > 0}" class="page-item">
+            <button class="page-link" name="page" value="0">First</button>
         </li>
-        <th:block th:if="${dto.currentPage > dto.firstPage}">
-            <li class="page-item"><button class="page-link" name="page" th:value="${dto.currentPage - 1}" th:text="${dto.currentPage}"></button></li>
-        </th:block>
-        <li class="page-item"><button class="page-link" name="page" th:value="${dto.currentPage}" th:text="${dto.currentPage + 1}"></button></li>
-        <th:block th:if="${dto.currentPage < dto.pages -1}">
-            <li class="page-item"><button class="page-link" name="page" th:value="${dto.currentPage + 1}" th:text="${dto.currentPage + 2}"></button></li>
-        </th:block>
-        <li class="page-item">
+        <li th:if="${dto.currentPage > 0}" class="page-item">
+            <button class="page-link" name="page" th:value="${dto.currentPage - 1}">Prev</button>
+        </li>
+        <li th:each="page : ${dto.pageNumbers}" class="page-item">
+            <button class="page-link" name="page" th:value="${page}" th:text="${page + 1}"></button>
+        </li>
+        <li th:if="${dto.currentPage < dto.pages -1}" class="page-item">
+            <button class="page-link" name="page" th:value="${dto.currentPage + 1}">Next</button>
+        </li>
+        <li th:if="${dto.pages > 1 and dto.currentPage < dto.pages - 1}" class="page-item">
             <button class="page-link" name="page" th:value="${dto.pages - 1}">Last</button>
         </li>
     </ul>

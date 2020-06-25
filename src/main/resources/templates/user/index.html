@@ -28,6 +28,7 @@
                                 <label class="input-group-text">Sort By...</label>
                             </div>
                             <select class="custom-select" th:field="${dto.sortOption}">
+<!--                                TODO - Use an Enum to clean this up -->
                                 <option value="title">Title</option>
                                 <option value="titleDesc">Title - Descending</option>
                                 <option value="sortByDate">Release Date</option>
@@ -41,11 +42,6 @@
                         </div>
                     </form>
                     <form th:action="@{${'/user/' + dto.username}}" method="post">
-<!--                        <input type="hidden" th:field="${dto.searchTerm}">-->
-<!--                        <input type="hidden" th:field="${dto.sortOption}">-->
-<!--                        <input type="hidden" th:field="${dto.username}">-->
-<!--                        <input type="hidden" th:field="${dto.url}">-->
-<!--                        <input type="hidden" th:field="${dto.upcoming}">-->
                         <nav th:replace="fragments :: pager"></nav>
                     </form>
 
@@ -59,14 +55,8 @@
             <th:block th:replace="fragments :: movielist"></th:block>
             <hr />
             <form th:action="@{${'/user/' + dto.username}}" method="post">
-<!--                <input type="hidden" th:field="${dto.searchTerm}">-->
-<!--                <input type="hidden" th:field="${dto.sortOption}">-->
-<!--                <input type="hidden" th:field="${dto.username}">-->
-<!--                <input type="hidden" th:field="${dto.url}">-->
-<!--                <input type="hidden" th:field="${dto.upcoming}">-->
                 <nav th:replace="fragments :: pager"></nav>
             </form>
-
 
         </div>
         <div class="col-md-3" style="background-color: black;">
