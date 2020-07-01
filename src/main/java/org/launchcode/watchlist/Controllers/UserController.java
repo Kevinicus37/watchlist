@@ -68,6 +68,7 @@ public class UserController extends AbstractBaseController {
         updateDTOfromPage(userMovieResults, movieListDto, page, size);
         movieListDto.setUrl(movieService.getBaseUrl(0));
         movieListDto.setUpcoming(upcoming.toList());
+        ;
 
         model.addAttribute("dto", movieListDto);
 
@@ -80,6 +81,10 @@ public class UserController extends AbstractBaseController {
                                                 @RequestParam(defaultValue = "0") int page,
                                                 @RequestParam(defaultValue = "20") int size,
                                                 Model model){
+
+        if (movieListDto.getPreviousSize() != size){
+            page = 0;
+        }
 
         int userId = userRepository.findIdByUsername(username);
         if (userId < 1){
@@ -162,6 +167,7 @@ public class UserController extends AbstractBaseController {
         movieListDto.setCurrentPage(page);
         movieListDto.setFirstElement((page * size) + 1);
         movieListDto.setUserList(true);
+        movieListDto.setPreviousSize(size);
         movieListDto.setPageNumbers(pagingService.getDisplayedPageNumbers(page, results.getTotalPages()));
     }
 }

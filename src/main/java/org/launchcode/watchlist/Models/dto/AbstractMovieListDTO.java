@@ -29,6 +29,8 @@ public class AbstractMovieListDTO {
 
     private String searchOption;
 
+    private int previousSize;
+
     public String getUsername() {
         return username;
     }
@@ -115,5 +117,13 @@ public class AbstractMovieListDTO {
 
     public void setSearchOption(String searchOption) {
         this.searchOption = searchOption;
+    }
+
+    public int getPreviousSize() {
+        return previousSize;
+    }
+
+    public void setPreviousSize(int previousSize) {
+        this.previousSize = previousSize;
     }
 }

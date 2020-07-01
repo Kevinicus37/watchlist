@@ -45,7 +45,7 @@ public class WatchlistController extends AbstractBaseController{
 
         // Check to see if user already has this movie in their list.
         if (tmdbMovie != null){
-            // TODO a better search here would be for tmdbId instead of title.
+            // TODO a better search here would be for tmdbId instead of title (might not be unique).
             Movie movie = movieRepository.findByTitleAndUserId(tmdbMovie.getTitle(), user.getId());
 
             if (movie == null) {
@@ -63,26 +63,6 @@ public class WatchlistController extends AbstractBaseController{
         }
 
         return "redirect:/user/" + user.getUsername();
-    }
-
-    @PostMapping("search")
-    public String searchWatchlist(String searchTerm, String username, HttpServletRequest request, Model model){
-        // TODO add a dto to this to include pagination.
-
-        List<Movie> movies = new ArrayList<>();
-
-        User user = userRepository.findByUsername(username);
-
-        List<Movie> userMovies = user.getWatchlist();
-        movies = movieService.getMoviesFromTitleSearch(userMovies, searchTerm);
-        List<Movie> upcomingMovies = movieService.getWatchlistUpcoming(userMovies);
-
-        model.addAttribute("upcoming", upcomingMovies);
-        model.addAttribute("movies", movies);
-        model.addAttribute("isUserList", true);
-        model.addAttribute("url", movieService.getBaseUrl(0));
-
-        return "/user/index";
     }
 
     @GetMapping("remove")

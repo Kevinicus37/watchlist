@@ -44,6 +44,10 @@ public class SearchController extends AbstractBaseController{
                                     @RequestParam(defaultValue = "20") int size,
                                     Model model){
 
+        if (size != dto.getPreviousSize()){
+            page = 0;
+        }
+
         List<MovieDb> movies = new ArrayList<>();
         MovieResultsPage results = new MovieResultsPage();
 
@@ -67,6 +71,7 @@ public class SearchController extends AbstractBaseController{
         dto.setFirstElement((page * size) + 1);
         dto.setUrl(movieService.getBaseUrl(0));
         dto.setUserList(false);
+        dto.setPreviousSize(size);
 
         model.addAttribute("dto", dto);
         model.addAttribute("title", "Search TMDB.org by:");
