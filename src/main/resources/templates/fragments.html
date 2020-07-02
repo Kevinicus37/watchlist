@@ -75,11 +75,10 @@
                 <td>
                     <a th:if="${!dto.isUserList()}" th:href="@{/movie/tmdb/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.releaseDate}"></H4></a>
                     <a th:unless="${!dto.isUserList()}" th:href="@{/movie/{id}(id=${movie.id})}"><H4 th:text="${movie.title + ' ' + movie.releaseYear}"></H4></a>
-                    <em th:if="${movie.crew != null and !movie.crew.isEmpty()}">Directed by <th:block th:each="crew : ${movie.crew}">
-                        <span th:text="${crewStat.last ? crew.name : crew.name + ', '}"></span>
-                    </th:block>
-                    </em>
-                    <p style="font-size: 0.75em;" th:text="${#strings.abbreviate(movie.overview,400)}"></p>
+<!--                    <em th:if="${movie.crew != null and !movie.crew.isEmpty()}">Directed by <th:block th:each="crew : ${movie.crew}">-->
+<!--                        <span th:text="${crewStat.last ? crew.name : crew.name + ', '}"></span>-->
+<!--                    </em>-->
+                    <p th:text="${#strings.abbreviate(movie.overview,200)}"></p>
                 </td>
                 <td>
                     <th:block th:if="${user != null}">
@@ -221,11 +220,8 @@
         </li>
     </ul>
     <label>Results Per Page: </label>
-    <select name="size" onchange="this.form.submit()"> /* TODO - Probably use an Enum Here */
-        <option value="10" th:selected="${dto.previousSize == 10}">10</option>
-        <option value="20" th:selected="${dto.previousSize == 20}">20</option>
-        <option value="50" th:selected="${dto.previousSize == 50}">50</option>
-        <option value="100" th:selected="${dto.previousSize == 100}">100</option>
+    <select name="size" onchange="this.form.submit()">
+        <option th:each="pageSize : ${dto.pageSizes}" th:value="${pageSize.size}" th:text="${pageSize.size}" th:selected="${dto.previousSize == pageSize.size}"></option>
     </select>
 </nav>
 

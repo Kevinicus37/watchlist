@@ -1,5 +1,6 @@
 package org.launchcode.watchlist.Models.dto;
 
+import org.launchcode.watchlist.Enums.PageSize;
 import org.launchcode.watchlist.Models.Movie;
 
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.List;
 public class AbstractMovieListDTO {
 
     private String username;
+
+    private PageSize[] pageSizes = PageSize.values();
 
     private String url;
 
@@ -37,6 +40,14 @@ public class AbstractMovieListDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public PageSize[] getPageSizes() {
+        return pageSizes;
+    }
+
+    public void setPageSizes(PageSize[] pageSizes) {
+        this.pageSizes = pageSizes;
     }
 
     public String getUrl() {

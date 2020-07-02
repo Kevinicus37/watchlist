@@ -84,23 +84,9 @@ public class MovieService {
         String response = restTemplate.getForObject(url, String.class);
 
         JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
-        //JsonArray jArr = jobj.getAsJsonArray("results");
-        //Type castType = new TypeToken<MovieResultsPage>(){}.getType();
-        //MovieResultsPage results = new Gson().fromJson(jobj, castType);
         MovieResultsPage results = new Gson().fromJson(jobj.toString(), MovieResultsPage.class);
         results.setTotalPages(new Gson().fromJson(jobj.get("total_pages"), Integer.class));
         results.setTotalResults(new Gson().fromJson(jobj.get("total_results"), Integer.class));
-//        Type listType = new TypeToken<List<MovieDb>>(){}.getType();
-//        List<MovieDb> movies = new Gson().fromJson(jArr, listType);
-//
-//        List<MovieDb> output = new ArrayList<>();
-//
-//        for (MovieDb movie : movies) {
-//            MovieDb newMovie = getTmdbMovie(movie.getId());
-//            setDirectors(newMovie);
-//            newMovie.setReleaseDate(getReleaseDateYearForDisplay(newMovie.getReleaseDate()));
-//            output.add(newMovie);
-//        }
 
         return results;
     }
@@ -144,6 +130,7 @@ public class MovieService {
         }
         videos.clear();
 
+        // TODO - Seems like it could slow things down - Is this necessary?  Shouldn't the movie method add these?
         for (Video video : tmdbMovies.getVideos(movie.getId(), "en")){
             if (video.getType().equalsIgnoreCase("trailer")){
                 videos.add(video);
@@ -192,21 +179,11 @@ public class MovieService {
         List<MovieDb> movies = new ArrayList<>();
 
         for (MovieDb movie : searchResults){
-            MovieDb newMovie = getTmdbMovie(movie.getId());
-            setDirectors(newMovie);
-            newMovie.setReleaseDate(getReleaseDateYearForDisplay(newMovie.getReleaseDate()));
-            movies.add(newMovie);
+            movie.setReleaseDate(getReleaseDateYearForDisplay(movie.getReleaseDate()));
+            movies.add(movie);
         }
 
         return movies;
-    }
-
-    public int getSearchResultsPageCount(String searchTerm){
-        return getSearchResultsPage(searchTerm).getTotalPages();
-    }
-
-    public int getTotalResultsCount(String searchTerm, int page){
-        return getSearchResultsPage(searchTerm, page).getTotalResults();
     }
 
     public String getFormattedReleaseDate(MovieDb movie){
@@ -460,27 +437,6 @@ public class MovieService {
 
         return sort;
     }
-
-//    public void sortMovies(List<Movie> movies, String sortOption){
-//        if (sortOption.equals("releaseDate")){
-//            sortMoviesByDate(movies);
-//        }
-//        else if (sortOption.equals("releaseDateDesc")){
-//            sortMoviesByDateDesc(movies);
-//        }
-//        else if (sortOption.equals("dateAdded")){
-//            sortMovieByDateAdded(movies);
-//        }
-//        else if (sortOption.equals("dateAddedDesc")){
-//            sortMovieByDateAddedDesc(movies);
-//        }
-//        else if (sortOption.equals("titleDesc")){
-//            sortMovieByTitleDesc(movies);
-//        }
-//        else {
-//            sortMovieByTitle(movies);
-//        }
-//    }
 
     public void sortMoviesByDate(List<Movie> movies){
         movies.sort(new SortMovieByDate());

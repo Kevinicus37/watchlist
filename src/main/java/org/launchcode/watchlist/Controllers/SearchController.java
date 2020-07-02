@@ -62,14 +62,14 @@ public class SearchController extends AbstractBaseController{
             results = movieService.getSearchResultsPage(dto.getSearchTerm(), page + 1);
         }
 
-        movies = movieService.getResultsFromPage(results);
+        movies = movieService.getResultsFromPage(results); // TODO - THIS TAKES A LONG TIME - FIX IT!
         dto.setMovieCount(results.getTotalResults());
         dto.setPages(results.getTotalPages());
         dto.setPageNumbers(pagingService.getDisplayedPageNumbers(page, results.getTotalPages()));
         dto.setMovies(movies);
         dto.setCurrentPage(page);
         dto.setFirstElement((page * size) + 1);
-        dto.setUrl(movieService.getBaseUrl(0));
+        dto.setUrl(movieService.getBaseUrl(0)); // TODO - Can this be sped up?
         dto.setUserList(false);
         dto.setPreviousSize(size);
 
@@ -78,16 +78,4 @@ public class SearchController extends AbstractBaseController{
 
         return "/search/tmdbsearch";
     }
-
-//    Was used for testing
-//    @GetMapping("cast/{castId}")
-//    public String getMovieDbsByCastMember(@PathVariable int castId, Model model){
-//        // castId should be the id for the cast Member on TMDb.org
-//        model.addAttribute("movies", movieService.searchForMovieDbByCastMember(castId));
-//        model.addAttribute("url", movieService.getBaseUrl(0));
-//        model.addAttribute("isUserList", false);
-//
-//        return "/search/tmdbsearch";
-//    }
-//
 }
