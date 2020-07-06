@@ -187,7 +187,7 @@ public class MovieService {
     }
 
     public String getFormattedReleaseDate(MovieDb movie){
-        String date = movie.getReleaseDate();
+        String date = getUSTheatricalReleaseDate(movie);
 
         return getFormattedDate(date);
     }
@@ -252,6 +252,21 @@ public class MovieService {
         return getComingSoon(1);
     }
 
+    public String getUSTheatricalReleaseDate(MovieDb movie){
+
+        for (ReleaseInfo release : movie.getReleases()){
+            if (release.getCountry().equals("US")) {
+                for (ReleaseDate date : release.getReleaseDates()){
+                    if (date.getType().equals("3")){
+                        return date.getReleaseDate();
+                    }
+                }
+            }
+        }
+
+        return movie.getReleaseDate();
+    }
+
     // Movie methods
 
     public List<Movie> getUnreleasedMovies(List<Movie> movies){
@@ -281,12 +296,16 @@ public class MovieService {
         return output.subList(startIndex,endIndex);
     }
 
-    public Movie convertFromMovieDb(MovieDb tmdbMovie){
-        if (tmdbMovie == null){
-            return null;
-        }
+    public void updateMovieFromTMDB(Movie movie){
+        MovieDb tmdbMovie = getTmdbMovie(movie.getTmdbId());
 
-        Movie movie = new Movie();
+        if (tmdbMovie != null){
+            mapMovieFromMovieDb(movie, tmdbMovie);
+            movieRepository.save(movie);
+        }
+    }
+
+    public void mapMovieFromMovieDb(Movie movie, MovieDb tmdbMovie){
         movie.setTitle(tmdbMovie.getTitle());
         movie.setReleaseDate(getFormattedReleaseDate(tmdbMovie));
         movie.setDirectors(getDirectorsFromMovieDb(tmdbMovie));
@@ -298,6 +317,15 @@ public class MovieService {
         movie.setOverview(tmdbMovie.getOverview());
         movie.setTmdbId(tmdbMovie.getId());
         movie.setGenres(getGenresFromMovieDb(tmdbMovie));
+    }
+
+    public Movie createMovieFromMovieDb(MovieDb tmdbMovie){
+        if (tmdbMovie == null){
+            return null;
+        }
+
+        Movie movie = new Movie();
+        mapMovieFromMovieDb(movie, tmdbMovie);
 
         return movie;
     }
@@ -482,7 +510,7 @@ public class MovieService {
     }
 
     public String getFormattedDate(String dateString){
-        truncateDate(dateString);
+        dateString = truncateDate(dateString);
 
         if (dateString != null && !dateString.isEmpty()){
             String[] dateParts = dateString.split("-");
@@ -504,12 +532,14 @@ public class MovieService {
         return dateString;
     }
 
-    public void truncateDate(String dateString){
+    public String truncateDate(String dateString){
         int index = dateString.indexOf('T');
 
         if (index >= 0){
             dateString = dateString.substring(0,index);
         }
+
+        return dateString;
 
     }
 

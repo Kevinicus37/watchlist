@@ -44,14 +44,6 @@ public class User extends AbstractEntity {
         this.username = username;
     }
 
-    public List<Movie> getMovies() {
-        return watchlist;
-    }
-
-    public void setMovies(List<Movie> movies) {
-        this.watchlist = movies;
-    }
-
     public List<Movie> getWatchlist() {
         return watchlist;
     }

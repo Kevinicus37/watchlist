@@ -27,7 +27,16 @@
                 <a class="nav-link" th:href="@{/search}">Search TMDb.org</a>
             </li>
             <li th:if="${user != null}" class="nav-item">
-                <a class="nav-link" th:href="@{/user/{username}(username=${user.username})}">My Watchlist</a>
+                <div class="dropdown show">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        My Watchlist
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" th:href="@{/user/{username}(username=${user.username})}">View Watchlist</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:if="${user.username == dto.username}" th:href="@{/watchlist/fullUpdate}">Update Watchlist</a>
+                    </div>
+                </div>
             </li>
         </ul>
     </div>
@@ -82,8 +91,11 @@
                 </td>
                 <td>
                     <th:block th:if="${user != null}">
-                        <a th:if="${!dto.isUserList()}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add to Watchlist</a>
-                        <a th:if="${dto.isUserList() and user.id == movie.user.id}" class="btn btn-danger" th:href="@{/watchlist/remove(id=${movie.id})}">Remove from Watchlist</a>
+                            <a th:if="${!dto.isUserList()}" class="btn btn-primary table-button" th:href="@{/watchlist/add(id=${movie.id})}">Add to Watchlist</a>
+                            <th:block th:if="${dto.isUserList() and user.id == movie.user.id}">
+                                <a  class="btn btn-danger table-button" th:href="@{/watchlist/remove(id=${movie.id})}">Remove from Watchlist</a>
+                                <a  class="btn btn-primary table-button down-1rem" th:href="@{/watchlist/update(id=${movie.id})}">Update Movie</a>
+                            </th:block>
                     </th:block>
 
                 </td>
@@ -108,7 +120,8 @@
                 </div>
                 <div class="col-md-4">
                     <div th:if="${isUserMovie and user.id == movie.user.id}" class="row">
-                        <a class="btn btn-danger" th:href="@{/watchlist/remove(id=${movie.id})}">Remove From Watchlist</a>
+                        <a class="btn btn-danger col-md-12" th:href="@{/watchlist/remove(id=${movie.id})}">Remove From Watchlist</a>
+                        <a  class="btn btn-primary col-md-12 down-1rem" th:href="@{/watchlist/update(id=${movie.id})}">Update Movie</a>
                     </div>
                     <div th:unless="${isUserMovie and user.id == movie.user.id}" class="row">
                         <a th:if="${!isUserMovie}" class="btn btn-primary" th:href="@{/watchlist/add(id=${movie.id})}">Add To Watchlist</a>
@@ -202,6 +215,10 @@
     <input type="hidden" th:field="${dto.url}">
     <input type="hidden" th:field="${dto.upcoming}">
     <input type="hidden" th:field="${dto.previousSize}">
+    <label>Results Per Page: </label>
+    <select name="size" onchange="this.form.submit()">
+        <option th:each="pageSize : ${dto.pageSizes}" th:value="${pageSize.size}" th:text="${pageSize.size}" th:selected="${dto.previousSize == pageSize.size}"></option>
+    </select>
     <ul class="pagination">
         <li  th:if="${dto.currentPage > 1}" class="page-item">
             <button class="page-link" name="page" value="0">First</button>
@@ -219,10 +236,7 @@
             <button class="page-link" name="page" th:value="${dto.pages - 1}">Last</button>
         </li>
     </ul>
-    <label>Results Per Page: </label>
-    <select name="size" onchange="this.form.submit()">
-        <option th:each="pageSize : ${dto.pageSizes}" th:value="${pageSize.size}" th:text="${pageSize.size}" th:selected="${dto.previousSize == pageSize.size}"></option>
-    </select>
+
 </nav>
 
 <th:block th:fragment="scripts">

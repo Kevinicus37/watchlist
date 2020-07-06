@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +40,7 @@ public class WatchlistController extends AbstractBaseController{
     public String addMovie(@RequestParam int id, HttpServletRequest request, Model model){
 
         MovieDb tmdbMovie = movieService.getTmdbMovie(id);
-        User user = authenticationController.getUserFromSession(request.getSession());
+        User user = (User) model.getAttribute("user");
 
         // Check to see if user already has this movie in their list.
         if (tmdbMovie != null){
@@ -49,7 +48,7 @@ public class WatchlistController extends AbstractBaseController{
             Movie movie = movieRepository.findByTitleAndUserId(tmdbMovie.getTitle(), user.getId());
 
             if (movie == null) {
-               movie = movieService.convertFromMovieDb(tmdbMovie);
+               movie = movieService.createMovieFromMovieDb(tmdbMovie);
                movie.setUser(user);
                movieRepository.save(movie);
             }
@@ -67,7 +66,7 @@ public class WatchlistController extends AbstractBaseController{
 
     @GetMapping("remove")
     public String removeFromWatchlist(@RequestParam int id, HttpServletRequest request, Model model){
-        User user = authenticationController.getUserFromSession(request.getSession());
+        User user = (User) model.getAttribute("user");
         Optional<Movie> result = movieRepository.findById(id);
 
         if (result.isPresent()){
@@ -75,6 +74,34 @@ public class WatchlistController extends AbstractBaseController{
             if (movie.getUser().equals(user)){
                 movieRepository.delete(movie);
             }
+        }
+
+        return "redirect:/user/" + user.getUsername();
+    }
+
+    @GetMapping("update")
+    public String updateWatchListMovie(@RequestParam int id, HttpServletRequest request, Model model){
+        User user = (User) model.getAttribute("user");
+        Optional<Movie> result = movieRepository.findById(id);
+
+        if (result.isPresent()){
+            Movie movie = result.get();
+            if (movie.getUser().equals(user)){
+                movieService.updateMovieFromTMDB(movie);
+            }
+        }
+
+        return "redirect:/user/" + user.getUsername();
+    }
+
+    @GetMapping("fullUpdate")
+    public String updateWatchlist(Model model){
+        User user = (User) model.getAttribute("user");
+
+        List<Movie> movies = user.getWatchlist();
+
+        for (Movie movie : movies){
+            movieService.updateMovieFromTMDB(movie);
         }
 
         return "redirect:/user/" + user.getUsername();
