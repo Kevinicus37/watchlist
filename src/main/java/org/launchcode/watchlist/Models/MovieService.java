@@ -233,7 +233,6 @@ public class MovieService {
     }
 
     public List<MovieDb> getComingSoon(int page){
-
         if (page < 1){
             page = 1;
         }
@@ -253,6 +252,10 @@ public class MovieService {
     }
 
     public String getUSTheatricalReleaseDate(MovieDb movie){
+
+        if (movie.getReleases() == null){
+            return movie.getReleaseDate();
+        }
 
         for (ReleaseInfo release : movie.getReleases()){
             if (release.getCountry().equals("US")) {
