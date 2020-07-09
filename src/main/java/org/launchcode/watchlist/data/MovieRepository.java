@@ -20,6 +20,13 @@ public interface MovieRepository extends PagingAndSortingRepository<Movie, Integ
 
     Movie findByTmdbId(int tmdbId);
     Movie findByTitleAndUserId(String title, int userId);
+    Movie findByTmdbIdAndUserId(int tmdbId, int userId);
+
+    @Query(value = "SELECT * FROM watchlist.movie m"
+            + " INNER JOIN movie_cast mc ON m.id = mc.movies_id INNER JOIN cast_member cm ON cm.id = mc.cast_id"
+            + " WHERE m.user_id = ?1 and cm.name like ?2 ;",
+            nativeQuery = true)
+    List<Movie> findByUserIdAndCastMemberName(@Param("userId") int userId, @Param("name") String name);
 
 
 }

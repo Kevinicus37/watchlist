@@ -54,7 +54,7 @@
 <!--                <a class="nav-item nav-link" th:href="@{/login}">Login</a>-->
                 <div class="dropdown show">
                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Login
+                        Login or Register
                     </a>
 
                     <div th:replace="fragments :: loginDD"></div>
@@ -201,6 +201,10 @@
 <div th:fragment="upcoming">
     <h4 class="center-text">Coming Soon</h4>
     <table class="table-list">
+        <colgroup>
+            <col>
+            <col style="width:80px">
+        </colgroup>
         <tr>
             <th>Title</th>
             <th>Release</th>

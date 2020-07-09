@@ -2,6 +2,7 @@ package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
 import org.launchcode.watchlist.Models.*;
+import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,8 +45,7 @@ public class WatchlistController extends AbstractBaseController{
 
         // Check to see if user already has this movie in their list.
         if (tmdbMovie != null){
-            // TODO a better search here would be for tmdbId instead of title (might not be unique).
-            Movie movie = movieRepository.findByTitleAndUserId(tmdbMovie.getTitle(), user.getId());
+            Movie movie = movieRepository.findByTmdbIdAndUserId(tmdbMovie.getId(), user.getId());
 
             if (movie == null) {
                movie = movieService.createMovieFromMovieDb(tmdbMovie);
@@ -97,12 +97,8 @@ public class WatchlistController extends AbstractBaseController{
     @GetMapping("fullUpdate")
     public String updateWatchlist(Model model){
         User user = (User) model.getAttribute("user");
-
         List<Movie> movies = user.getWatchlist();
-
-        for (Movie movie : movies){
-            movieService.updateMovieFromTMDB(movie);
-        }
+        movieService.updateMovieList(movies);
 
         return "redirect:/user/" + user.getUsername();
     }

@@ -2,7 +2,7 @@ package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
-import org.launchcode.watchlist.Models.MovieService;
+import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Models.dto.MovieDbListDTO;
 import org.launchcode.watchlist.Services.PagingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.directory.SearchResult;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @RequestMapping("search")

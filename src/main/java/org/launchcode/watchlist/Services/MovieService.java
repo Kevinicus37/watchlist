@@ -1,9 +1,7 @@
-package org.launchcode.watchlist.Models;
+package org.launchcode.watchlist.Services;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.ReleaseDate;
@@ -13,9 +11,9 @@ import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import info.movito.themoviedbapi.model.people.Person;
 import info.movito.themoviedbapi.model.people.PersonCast;
 import info.movito.themoviedbapi.model.people.PersonCrew;
+import org.launchcode.watchlist.Models.*;
 import org.launchcode.watchlist.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
-import java.lang.reflect.Type;
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -299,6 +297,12 @@ public class MovieService {
         return output.subList(startIndex,endIndex);
     }
 
+    public void updateMovieList(List<Movie> movies){
+        for (Movie movie :movies){
+            updateMovieFromTMDB(movie);
+        }
+    }
+
     public void updateMovieFromTMDB(Movie movie){
         MovieDb tmdbMovie = getTmdbMovie(movie.getTmdbId());
 
@@ -320,6 +324,21 @@ public class MovieService {
         movie.setOverview(tmdbMovie.getOverview());
         movie.setTmdbId(tmdbMovie.getId());
         movie.setGenres(getGenresFromMovieDb(tmdbMovie));
+    }
+
+    public List<Movie> findMovieByCastMember(List<Movie> movies, String castName){
+        List<Movie> output = new ArrayList<>();
+
+        for (Movie movie : movies){
+            for (CastMember castMember : movie.getCast()){
+                if (castMember.getName().toLowerCase().contains(castName.toLowerCase())){
+                    output.add(movie);
+                    break;
+                }
+            }
+        }
+
+        return output;
     }
 
     public Movie createMovieFromMovieDb(MovieDb tmdbMovie){

@@ -1,8 +1,7 @@
 package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
-import org.launchcode.watchlist.Models.ApiKey;
-import org.launchcode.watchlist.Models.MovieService;
+import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Models.dto.HomePageDTO;
 import org.launchcode.watchlist.data.ApiKeyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class HomeController extends AbstractBaseController{

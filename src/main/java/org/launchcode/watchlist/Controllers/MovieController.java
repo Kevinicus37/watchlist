@@ -2,7 +2,7 @@ package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
 import org.launchcode.watchlist.Models.Movie;
-import org.launchcode.watchlist.Models.MovieService;
+import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Models.User;
 import org.launchcode.watchlist.data.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;

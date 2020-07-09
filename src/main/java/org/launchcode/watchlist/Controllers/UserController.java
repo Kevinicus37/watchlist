@@ -1,9 +1,9 @@
 package org.launchcode.watchlist.Controllers;
 
 import org.launchcode.watchlist.Models.Movie;
-import org.launchcode.watchlist.Models.MovieService;
+import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Models.User;
-import org.launchcode.watchlist.Models.UserService;
+import org.launchcode.watchlist.Services.UserService;
 import org.launchcode.watchlist.Models.dto.MovieListDTO;
 import org.launchcode.watchlist.Models.dto.NewPasswordFormDTO;
 import org.launchcode.watchlist.Services.PagingService;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -68,7 +67,6 @@ public class UserController extends AbstractBaseController {
         updateDTOfromPage(userMovieResults, movieListDto, page, size);
         movieListDto.setUrl(movieService.getBaseUrl(0));
         movieListDto.setUpcoming(upcoming.toList());
-        ;
 
         model.addAttribute("dto", movieListDto);
 

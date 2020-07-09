@@ -1,10 +1,10 @@
-package org.launchcode.watchlist.Models;
+package org.launchcode.watchlist.Services;
 
+import org.launchcode.watchlist.Models.User;
 import org.launchcode.watchlist.data.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
