@@ -351,3 +351,11 @@ td {
     padding-right: .2rem;
     width: 100%;
 }
+
+.bootstrap-select {
+    background-color : black !important;
+}
+
+.page-size-select {
+    margin-top : 1rem;
+}

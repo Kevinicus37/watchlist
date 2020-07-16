@@ -7,6 +7,7 @@
     <title>Watchlist</title>
 
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-rCA2D+D9QXuP2TomtQwd+uP50EHjpafN+wruul0sXZzX/Da7Txn4tB9aLMZV4DZm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
     <link href="/css/styles.css" rel="stylesheet" type="text/css" >
 
 </head>
@@ -229,7 +230,7 @@
     <input type="hidden" th:field="${dto.url}">
     <input type="hidden" th:field="${dto.upcoming}">
     <input type="hidden" th:field="${dto.previousSize}">
-    <label>Results Per Page: </label>
+    <label class="page-size-select">Results Per Page: </label>
     <select name="size" onchange="this.form.submit()">
         <option th:each="pageSize : ${dto.pageSizes}" th:value="${pageSize.size}" th:text="${pageSize.size}" th:selected="${dto.previousSize == pageSize.size}"></option>
     </select>
@@ -257,6 +258,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 </th:block>
 
 <div th:fragment="loginDD" class="dropdown-menu">

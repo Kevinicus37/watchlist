@@ -34,6 +34,8 @@ public class AbstractMovieListDTO {
 
     private int previousSize;
 
+    private List<String> genreNames = new ArrayList<>();
+
     public String getUsername() {
         return username;
     }
@@ -136,5 +138,13 @@ public class AbstractMovieListDTO {
 
     public void setPreviousSize(int previousSize) {
         this.previousSize = previousSize;
+    }
+
+    public List<String> getGenreNames() {
+        return genreNames;
+    }
+
+    public void setGenreNames(List<String> genreNames) {
+        this.genreNames = genreNames;
     }
 }

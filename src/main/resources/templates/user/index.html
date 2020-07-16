@@ -18,6 +18,7 @@
                             <input type="hidden" th:field="${dto.username}">
                             <input type="hidden" th:field="${dto.url}">
                             <input type="hidden" th:field="${dto.upcoming}">
+                            <input type="hidden" th:field="${dto.genreNames}">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
@@ -31,15 +32,19 @@
 <!--                                TODO - Use an Enum to clean this up -->
                                 <option value="title">Title</option>
                                 <option value="titleDesc">Title - Descending</option>
-                                <option value="sortByDate">Release Date</option>
-                                <option value="sortByDateDesc">Release Date - Descending</option>
-                                <option value="dateAdded">Date Added - Oldest</option>
-                                <option value="dateAddedDesc">Date Added - Newest</option>
+                                <option value="sort_by_date">Release Date</option>
+                                <option value="sort_by_dateDesc">Release Date - Descending</option>
+                                <option value="date_added">Date Added - Oldest</option>
+                                <option value="date_addedDesc">Date Added - Newest</option>
                             </select>
                             <div class="input-group-append">
                                 <input type="submit" class="btn btn-primary" value="Sort" />
                             </div>
                         </div>
+                        <select name="genres" class="selectpicker" data-live-search="true" title="Choose one or more genres to filter by..." multiple>
+                            <option th:each="genre : ${dto.genreNames}" th:text="${genre}" th:value="${genre}"></option>
+                        </select>
+
                     </form>
                     <form th:action="@{${'/user/' + dto.username}}" method="post">
                         <nav th:replace="fragments :: pager"></nav>
