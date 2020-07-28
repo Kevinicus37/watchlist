@@ -20,11 +20,11 @@
         </div>
     </form>
     <th:block th:if="${dto.movies != null}">
-        <form th:action="@{/search}" method="post">
+        <form th:action="@{${dto.formAction}}" method="post">
             <nav th:replace="fragments :: pager"></nav>
         </form>
         <th:block th:replace="fragments :: movielist"></th:block>
-        <form th:action="@{/search}" method="post">
+        <form th:action="@{${dto.formAction}}" method="post">
             <nav th:replace="fragments :: pager"></nav>
         </form>
 

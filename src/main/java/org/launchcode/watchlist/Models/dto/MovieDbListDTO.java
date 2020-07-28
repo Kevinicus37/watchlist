@@ -13,6 +13,8 @@ public class MovieDbListDTO extends AbstractMovieListDTO {
 
     private final int firstPage = 0;
 
+    private String formAction = "/search";
+
     public List<MovieDb> getMovies() {
         return movies;
     }
@@ -31,5 +33,13 @@ public class MovieDbListDTO extends AbstractMovieListDTO {
 
     public int getFirstPage() {
         return firstPage;
+    }
+
+    public String getFormAction() {
+        return formAction;
+    }
+
+    public void setFormAction(String formAction) {
+        this.formAction = formAction;
     }
 }

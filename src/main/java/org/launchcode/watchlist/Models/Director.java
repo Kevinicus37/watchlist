@@ -13,6 +13,8 @@ public class Director extends AbstractEntity{
 
     private String name;
 
+    private int tmdbId;
+
     public Director(){}
 
     public Director(String aName){
@@ -33,5 +35,13 @@ public class Director extends AbstractEntity{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getTmdbId() {
+        return tmdbId;
+    }
+
+    public void setTmdbId(int tmdbId) {
+        this.tmdbId = tmdbId;
     }
 }

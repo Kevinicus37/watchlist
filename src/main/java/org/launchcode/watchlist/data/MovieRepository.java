@@ -20,6 +20,8 @@ public interface MovieRepository extends PagingAndSortingRepository<Movie, Integ
     public static final String SELECT_MOVIE = "SELECT DISTINCT m.* FROM watchlist.movie m ";
     public static final String SELECT_MOVIE_COUNT = "SELECT count(DISTINCT m.id) FROM watchlist.movie m ";
     public static final String ORDER_BY = "ORDER BY ?#{#pageable} ";
+    public static final String WHERE_USER_TITLE_GENRE = "WHERE m.user_id = ?1 AND g.name in (?3) AND m.title like %?2% ";
+    public static final String WHERE_USER_CAST_GENRE = "where m.user_id = ?1 and g.name in (?3) and cm.name like %?2%";
 
     List<Movie> findByTitle(String title);
     Page<Movie> findByTitle(String title, Pageable pageable);
@@ -29,21 +31,15 @@ public interface MovieRepository extends PagingAndSortingRepository<Movie, Integ
     Movie findByTmdbId(int tmdbId);
     Movie findByTitleAndUserId(String title, int userId);
     Movie findByTmdbIdAndUserId(int tmdbId, int userId);
-    @Query(value = SELECT_MOVIE + MOVIE_CAST_JOIN + "WHERE m.user_id = ?1 and cm.name like %?2% " + ORDER_BY,
-            countQuery = SELECT_MOVIE_COUNT + MOVIE_CAST_JOIN + "WHERE m.user_id = ?1 and cm.name like %?2%;",
-            nativeQuery = true)
-    Page<Movie> findByUserIdAndCastMemberName(@Param("userId") int userId, @Param("name") String name, Pageable pageable);
-    @Query(value = SELECT_MOVIE + MOVIE_CAST_JOIN + MOVIE_GENRE_JOIN +
-            "where m.user_id = ?1 and g.name in (?3) and cm.name like %?2%" +
-            ORDER_BY,
-            countQuery = SELECT_MOVIE_COUNT + MOVIE_CAST_JOIN + MOVIE_GENRE_JOIN +
-                    "where m.user_id = ?1 and g.name in (?3) and cm.name like %?2%",
+
+    @Query(value = SELECT_MOVIE + MOVIE_CAST_JOIN + MOVIE_GENRE_JOIN + WHERE_USER_CAST_GENRE + ORDER_BY,
+            countQuery = SELECT_MOVIE_COUNT + MOVIE_CAST_JOIN + MOVIE_GENRE_JOIN + WHERE_USER_CAST_GENRE,
             nativeQuery = true)
     Page<Movie> findByUserIdAndCastMemberNameFilteredByGenre(@Param("userId") int userId, @Param("name") String name,
                                                              @Param("genres") List<String> genres, Pageable pageable);
-    @Query(value = SELECT_MOVIE + MOVIE_GENRE_JOIN + "WHERE m.user_id = ?1 AND g.name in (?3) AND m.title like %?2% " +
-            ORDER_BY,
-            countQuery = SELECT_MOVIE_COUNT + MOVIE_GENRE_JOIN +"WHERE m.user_id = ?1 AND g.name in (?3) AND m.title like %?2%;",
+
+    @Query(value = SELECT_MOVIE + MOVIE_GENRE_JOIN + WHERE_USER_TITLE_GENRE + ORDER_BY,
+            countQuery = SELECT_MOVIE_COUNT + MOVIE_GENRE_JOIN + WHERE_USER_TITLE_GENRE,
             nativeQuery = true)
     Page<Movie> findByUserIdAndTitleContainingFilteredByGenre(@Param("userId") int userId, @Param("name") String name,
                                                              @Param("genres") List<String> genres, Pageable pageable);

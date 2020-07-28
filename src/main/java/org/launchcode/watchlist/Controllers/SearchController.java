@@ -2,6 +2,7 @@ package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
+import org.launchcode.watchlist.Models.dto.MovieByDirectorDTO;
 import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Models.dto.MovieDbListDTO;
 import org.launchcode.watchlist.Services.PagingService;
@@ -59,20 +60,53 @@ public class SearchController extends AbstractBaseController{
             results = movieService.getSearchResultsPage(dto.getSearchTerm(), page + 1);
         }
 
-        movies = movieService.getResultsFromPage(results); // TODO - THIS TAKES A LONG TIME - FIX IT!
-        dto.setMovieCount(results.getTotalResults());
-        dto.setPages(results.getTotalPages());
-        dto.setPageNumbers(pagingService.getDisplayedPageNumbers(page, results.getTotalPages()));
-        dto.setMovies(movies);
-        dto.setCurrentPage(page);
-        dto.setFirstElement((page * size) + 1);
-        dto.setUrl(movieService.getBaseUrl(0)); // TODO - Can this be sped up?
-        dto.setUserList(false);
-        dto.setPreviousSize(size);
-
+        updateDTOFromResults(dto, results, page, size);
         model.addAttribute("dto", dto);
         model.addAttribute("title", "Search TMDB.org by:");
 
         return "/search/tmdbsearch";
     }
+
+    @GetMapping("director/{tmdbId}")
+    public String getDirectorMovies(@PathVariable int tmdbId,
+                                   @RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "20") int size,
+                                   Model model){
+
+        MovieResultsPage results = movieService.searchForMovieDbByDirector(tmdbId, page + 1);
+        MovieByDirectorDTO dto = new MovieByDirectorDTO();
+        updateDTOFromResults(dto, results, page, size);
+        dto.setFormAction("/search/director/" + tmdbId);
+        model.addAttribute("dto", dto);
+
+        return "/search/tmdbsearch";
+    }
+
+    @PostMapping("director/{tmdbId}")
+    public String processDirectorMovies(@PathVariable int tmdbId,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "20") int size,
+                                    Model model){
+
+        MovieResultsPage results = movieService.searchForMovieDbByDirector(tmdbId, page + 1);
+        MovieByDirectorDTO dto = new MovieByDirectorDTO();
+        updateDTOFromResults(dto, results, page, size);
+        dto.setFormAction("/search/director/" + tmdbId);
+        model.addAttribute("dto", dto);
+
+        return "/search/tmdbsearch";
+    }
+
+    public void updateDTOFromResults(MovieDbListDTO dto, MovieResultsPage results, int page, int size){
+        dto.setMovieCount(results.getTotalResults());
+        dto.setPages(results.getTotalPages());
+        dto.setPageNumbers(pagingService.getDisplayedPageNumbers(page, results.getTotalPages()));
+        dto.setMovies(movieService.getResultsFromPage(results));
+        dto.setCurrentPage(page);
+        dto.setFirstElement((page * size) + 1);
+        dto.setUrl(movieService.getBaseUrl(0)); // TODO - Can this be sped up? -
+        dto.setUserList(false);
+        dto.setPreviousSize(size);
+    }
+
 }

@@ -1,16 +1,17 @@
 package org.launchcode.watchlist.Services;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.ReleaseDate;
 import info.movito.themoviedbapi.model.ReleaseInfo;
 import info.movito.themoviedbapi.model.Video;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
-import info.movito.themoviedbapi.model.people.Person;
-import info.movito.themoviedbapi.model.people.PersonCast;
-import info.movito.themoviedbapi.model.people.PersonCrew;
+import info.movito.themoviedbapi.model.people.*;
 import org.launchcode.watchlist.Models.*;
 import org.launchcode.watchlist.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -36,6 +38,7 @@ public class MovieService {
     private TmdbMovies tmdbMovies;
     private TmdbSearch search;
     private TmdbDiscover discover;
+    private TmdbPeople people;
 
     @Autowired
     DirectorRepository directorRepository;
@@ -63,6 +66,7 @@ public class MovieService {
         this.tmdbMovies = api.getMovies();
         this.search = api.getSearch();
         this.discover = api.getDiscover();
+        this.people = api.getPeople();
     }
 
      // MovieDb specific methods
@@ -77,14 +81,96 @@ public class MovieService {
             page = 1;
         }
 
-        RestTemplate restTemplate = new RestTemplate();
-        String url = apiBaseUrl + "discover/movie?api_key=" + key + options + "&page=" + page + "&with_cast=" + id;
-        String response = restTemplate.getForObject(url, String.class);
+        return searchForMovieDbByCriteria(id, page, "&with_cast=");
+    }
+
+    public MovieResultsPage searchForMovieDbByCriteria(int id, int page, String criteria){
+
+        String url = apiBaseUrl + "discover/movie?api_key=" + key + options + "&page=" + page + criteria + id;
+        String response = getJsonResponseAsString(url);
 
         JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
         MovieResultsPage results = new Gson().fromJson(jobj.toString(), MovieResultsPage.class);
         results.setTotalPages(new Gson().fromJson(jobj.get("total_pages"), Integer.class));
         results.setTotalResults(new Gson().fromJson(jobj.get("total_results"), Integer.class));
+
+        return results;
+    }
+
+    public List<CrewCredit> getCrewCreditsByTmdbId(int id){
+        String url = apiBaseUrl + "/person/" + id + "/combined_credits?api_key=" + key;
+        String response = getJsonResponseAsString(url);
+
+        Gson gson = new Gson();
+        JsonObject jObj = gson.fromJson(response, JsonObject.class);
+        JsonElement jElem = jObj.get("crew");
+        Type crewCreditListType = new TypeToken<ArrayList<CrewCredit>>(){}.getType();
+        List<CrewCredit> credits = gson.fromJson(jElem, crewCreditListType);
+
+        return credits;
+    }
+
+    public String getJsonResponseAsString(String url){
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.getForObject(url, String.class);
+
+        return response;
+    }
+
+    public MovieResultsPage searchForMovieDbByDirector(int id, int page){
+
+        // TODO: Try and create a better lookup that gets the "job" name, and not just department.
+        // TODO: This way, 2nd Unit Director isn't included. Ex. Steven Spielberg for Goonies
+
+        if (page < 1) {
+            page = 1;
+        }
+
+        int count = 0;
+        List<MovieDb> movies = new ArrayList<>();
+        MovieResultsPage results = new MovieResultsPage();
+
+//        PersonCredits credits = people.getCombinedPersonCredits(id);
+//        for (PersonCredit credit : credits.getCrew()){
+//            if (credit.getDepartment().equals("Directing") && credit.getMediaType().equals("movie")){
+//                count++;
+//                if (count <= (page * 20) && count > (page - 1) * 20){
+//                    MovieDb newMovie = new MovieDb();
+//                    newMovie.setReleaseDate(credit.getReleaseDate());
+//                    newMovie.setTitle(credit.getMovieTitle());
+//                    newMovie.setId(credit.getId());
+//                    newMovie.setPosterPath(credit.getPosterPath());
+//                    newMovie.setOverview(credit.getOverview());
+//                    movies.add(newMovie);
+//                }
+//            }
+//
+//
+//
+//        results.setTotalPages(count / 20 + (count % 20 > 0 ? 1 : 0));
+//        results.setTotalResults(count);
+//        results.setResults(movies);
+//        }
+
+        List<CrewCredit> credits = getCrewCreditsByTmdbId(id);
+        for (CrewCredit credit : credits){
+            if (credit.getJob().toLowerCase().equals("director") && credit.getMediaType().equals("movie")){
+                count++;
+                if (count <= (page * 20) && count > (page - 1) * 20){
+                    MovieDb newMovie = new MovieDb();
+                    newMovie.setReleaseDate(credit.getReleaseDate());
+                    newMovie.setTitle(credit.getTitle());
+                    newMovie.setId(credit.getId());
+                    newMovie.setPosterPath(credit.getPosterPath());
+                    newMovie.setOverview(credit.getOverview());
+                    movies.add(newMovie);
+                }
+            }
+
+        results.setTotalPages(count / 20 + (count % 20 > 0 ? 1 : 0));
+        results.setTotalResults(count);
+        results.setResults(movies);
+        }
 
         return results;
     }
@@ -363,10 +449,11 @@ public class MovieService {
             for (PersonCrew crewMember : tmdbMovie.getCrew()) {
                 if (crewMember.getJob().equals("Director")) {
 
-                    Director director= directorRepository.findByName(crewMember.getName());
+                    Director director = directorRepository.findByName(crewMember.getName());
 
                     if (director == null){
                         director = new Director(crewMember.getName());
+                        director.setTmdbId(crewMember.getId());
                         directorRepository.save(director);
                     }
 
