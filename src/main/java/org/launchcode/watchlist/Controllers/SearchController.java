@@ -73,6 +73,8 @@ public class SearchController extends AbstractBaseController{
                                    @RequestParam(defaultValue = "20") int size,
                                    Model model){
 
+        // TODO - Display the name of the director the results are for.
+
         MovieResultsPage results = movieService.searchForMovieDbByDirector(tmdbId, page + 1);
         MovieByDirectorDTO dto = new MovieByDirectorDTO();
         updateDTOFromResults(dto, results, page, size);

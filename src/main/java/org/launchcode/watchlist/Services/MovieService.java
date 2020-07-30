@@ -1,9 +1,6 @@
 package org.launchcode.watchlist.Services;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import info.movito.themoviedbapi.*;
 import info.movito.themoviedbapi.model.MovieDb;
@@ -89,10 +86,11 @@ public class MovieService {
         String url = apiBaseUrl + "discover/movie?api_key=" + key + options + "&page=" + page + criteria + id;
         String response = getJsonResponseAsString(url);
 
-        JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
-        MovieResultsPage results = new Gson().fromJson(jobj.toString(), MovieResultsPage.class);
-        results.setTotalPages(new Gson().fromJson(jobj.get("total_pages"), Integer.class));
-        results.setTotalResults(new Gson().fromJson(jobj.get("total_results"), Integer.class));
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
+        JsonObject jobj = gson.fromJson(response, JsonObject.class);
+        MovieResultsPage results = gson.fromJson(jobj.toString(), MovieResultsPage.class);
 
         return results;
     }
@@ -119,9 +117,6 @@ public class MovieService {
 
     public MovieResultsPage searchForMovieDbByDirector(int id, int page){
 
-        // TODO: Try and create a better lookup that gets the "job" name, and not just department.
-        // TODO: This way, 2nd Unit Director isn't included. Ex. Steven Spielberg for Goonies
-
         if (page < 1) {
             page = 1;
         }
@@ -129,28 +124,6 @@ public class MovieService {
         int count = 0;
         List<MovieDb> movies = new ArrayList<>();
         MovieResultsPage results = new MovieResultsPage();
-
-//        PersonCredits credits = people.getCombinedPersonCredits(id);
-//        for (PersonCredit credit : credits.getCrew()){
-//            if (credit.getDepartment().equals("Directing") && credit.getMediaType().equals("movie")){
-//                count++;
-//                if (count <= (page * 20) && count > (page - 1) * 20){
-//                    MovieDb newMovie = new MovieDb();
-//                    newMovie.setReleaseDate(credit.getReleaseDate());
-//                    newMovie.setTitle(credit.getMovieTitle());
-//                    newMovie.setId(credit.getId());
-//                    newMovie.setPosterPath(credit.getPosterPath());
-//                    newMovie.setOverview(credit.getOverview());
-//                    movies.add(newMovie);
-//                }
-//            }
-//
-//
-//
-//        results.setTotalPages(count / 20 + (count % 20 > 0 ? 1 : 0));
-//        results.setTotalResults(count);
-//        results.setResults(movies);
-//        }
 
         List<CrewCredit> credits = getCrewCreditsByTmdbId(id);
         for (CrewCredit credit : credits){
