@@ -19,7 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -68,20 +67,20 @@ public class MovieService {
 
      // MovieDb specific methods
 
-    public MovieResultsPage searchForMovieDbByCastMember(int id){
-        return searchForMovieDbByCastMember(id, 1);
+    public MovieResultsPage searchForMovieDbsByCastMember(int id){
+        return searchForMovieDbsByCastMember(id, 1);
     }
 
-    public MovieResultsPage searchForMovieDbByCastMember(int id, int page){
+    public MovieResultsPage searchForMovieDbsByCastMember(int id, int page){
 
         if (page < 1){
             page = 1;
         }
 
-        return searchForMovieDbByCriteria(id, page, "&with_cast=");
+        return searchForMovieDbsByCriteria(id, page, "&with_cast=");
     }
 
-    public MovieResultsPage searchForMovieDbByCriteria(int id, int page, String criteria){
+    public MovieResultsPage searchForMovieDbsByCriteria(int id, int page, String criteria){
 
         String url = apiBaseUrl + "discover/movie?api_key=" + key + options + "&page=" + page + criteria + id;
         String response = getJsonResponseAsString(url);
@@ -106,6 +105,22 @@ public class MovieService {
         List<CrewCredit> credits = gson.fromJson(jElem, crewCreditListType);
 
         return credits;
+    }
+
+    public CastMember getCastMemberByTmdbId(int tmdbId){
+        PersonPeople person = people.getPersonInfo(tmdbId);
+
+        if (person != null){
+            CastMember castMember = new CastMember (person.getName(), person.getId());
+            castMember.setBiography(person.getBiography());
+            castMember.setBirthday(person.getBirthday());
+            castMember.setDeathday(person.getDeathday());
+            castMember.setPlaceOfBirth(person.getBirthplace());
+            castMember.setProfilePath(person.getProfilePath());
+            return castMember;
+        }
+
+        return null;
     }
 
     public String getJsonResponseAsString(String url){
@@ -149,15 +164,15 @@ public class MovieService {
     }
 
     public List<Integer> searchForCastMember(String searchTerm){
-        List<Integer> output = new ArrayList<>();
+        List<Integer> castIds = new ArrayList<>();
         List<Person> personList = search.searchPerson(searchTerm,false, 0).getResults();
         for (Person person : personList){
             if (person.getId() > 0){
-                output.add(person.getId());
+                castIds.add(person.getId());
             }
         }
 
-        return output;
+        return castIds;
     }
 
     public List<PersonCrew> getDirectors(MovieDb movie){
@@ -171,6 +186,23 @@ public class MovieService {
             }
         }
         return directors;
+    }
+
+    public List<PersonCast> getTopCastFromMovieDb(MovieDb movie){
+        List<PersonCast> topCast = new ArrayList<>();
+
+        for (PersonCast castMember : movie.getCast()){
+            if (castMember.getOrder() < 10){
+                topCast.add(castMember);
+                if (topCast.size() >= 10){
+                    break;
+                }
+            }
+        }
+
+        topCast.sort(Comparator.comparing(PersonCast::getOrder));
+
+        return topCast;
     }
 
     public void setDirectors(MovieDb movie){
@@ -207,6 +239,7 @@ public class MovieService {
                 TmdbMovies.MovieMethod.release_dates,
                 TmdbMovies.MovieMethod.releases);
         removeNonTrailers(movie);
+        movie.getCredits().setCast(getTopCastFromMovieDb(movie));
 
         return movie;
     }
@@ -248,6 +281,9 @@ public class MovieService {
 
         return getFormattedDate(date);
     }
+
+
+
 
     // TMDB.org Utility Methods
 
@@ -326,6 +362,9 @@ public class MovieService {
 
         return movie.getReleaseDate();
     }
+
+
+
 
     // Movie methods
 
@@ -448,10 +487,10 @@ public class MovieService {
         if (tmdbMovie.getCast() != null) {
             for (PersonCast castMember : tmdbMovie.getCast()) {
 
-                CastMember newMember = castMemberRepository.findByCastId(castMember.getId());
+                CastMember newMember = castMemberRepository.findById(castMember.getId());
 
                 if (newMember == null){
-                    newMember = new CastMember(castMember.getName(), castMember.getId());
+                    newMember = getCastMemberByTmdbId(castMember.getId());
                     castMemberRepository.save(newMember);
                 }
                 cast.add(newMember);

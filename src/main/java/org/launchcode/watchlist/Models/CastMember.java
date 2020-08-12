@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class CastMember extends AbstractEntity {
+public class CastMember extends ProductionMember {
 
-    private String name;
+//    private String name;
 
-    private int castId;
+//    private int tmdbId;
 
     @ManyToMany(mappedBy = "cast")
     private List<Movie> movies = new ArrayList<>();
@@ -19,21 +19,21 @@ public class CastMember extends AbstractEntity {
     public CastMember() {}
 
     public CastMember(String aName){
-        this.name = aName;
+        setName(aName);
     }
 
     public CastMember(String aName, int aId){
         this(aName);
-        this.castId = aId;
+        setTmdbId(aId);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
 
     public List<Movie> getMovies() {
         return movies;
@@ -43,26 +43,26 @@ public class CastMember extends AbstractEntity {
         this.movies = movies;
     }
 
-    public int getCastId() {
-        return castId;
-    }
+//    public int getTmdbId() {
+//        return tmdbId;
+//    }
+//
+//    public void setTmdbId(int tmdbId) {
+//        this.tmdbId = tmdbId;
+//    }
 
-    public void setCastId(int castId) {
-        this.castId = castId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        CastMember that = (CastMember) o;
-        return castId == that.castId &&
-                Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), name, castId);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        if (!super.equals(o)) return false;
+//        CastMember that = (CastMember) o;
+//        return getTmdbId() == that.getTmdbId() &&
+//                Objects.equals(getName(), that.getName());
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(super.hashCode(), getName(), getTmdbId());
+//    }
 }

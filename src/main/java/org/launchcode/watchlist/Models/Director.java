@@ -6,19 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Director extends AbstractEntity{
+public class Director extends ProductionMember{
 
     @ManyToMany(mappedBy = "directors")
     private List<Movie> movies = new ArrayList<>();
 
-    private String name;
+//    private String name;
 
-    private int tmdbId;
+//    private int tmdbId;
 
     public Director(){}
 
     public Director(String aName){
-        this.name = aName;
+        setName(aName);
     }
 
     public List<Movie> getMovies() {
@@ -29,19 +29,19 @@ public class Director extends AbstractEntity{
         this.movies = movies;
     }
 
-    public String getName() {
-        return name;
-    }
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getTmdbId() {
-        return tmdbId;
-    }
-
-    public void setTmdbId(int tmdbId) {
-        this.tmdbId = tmdbId;
-    }
+//    public int getTmdbId() {
+//        return tmdbId;
+//    }
+//
+//    public void setTmdbId(int tmdbId) {
+//        this.tmdbId = tmdbId;
+//    }
 }

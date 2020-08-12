@@ -53,7 +53,7 @@ public class SearchController extends AbstractBaseController{
 
             List<Integer> castIds = movieService.searchForCastMember(dto.getSearchTerm());
             if (castIds.size() > 0){
-                results = movieService.searchForMovieDbByCastMember(castIds.get(0), page + 1);
+                results = movieService.searchForMovieDbsByCastMember(castIds.get(0), page + 1);
             }
         }
         else {
