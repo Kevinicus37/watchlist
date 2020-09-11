@@ -8,55 +8,57 @@
 <div class="container">
     <header th:replace="fragments :: header"></header>
 
-    <div class="row">
-        <div class="col-md-4 poster">
-            <div class="center-block">
-                <img th:src="${dto.cast.profilePath != null ? dto.profileUrl + dto.cast.profilePath :'/images/profilepictures/defaultProfilePicture.png'}" class="img-fluid" alt/>
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="row main-film-info margin-right-offset" style="border-bottom:3px groove gray">
-                <div class="col-md-8">
-                    <h1>
-                        <span style="color: ghostwhite;" th:text="${dto.cast.name}"></span>
-                    </h1>
+    <div class="row" >
+        <div class="col-md-10 main-film-top-margin">
+            <div class="row">
+                <div class="col-md-4 poster">
+                    <div class="center-block">
+                        <img th:src="${dto.cast.profilePath != null ? dto.profileUrl + dto.cast.profilePath :'/images/profilepictures/defaultProfilePicture.png'}" class="img-fluid" alt/>
+                    </div>
                 </div>
-<!--                <div class="col-md-4">-->
-<!--                    <div th:if="${isUserMovie and user.id == movie.user.id}" class="row">-->
-<!--                        <a  class="btn btn-primary col-md-12 down-1rem" th:href="@{/cast/update(id=${cast.id})}">Update Cast</a>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <div class="col-md-8">
+                    <div class="row main-film-info margin-right-offset" style="border-bottom:3px groove gray">
+                        <div class="col-md-8">
+                            <h1>
+                                <span style="color: ghostwhite;" th:text="${dto.cast.name}"></span>
+                            </h1>
+                        </div>
+                    </div>
+                    <div th:if="${!dto.cast.biography.isEmpty()}" class="row main-film-info">
+                        <h2>Biography</h2>
+                        <p th:text="${dto.cast.biography}"></p>
+                        <br />
+                    </div>
+                </div>
             </div>
-            <div th:if="${!dto.cast.biography.isEmpty()}" class="row main-film-info">
-                <h2>Biography</h2>
-                <p th:text="${dto.cast.biography}"></p>
-                <br />
+
+            <!--    <form th:action="@{/cast/search}" method="post">-->
+            <!--        <div class="input-group mb-3">-->
+            <!--            <select class="custom-select input-group-prepend" th:field="${dto.searchOption}" id="input-group-select">-->
+            <!--                <option value="title">Title</option>-->
+            <!--                <option value="cast">Cast</option>-->
+            <!--            </select>-->
+            <!--            <input type="text" th:field="${dto.searchTerm}" class="form-control">-->
+            <!--            <div class="input-group-append">-->
+            <!--                <input type="submit" class="btn btn-primary" value="Search" />-->
+            <!--            </div>-->
+            <!--        </div>-->
+            <!--    </form>-->
+            <!--    <th:block th:if="${dto.movies != null}">-->
+            <!--        <form th:action="@{${dto.formAction}}" method="post">-->
+            <!--            <nav th:replace="fragments :: pager"></nav>-->
+            <!--        </form>-->
+            <th:block th:replace="fragments :: movielist"></th:block>
+            <!--        <form th:action="@{${dto.formAction}}" method="post">-->
+            <!--            <nav th:replace="fragments :: pager"></nav>-->
+            <!--        </form>-->
+
+            </th:block>
             </div>
+            <div th:replace="fragments :: personInfo"></div>
         </div>
-    </div>
 
-<!--    <form th:action="@{/cast/search}" method="post">-->
-<!--        <div class="input-group mb-3">-->
-<!--            <select class="custom-select input-group-prepend" th:field="${dto.searchOption}" id="input-group-select">-->
-<!--                <option value="title">Title</option>-->
-<!--                <option value="cast">Cast</option>-->
-<!--            </select>-->
-<!--            <input type="text" th:field="${dto.searchTerm}" class="form-control">-->
-<!--            <div class="input-group-append">-->
-<!--                <input type="submit" class="btn btn-primary" value="Search" />-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </form>-->
-<!--    <th:block th:if="${dto.movies != null}">-->
-<!--        <form th:action="@{${dto.formAction}}" method="post">-->
-<!--            <nav th:replace="fragments :: pager"></nav>-->
-<!--        </form>-->
-        <th:block th:replace="fragments :: movielist"></th:block>
-<!--        <form th:action="@{${dto.formAction}}" method="post">-->
-<!--            <nav th:replace="fragments :: pager"></nav>-->
-<!--        </form>-->
 
-    </th:block>
 
 </div>
 <th:block th:replace="fragments :: scripts"></th:block>

@@ -222,6 +222,20 @@
     </table>
 </div>
 
+<div th:fragment="personInfo" class="col-md-2 extra-film-info">
+    <div th:replace="fragments :: userInfo"></div>
+    <hr />
+    <div class="film-stats">
+        <div th:if="${dto.cast != null}" class="row">
+            <p th:if="${dto.cast.birthday != null}" th:text="${'Birthday: ' + dto.cast.birthday}"></p>
+            <p th:if="${dto.cast.placeOfBirth != null}" th:text="${dto.cast.placeOfBirth}"></p>
+            <p th:if="${dto.cast.deathday != null}" th:text="${dto.cast.deathday}"></p>
+        </div>
+
+    </div>
+
+</div>
+
 <nav th:fragment="pager">
     <input type="hidden" th:field="${dto.searchOption}">
     <input type="hidden" th:field="${dto.searchTerm}">
