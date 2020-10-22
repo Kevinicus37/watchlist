@@ -2,6 +2,7 @@ package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
+import org.launchcode.watchlist.Models.dto.CastListDTO;
 import org.launchcode.watchlist.Models.dto.MovieByDirectorDTO;
 import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Models.dto.MovieDbListDTO;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RequestMapping("search")
@@ -75,7 +77,7 @@ public class SearchController extends AbstractBaseController{
 
         // TODO - Display the name of the director the results are for.
 
-        MovieResultsPage results = movieService.searchForMovieDbByDirector(tmdbId, page + 1);
+        MovieResultsPage results = movieService.searchForMovieDbsByDirector(tmdbId, page + 1, size);
         MovieByDirectorDTO dto = new MovieByDirectorDTO();
         updateDTOFromResults(dto, results, page, size);
         dto.setFormAction("/search/director/" + tmdbId);
@@ -90,7 +92,7 @@ public class SearchController extends AbstractBaseController{
                                     @RequestParam(defaultValue = "20") int size,
                                     Model model){
 
-        MovieResultsPage results = movieService.searchForMovieDbByDirector(tmdbId, page + 1);
+        MovieResultsPage results = movieService.searchForMovieDbsByDirector(tmdbId, page + 1, size);
         MovieByDirectorDTO dto = new MovieByDirectorDTO();
         updateDTOFromResults(dto, results, page, size);
         dto.setFormAction("/search/director/" + tmdbId);

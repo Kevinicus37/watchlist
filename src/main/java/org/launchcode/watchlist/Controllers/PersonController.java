@@ -1,5 +1,6 @@
 package org.launchcode.watchlist.Controllers;
 
+import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import org.launchcode.watchlist.Models.dto.CastListDTO;
 import org.launchcode.watchlist.Services.MovieService;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Comparator;
+
 @Controller
-@RequestMapping("cast")
-public class CastController extends AbstractBaseController {
+@RequestMapping("person")
+public class PersonController extends AbstractBaseController {
 
     @Autowired
     MovieService movieService;
@@ -27,12 +30,22 @@ public class CastController extends AbstractBaseController {
     CastMemberRepository castMemberRepository;
 
     @GetMapping("view/{tmdbId}")
-    public String castInfo(@PathVariable int tmdbId,
-                           @RequestParam(defaultValue = "0") int page,
-                           @RequestParam(defaultValue = "20") int size,
-                           Model model){
+    public String getPersonMovies(@PathVariable int tmdbId,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue="20") int size,
+                                  @RequestParam(defaultValue = "cast") String creditType,
+                                  Model model){
 
-        MovieResultsPage results = movieService.searchForMovieDbsByCastMember(tmdbId, page + 1);
+        MovieResultsPage results;
+
+        if (creditType.equals("director")){
+            results = movieService.searchForMovieDbsByDirector(tmdbId, page+1, size);
+        }
+        else {
+            results = movieService.searchForMovieDbsByCastMember(tmdbId, page + 1);
+        }
+
+        results.getResults().sort(Comparator.comparing(MovieDb::getPopularity).reversed());
         CastListDTO dto = new CastListDTO();
         dto.setCast(movieService.getCastMemberByTmdbId(tmdbId));
         updateDTOFromResults(dto, results, page, size);
@@ -40,7 +53,7 @@ public class CastController extends AbstractBaseController {
         dto.setFormAction("/cast/view/" + tmdbId);
         model.addAttribute("dto", dto);
 
-        return "/cast/view";
+        return "/person/view";
     }
 
     public void updateDTOFromResults(CastListDTO dto, MovieResultsPage results, int page, int size){

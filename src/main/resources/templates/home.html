@@ -40,11 +40,15 @@
             <div>
                 <h4 class="center-text">Now Playing</h4>
                 <table class="table-list">
+                    <colgroup>
+                        <col>
+                        <col style="width:80px">
+                    </colgroup>
                     <tr>
                         <th>Title</th>
                         <th>Release</th>
                     </tr>
-                    <tr th:each="movie : ${nowPlaying}">
+                    <tr th:each="movie : ${dto.nowPlaying}">
                         <td><a th:href="@{${'/movie/tmdb/' + movie.id}}" th:text="${movie.title}"></a>
                         </td>
                         <td th:text="${movie.releaseDate}"></td>

@@ -95,7 +95,7 @@ public class MovieService {
     }
 
     public List<CrewCredit> getCrewCreditsByTmdbId(int id){
-        String url = apiBaseUrl + "/person/" + id + "/combined_credits?api_key=" + key;
+        String url = apiBaseUrl + "/person/" + id + "/movie_credits?api_key=" + key;
         String response = getJsonResponseAsString(url);
 
         Gson gson = new Gson();
@@ -130,10 +130,14 @@ public class MovieService {
         return response;
     }
 
-    public MovieResultsPage searchForMovieDbByDirector(int id, int page){
+    public MovieResultsPage searchForMovieDbsByDirector(int id, int page, int size){
 
         if (page < 1) {
             page = 1;
+        }
+
+        if (size < 1){
+            size = 20;
         }
 
         int count = 0;
@@ -142,25 +146,31 @@ public class MovieService {
 
         List<CrewCredit> credits = getCrewCreditsByTmdbId(id);
         for (CrewCredit credit : credits){
-            if (credit.getJob().toLowerCase().equals("director") && credit.getMediaType().equals("movie")){
+            if (credit.getJob().toLowerCase().equals("director")){  // && credit.getMediaType().equals("movie")
                 count++;
-                if (count <= (page * 20) && count > (page - 1) * 20){
-                    MovieDb newMovie = new MovieDb();
-                    newMovie.setReleaseDate(credit.getReleaseDate());
-                    newMovie.setTitle(credit.getTitle());
-                    newMovie.setId(credit.getId());
-                    newMovie.setPosterPath(credit.getPosterPath());
-                    newMovie.setOverview(credit.getOverview());
+                if (count <= (page * size) && count > (page - 1) * size){
+                    MovieDb newMovie = getMovieDbFromCrewCredit(credit);
                     movies.add(newMovie);
                 }
             }
-
-        results.setTotalPages(count / 20 + (count % 20 > 0 ? 1 : 0));
-        results.setTotalResults(count);
-        results.setResults(movies);
         }
 
+        results.setTotalPages(count / size + (count % size > 0 ? 1 : 0));
+        results.setTotalResults(count);
+        results.setResults(movies);
+
         return results;
+    }
+
+    public MovieDb getMovieDbFromCrewCredit(CrewCredit credit){
+        MovieDb newMovie = new MovieDb();
+        newMovie.setReleaseDate(credit.getReleaseDate());
+        newMovie.setTitle(credit.getTitle());
+        newMovie.setId(credit.getId());
+        newMovie.setPosterPath(credit.getPosterPath());
+        newMovie.setOverview(credit.getOverview());
+
+        return newMovie;
     }
 
     public List<Integer> searchForCastMember(String searchTerm){
@@ -326,6 +336,9 @@ public class MovieService {
     }
 
     public List<MovieDb> getComingSoon(int page){
+
+        // TODO - check release date to current date to weed out bad data from tmdb.org
+
         if (page < 1){
             page = 1;
         }

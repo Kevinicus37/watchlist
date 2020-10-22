@@ -150,8 +150,8 @@
             </div>
             <div class="row">
                 <div th:each="castMember : ${movie.cast}" th:if="${castMemberStat.index < 10}" class="col-md-4 cast-display">
-                    <a th:if="${!isUserMovie}" th:href="@{${'/cast/view/' + castMember.id}}" th:text="${castMember.name}"></a>
-                    <a th:unless="${!isUserMovie}" th:href="@{${'/cast/view/' + castMember.tmdbId}}" th:text="${castMember.name}"></a>
+                    <a th:if="${!isUserMovie}" th:href="@{${'/person/view/' + castMember.tmdbId}}" th:text="${castMember.name}"></a>
+                    <a th:unless="${!isUserMovie}" th:href="@{${'/person/view/' + castMember.tmdbId}}" th:text="${castMember.name}"></a>
                 </div>
             </div>
             <div th:if="${comments != null}" class="row main-film-info">
