@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface CastMemberRepository extends CrudRepository<CastMember, Integer> {
     public CastMember findByName(String name);
     public CastMember findById(int id);
+    public CastMember findByTmdbId(int tmdbId);
 }

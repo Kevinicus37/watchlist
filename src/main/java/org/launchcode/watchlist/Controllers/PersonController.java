@@ -2,7 +2,7 @@ package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
-import org.launchcode.watchlist.Models.dto.CastListDTO;
+import org.launchcode.watchlist.Models.dto.PersonListDTO;
 import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Services.PagingService;
 import org.launchcode.watchlist.data.CastMemberRepository;
@@ -46,17 +46,17 @@ public class PersonController extends AbstractBaseController {
         }
 
         results.getResults().sort(Comparator.comparing(MovieDb::getPopularity).reversed());
-        CastListDTO dto = new CastListDTO();
-        dto.setCast(movieService.getCastMemberByTmdbId(tmdbId));
+        PersonListDTO dto = new PersonListDTO();
+        dto.setPerson(movieService.getProductionMemberByTmdbId(tmdbId));
         updateDTOFromResults(dto, results, page, size);
         dto.setProfileUrl(movieService.getBaseUrl(3));
-        dto.setFormAction("/cast/view/" + tmdbId);
+        dto.setFormAction("/person/view/" + tmdbId);
         model.addAttribute("dto", dto);
 
         return "/person/view";
     }
 
-    public void updateDTOFromResults(CastListDTO dto, MovieResultsPage results, int page, int size){
+    public void updateDTOFromResults(PersonListDTO dto, MovieResultsPage results, int page, int size){
         dto.setMovieCount(results.getTotalResults());
         dto.setPages(results.getTotalPages());
         dto.setPageNumbers(pagingService.getDisplayedPageNumbers(page, results.getTotalPages()));

@@ -2,7 +2,6 @@ package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
-import org.launchcode.watchlist.Models.dto.CastListDTO;
 import org.launchcode.watchlist.Models.dto.MovieByDirectorDTO;
 import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Models.dto.MovieDbListDTO;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @RequestMapping("search")

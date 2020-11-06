@@ -10,6 +10,7 @@ import info.movito.themoviedbapi.model.Video;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import info.movito.themoviedbapi.model.people.*;
 import org.launchcode.watchlist.Models.*;
+import org.launchcode.watchlist.Models.ProductionMember;
 import org.launchcode.watchlist.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -107,17 +108,17 @@ public class MovieService {
         return credits;
     }
 
-    public CastMember getCastMemberByTmdbId(int tmdbId){
+    public ProductionMember getProductionMemberByTmdbId(int tmdbId){
         PersonPeople person = people.getPersonInfo(tmdbId);
 
         if (person != null){
-            CastMember castMember = new CastMember (person.getName(), person.getId());
-            castMember.setBiography(person.getBiography());
-            castMember.setBirthday(person.getBirthday());
-            castMember.setDeathday(person.getDeathday());
-            castMember.setPlaceOfBirth(person.getBirthplace());
-            castMember.setProfilePath(person.getProfilePath());
-            return castMember;
+            ProductionMember productionMember = new ProductionMember(person.getName(), person.getId());
+            productionMember.setBiography(person.getBiography());
+            productionMember.setBirthday(person.getBirthday());
+            productionMember.setDeathday(person.getDeathday());
+            productionMember.setPlaceOfBirth(person.getBirthplace());
+            productionMember.setProfilePath(person.getProfilePath());
+            return productionMember;
         }
 
         return null;
@@ -175,8 +176,8 @@ public class MovieService {
 
     public List<Integer> searchForCastMember(String searchTerm){
         List<Integer> castIds = new ArrayList<>();
-        List<Person> personList = search.searchPerson(searchTerm,false, 0).getResults();
-        for (Person person : personList){
+        List<info.movito.themoviedbapi.model.people.Person> personList = search.searchPerson(searchTerm,false, 0).getResults();
+        for (info.movito.themoviedbapi.model.people.Person person : personList){
             if (person.getId() > 0){
                 castIds.add(person.getId());
             }
@@ -292,6 +293,27 @@ public class MovieService {
         return getFormattedDate(date);
     }
 
+    private List<CastMember> getCastFromMovieDb(MovieDb tmdbMovie){
+        if (tmdbMovie == null){
+            return null;
+        }
+
+        List<CastMember> cast = new ArrayList<>();
+
+        if (tmdbMovie.getCast() != null) {
+            for (PersonCast castMember : tmdbMovie.getCast()) {
+                CastMember newMember = castMemberRepository.findByTmdbId(castMember.getId());
+
+                if (newMember == null){
+                    newMember = (CastMember) getProductionMemberByTmdbId(castMember.getId());
+                    castMemberRepository.save(newMember);
+                }
+                cast.add(newMember);
+            }
+        }
+
+        return cast;
+    }
 
 
 
@@ -490,28 +512,7 @@ public class MovieService {
         return directors;
     }
 
-    private List<CastMember> getCastFromMovieDb(MovieDb tmdbMovie){
-        if (tmdbMovie == null){
-            return null;
-        }
 
-        List<CastMember> cast = new ArrayList<>();
-
-        if (tmdbMovie.getCast() != null) {
-            for (PersonCast castMember : tmdbMovie.getCast()) {
-
-                CastMember newMember = castMemberRepository.findById(castMember.getId());
-
-                if (newMember == null){
-                    newMember = getCastMemberByTmdbId(castMember.getId());
-                    castMemberRepository.save(newMember);
-                }
-                cast.add(newMember);
-            }
-        }
-
-        return cast;
-    }
 
     private List<Genre> getGenresFromMovieDb(MovieDb tmdbMovie){
         List<Genre> genres = new ArrayList<>();

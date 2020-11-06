@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Director extends ProductionMember{
+public class Director extends ProductionMember {
 
     @ManyToMany(mappedBy = "directors")
     private List<Movie> movies = new ArrayList<>();

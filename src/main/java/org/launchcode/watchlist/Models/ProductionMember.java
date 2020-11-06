@@ -25,6 +25,13 @@ public class ProductionMember extends AbstractEntity {
 
     private String deathday;
 
+    public ProductionMember(){}
+
+    public ProductionMember(String aName, int aId){
+        this.name = aName;
+        this.tmdbId = aId;
+    }
+
     public String getBiography() {
         return biography;
     }
