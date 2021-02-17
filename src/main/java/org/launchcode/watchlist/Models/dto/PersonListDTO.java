@@ -8,6 +8,11 @@ public class PersonListDTO extends MovieDbListDTO {
 
     private String profileUrl;
 
+    public PersonListDTO(){
+        super();
+        setFormAction("person");
+    }
+
     public ProductionMember getPerson() {
         return person;
     }

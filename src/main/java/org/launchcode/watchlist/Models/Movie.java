@@ -2,6 +2,7 @@ package org.launchcode.watchlist.Models;
 
 import com.google.gson.annotations.SerializedName;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -44,13 +45,13 @@ public class Movie extends AbstractEntity{
     @ManyToOne
     private User user;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     private List<Genre> genres = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     private List<Director> directors = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     private List<CastMember> cast = new ArrayList<>();
 
     private String dateAdded;

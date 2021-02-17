@@ -302,7 +302,12 @@ public class MovieService {
 
         if (tmdbMovie.getCast() != null) {
             for (PersonCast castMember : tmdbMovie.getCast()) {
-                CastMember newMember = castMemberRepository.findByTmdbId(castMember.getId());
+                List<CastMember> results = castMemberRepository.findByTmdbId(castMember.getId());
+                CastMember newMember = new CastMember();
+
+                if (results.size() > 0){
+                    newMember = results.get(0);
+                }
 
                 if (newMember == null){
                     newMember = (CastMember) getProductionMemberByTmdbId(castMember.getId());

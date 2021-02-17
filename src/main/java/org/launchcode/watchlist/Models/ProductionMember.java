@@ -2,16 +2,19 @@ package org.launchcode.watchlist.Models;
 
 import com.google.gson.annotations.SerializedName;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
 import java.util.Objects;
 
-@Entity
+@MappedSuperclass
 public class ProductionMember extends AbstractEntity {
 
     private String biography;
 
     private String name;
 
+    @Column(name = "tmdb_id", nullable = false)
     private int tmdbId;
 
     @SerializedName("place_of_birth")

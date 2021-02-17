@@ -32,6 +32,9 @@ public interface MovieRepository extends PagingAndSortingRepository<Movie, Integ
     Movie findByTitleAndUserId(String title, int userId);
     Movie findByTmdbIdAndUserId(int tmdbId, int userId);
 
+
+
+
     @Query(value = SELECT_MOVIE + MOVIE_CAST_JOIN + MOVIE_GENRE_JOIN + WHERE_USER_CAST_GENRE + ORDER_BY,
             countQuery = SELECT_MOVIE_COUNT + MOVIE_CAST_JOIN + MOVIE_GENRE_JOIN + WHERE_USER_CAST_GENRE,
             nativeQuery = true)
