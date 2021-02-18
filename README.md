@@ -24,4 +24,5 @@ How, or the best way, to work with the API (TMDb.org) with Java/Springboot. I ma
 ### Project Tracker
 [Trello Board](https://trello.com/b/68Vl0W3G/liftoff-project-board)
 
-![](Use.png)
+![](User Page.png)![](User%20Page.png)
+![](Movie Page.png)![](Movie%20Page.png)
