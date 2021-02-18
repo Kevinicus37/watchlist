@@ -2,7 +2,6 @@ package org.launchcode.watchlist.Controllers;
 
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
-import org.launchcode.watchlist.Models.dto.MovieByDirectorDTO;
 import org.launchcode.watchlist.Models.dto.PersonListDTO;
 import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Services.PagingService;

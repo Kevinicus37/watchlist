@@ -170,10 +170,10 @@
         <div class="row">
             <b>Directed By:</b>
             <th:block th:if="${isUserMovie}">
-                <a th:each="director : ${movie.directors}" th:href="@{${'/search/director/' + director.tmdbId}}" th:text="${director.name}"></a>
+                <a th:each="director : ${movie.directors}" th:href="@{${'/person/view/' + director.tmdbId + '?creditType=director'}}" th:text="${director.name}"></a>
             </th:block>
             <th:block th:unless="${isUserMovie}">
-                <a th:each="crew : ${movie.crew}" th:href="@{${'/search/director/' + crew.id}}" th:text="${crew.name}"></a>
+                <a th:each="crew : ${movie.crew}" th:href="@{${'/person/view/' + crew.id + '?creditType=director'}}" th:text="${crew.name}"></a>
             </th:block>
         </div>
         <div class="row">

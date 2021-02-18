@@ -32,18 +32,6 @@
                 </div>
             </div>
 
-            <!--    <form th:action="@{/cast/search}" method="post">-->
-            <!--        <div class="input-group mb-3">-->
-            <!--            <select class="custom-select input-group-prepend" th:field="${dto.searchOption}" id="input-group-select">-->
-            <!--                <option value="title">Title</option>-->
-            <!--                <option value="cast">Cast</option>-->
-            <!--            </select>-->
-            <!--            <input type="text" th:field="${dto.searchTerm}" class="form-control">-->
-            <!--            <div class="input-group-append">-->
-            <!--                <input type="submit" class="btn btn-primary" value="Search" />-->
-            <!--            </div>-->
-            <!--        </div>-->
-            <!--    </form>-->
             <div class="row">
                 <div class="col-md-2"><a th:href="@{${'/person/view/' + dto.person.tmdbId + '?creditType=cast'}}">Cast</a></div>
                 <div class="col-md-2"><a th:href="@{${'/person/view/' + dto.person.tmdbId + '?creditType=director'}}">Director</a></div>
@@ -53,9 +41,9 @@
                         <nav th:replace="fragments :: pager"></nav>
                     </form>
             <th:block th:replace="fragments :: movielist"></th:block>
-<!--                    <form th:action="@{${dto.formAction}}" method="post">-->
-<!--                        <nav th:replace="fragments :: pager"></nav>-->
-<!--                    </form>-->
+                    <form th:action="@{${dto.formAction}}" method="post">
+                        <nav th:replace="fragments :: pager"></nav>
+                    </form>
 
             </th:block>
             </div>
