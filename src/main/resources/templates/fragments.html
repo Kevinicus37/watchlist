@@ -191,11 +191,11 @@
 
 <div th:fragment="userInfo">
     <div class="row profilePicture">
-        <img class="img-fluid rounded mx-auto d-block" id="profile-picture" src="../static/images/profilepictures/defaultProfilePicture.png" th:src="@{${'/images/profilepictures/' + user.profilePicturePath}}">
+        <img class="img-fluid rounded mx-auto d-block" id="profile-picture" src="../static/images/profilepictures/defaultProfilePicture.png" th:src="@{${'/images/profilepictures/' + (movieUser != null ? movieUser.profilePicturePath : user.profilePicturePath)}}">
     </div>
-    <H4 class="center-text" th:text="${user.username}"></H4>
+    <H4 class="center-text" th:text="${(movieUser != null ? movieUser.username : user.username)}"></H4>
     <div class="row center-text" id="user-links">
-        <a th:href="@{${'/user/' + user.username}}">Watchlist</a>
+        <a th:href="@{${'/user/' + (movieUser != null ? movieUser.username : user.username)}}">Watchlist</a>
     </div>
 </div>
 

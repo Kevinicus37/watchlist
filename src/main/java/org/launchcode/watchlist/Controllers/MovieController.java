@@ -5,6 +5,7 @@ import org.launchcode.watchlist.Models.Movie;
 import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Models.User;
 import org.launchcode.watchlist.data.MovieRepository;
+import org.launchcode.watchlist.data.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,9 @@ public class MovieController extends AbstractBaseController {
 
     @Autowired
     MovieRepository movieRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     AuthenticationController authenticationController;
@@ -54,6 +58,10 @@ public class MovieController extends AbstractBaseController {
 
         Movie movie = result.get();
 
+        // Get user from Movie
+        User movieUser = movie.getUser();
+
+        model.addAttribute("movieUser", movieUser);
         model.addAttribute("movie", movie);
         model.addAttribute("trailerUrl", movie.getTrailerUrl());
         model.addAttribute("url", movieService.getBaseUrl(3));
