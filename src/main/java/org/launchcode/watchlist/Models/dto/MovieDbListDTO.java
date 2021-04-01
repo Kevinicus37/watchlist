@@ -11,8 +11,6 @@ public class MovieDbListDTO extends AbstractMovieListDTO {
 
     private List<Movie> upcoming;
 
-    private final int firstPage = 0;
-
     private String formAction = "/search";
 
     public List<MovieDb> getMovies() {
@@ -29,10 +27,6 @@ public class MovieDbListDTO extends AbstractMovieListDTO {
 
     public void setUpcoming(List<Movie> upcoming) {
         this.upcoming = upcoming;
-    }
-
-    public int getFirstPage() {
-        return firstPage;
     }
 
     public String getFormAction() {

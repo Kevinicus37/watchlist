@@ -10,8 +10,6 @@ public class MovieListDTO extends AbstractMovieListDTO{
 
     private List<Movie> upcoming;
 
-    private final int firstPage = 0;
-
     public List<Movie> getMovies() {
         return movies;
     }
@@ -28,7 +26,4 @@ public class MovieListDTO extends AbstractMovieListDTO{
         this.upcoming = upcoming;
     }
 
-    public int getFirstPage() {
-        return firstPage;
-    }
 }

@@ -1,6 +1,7 @@
 package org.launchcode.watchlist.Controllers;
 
 import org.launchcode.watchlist.Models.Movie;
+import org.launchcode.watchlist.Models.dto.UserListDTO;
 import org.launchcode.watchlist.Services.MovieService;
 import org.launchcode.watchlist.Models.User;
 import org.launchcode.watchlist.Services.UserService;
@@ -13,6 +14,7 @@ import org.launchcode.watchlist.data.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,6 +56,33 @@ public class UserController extends AbstractBaseController {
     @Autowired
     PagingService pagingService;
 
+
+    @GetMapping("/index")
+    public String displayUsers(@RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "20") int size,
+                               Model model){
+
+        int numberOfUsers = (int) userRepository.count();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
+        List<User> users = (List<User>) userRepository.findAll(pageable);
+
+
+        // Add to dto: pageSizes Enum, previous page size, current page number, number of pages
+        UserListDTO dto = new UserListDTO();
+        dto.setUsers(users);
+        dto.setCurrentPage(page);
+        dto.setPreviousSize(size);
+        dto.setPages(numberOfUsers/size);
+        dto.setFirstElement(page * size + 1);
+        dto.setTotalUsers(numberOfUsers);
+        dto.setUrl("/images/profilepictures/");
+        model.addAttribute("dto", dto);
+
+        // TODO - Improve layout of index.html. Add pagination. Add a @PostMapping method to handle pagination.
+
+        return "user/index"; //
+    }
+
     @GetMapping("/{username}")
     public String displayUser(@PathVariable String username,
                               @RequestParam(defaultValue = "0") int page,
@@ -80,7 +109,7 @@ public class UserController extends AbstractBaseController {
 
         model.addAttribute("dto", movieListDto);
 
-        return "user/index";
+        return "user/watchlist";
     }
 
     @PostMapping("/{username}")
@@ -123,7 +152,7 @@ public class UserController extends AbstractBaseController {
 
         model.addAttribute("dto", movieListDto);
 
-        return "user/index";
+        return "user/watchlist";
     }
 
     @GetMapping("manage")

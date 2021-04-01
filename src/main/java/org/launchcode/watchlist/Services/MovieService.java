@@ -517,8 +517,6 @@ public class MovieService {
         return directors;
     }
 
-
-
     private List<Genre> getGenresFromMovieDb(MovieDb tmdbMovie){
         List<Genre> genres = new ArrayList<>();
 
@@ -536,6 +534,8 @@ public class MovieService {
     }
 
     public List<Movie> getMoviesFromTitleSearch(List<Movie> movies, String searchTerm){
+        // Method for possible future use? 3.12.21
+
         List<Movie> output = new ArrayList<>();
 
         for (Movie movie : movies){
@@ -548,6 +548,8 @@ public class MovieService {
     }
 
     public void setUpcomingWatchlistHomeReleases(List<Movie> watchlistMovies){
+        // Method for possible future use - when tmdb.org has more home release info. 3.12.21
+
         for (Movie movie : watchlistMovies){
 
            List<ReleaseDate> dates = getReleaseDates(movie);
@@ -563,6 +565,9 @@ public class MovieService {
     }
 
     public void setUpcomingWatchListTheaterRelease(List<Movie> watchlistMovies){
+        // Method for possible future use - when tmdb.org has more home release info. 3.12.21
+        // It's been awhile since I created this. I'm not entirely sure what it's purpose was. 3.12.21
+
         for (Movie movie : watchlistMovies){
             List<ReleaseDate> releaseDates = getReleaseDates(movie);
 
@@ -587,6 +592,8 @@ public class MovieService {
     }
 
     public Sort getSort(String sortOption){
+        // TODO - Create Enum for sortOption.
+
         Boolean isDescending = false;
 
         if (sortOption == null || sortOption.isBlank()){
