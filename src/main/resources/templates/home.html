@@ -24,6 +24,14 @@
                                     </div>
                                 </div>
                             </form>
+                            <form th:action="@{/user/index}" method="post">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="username" placeholder="Search Users">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary">Search</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                     <div class="row">

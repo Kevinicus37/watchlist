@@ -64,9 +64,9 @@ public class UserController extends AbstractBaseController {
 
         int numberOfUsers = (int) userRepository.count();
         Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
-        List<User> users = (List<User>) userRepository.findAll(pageable);
+        List<User> users = userRepository.findAll(pageable);
 
-
+        // TODO - Make this a method
         // Add to dto: pageSizes Enum, previous page size, current page number, number of pages
         UserListDTO dto = new UserListDTO();
         dto.setUsers(users);
@@ -81,6 +81,30 @@ public class UserController extends AbstractBaseController {
         // TODO - Improve layout of index.html. Add pagination. Add a @PostMapping method to handle pagination.
 
         return "user/index"; //
+    }
+
+    @PostMapping("/index")
+    public String searchIndex(@RequestParam(defaultValue = "") String username,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "20") int size,
+                              Model model){
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
+        List<User> users = userRepository.findByUsernameContaining(username, pageable);
+        int numberOfUsers = (int) userRepository.countByUsernameContaining(username);
+
+        // TODO Make this a method
+        UserListDTO dto = new UserListDTO();
+        dto.setUsers(users);
+        dto.setCurrentPage(page);
+        dto.setPreviousSize(size);
+        dto.setPages(numberOfUsers/size);
+        dto.setFirstElement(page * size + 1);
+        dto.setTotalUsers(numberOfUsers);
+        dto.setUrl("/images/profilepictures/");
+        model.addAttribute("dto", dto);
+
+        return "user/index";
     }
 
     @GetMapping("/{username}")
@@ -193,6 +217,8 @@ public class UserController extends AbstractBaseController {
         model.addAttribute("success", "Password Updated!");
         return "user/manage";
     }
+
+
 
     @PostMapping("uploadImage")
     public String uploadImage(@RequestParam("imageFile") MultipartFile imageFile, HttpServletRequest request, Model model){

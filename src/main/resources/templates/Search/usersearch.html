@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<nav th:replace="fragments :: navbar"></nav>
+
+<div class="container">
+    <header th:replace="fragments :: header"></header>
+    <form th:action="@{/user/index}" method="post">
+        <div class="input-group mb-3">
+            <input type="text" name="username" class="form-control">
+            <div class="input-group-append">
+                <input type="submit" class="btn btn-primary" value="Search" />
+            </div>
+        </div>
+    </form>
+
+
+</div>
+<th:block th:replace="fragments :: scripts"></th:block>
+</body>
+</html>

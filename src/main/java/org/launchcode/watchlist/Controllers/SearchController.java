@@ -99,6 +99,13 @@ public class SearchController extends AbstractBaseController{
         return "/search/tmdbsearch";
     }
 
+
+    @GetMapping("user")
+    public String displayUserSearchForm(Model model){
+        model.addAttribute("title", "Search for a User:");
+
+        return "/search/usersearch";
+    }
     public void updateDTOFromResults(MovieDbListDTO dto, MovieResultsPage results, int page, int size){
         dto.setMovieCount(results.getTotalResults());
         dto.setPages(results.getTotalPages());
