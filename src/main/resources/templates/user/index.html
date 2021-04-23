@@ -25,6 +25,9 @@
             </td>
         </tr>
     </table>
+    <form th:action="@{/user/index}" method="post">
+        <nav th:replace="fragments :: user-pager"></nav>
+    </form>
 </div>
 </body>
 </html>

@@ -235,6 +235,10 @@
 
 <nav th:fragment="pager">
     <th:block th:replace="fragments :: hidden-inputs"></th:block>
+    <th:block th:replace="fragments :: pager-insides"></th:block>
+</nav>
+
+<th:block th:fragment="pager-insides">
     <label class="page-size-select">Results Per Page: </label>
     <select name="size" onchange="this.form.submit()">
         <option th:each="pageSize : ${dto.pageSizes}" th:value="${pageSize.size}" th:text="${pageSize.size}" th:selected="${dto.previousSize == pageSize.size}"></option>
@@ -256,6 +260,11 @@
             <button class="page-link" name="page" th:value="${dto.pages - 1}">Last</button>
         </li>
     </ul>
+</th:block>
+
+<nav th:fragment="user-pager">
+    <th:block th:replace="fragments :: basic-hidden-inputs"></th:block>
+    <th:block th:replace="fragments :: pager-insides"></th:block>
 </nav>
 
 <div th:fragment="production-role-selcection">
@@ -301,14 +310,18 @@
 </div>
 
 <th:block th:fragment="hidden-inputs">
+    <th:block th:replace="fragments::basic-hidden-inputs"></th:block>
+    <input type="hidden" th:field="${dto.username}">
+    <input type="hidden" th:field="${dto.upcoming}">
+<!-- TODO- Find out why we commented this out.   <input type="hidden" th:field="${dto.formAction}">-->
+</th:block>
+
+<th:block th:fragment="basic-hidden-inputs">
     <input type="hidden" th:field="${dto.searchOption}">
     <input type="hidden" th:field="${dto.searchTerm}">
     <input type="hidden" th:field="${dto.sortOption}">
-    <input type="hidden" th:field="${dto.username}">
     <input type="hidden" th:field="${dto.url}">
-    <input type="hidden" th:field="${dto.upcoming}">
     <input type="hidden" th:field="${dto.previousSize}">
-<!-- TODO- Find out why we commented this out.   <input type="hidden" th:field="${dto.formAction}">-->
 </th:block>
 </body>
 </html>

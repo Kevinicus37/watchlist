@@ -66,16 +66,9 @@ public class UserController extends AbstractBaseController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
         List<User> users = userRepository.findAll(pageable);
 
-        // TODO - Make this a method
         // Add to dto: pageSizes Enum, previous page size, current page number, number of pages
         UserListDTO dto = new UserListDTO();
-        dto.setUsers(users);
-        dto.setCurrentPage(page);
-        dto.setPreviousSize(size);
-        dto.setPages(numberOfUsers/size);
-        dto.setFirstElement(page * size + 1);
-        dto.setTotalUsers(numberOfUsers);
-        dto.setUrl("/images/profilepictures/");
+        updateUserDTO(dto, users, page, size, numberOfUsers);
         model.addAttribute("dto", dto);
 
         // TODO - Improve layout of index.html. Add pagination. Add a @PostMapping method to handle pagination.
@@ -84,24 +77,17 @@ public class UserController extends AbstractBaseController {
     }
 
     @PostMapping("/index")
-    public String searchIndex(@RequestParam(defaultValue = "") String username,
+    public String searchIndex(@RequestParam(defaultValue = "") String searchTerm,
                               @RequestParam(defaultValue = "0") int page,
                               @RequestParam(defaultValue = "20") int size,
                               Model model){
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
-        List<User> users = userRepository.findByUsernameContaining(username, pageable);
-        int numberOfUsers = (int) userRepository.countByUsernameContaining(username);
+        List<User> users = userRepository.findByUsernameContaining(searchTerm, pageable);
+        int numberOfUsers = (int) userRepository.countByUsernameContaining(searchTerm);
 
-        // TODO Make this a method
         UserListDTO dto = new UserListDTO();
-        dto.setUsers(users);
-        dto.setCurrentPage(page);
-        dto.setPreviousSize(size);
-        dto.setPages(numberOfUsers/size);
-        dto.setFirstElement(page * size + 1);
-        dto.setTotalUsers(numberOfUsers);
-        dto.setUrl("/images/profilepictures/");
+        updateUserDTO(dto, users, page, size, numberOfUsers);
         model.addAttribute("dto", dto);
 
         return "user/index";
@@ -163,10 +149,6 @@ public class UserController extends AbstractBaseController {
         }
 
         Sort sort = movieService.getSort(movieListDto.getSortOption());
-
-//        Page<Movie> userMovieResults = movieRepository.findByUserIdAndTitleContaining(userId,
-//                movieListDto.getSearchTerm(),
-//                PageRequest.of(page, size, sort));
 
         Page<Movie> userMovieResults = movieRepository.findByUserIdAndTitleContainingFilteredByGenre(userId,
                 movieListDto.getSearchTerm(), genreFilter,
@@ -239,12 +221,27 @@ public class UserController extends AbstractBaseController {
 
     private void updateDTOfromPage(Page results, MovieListDTO movieListDto, int page, int size){
         movieListDto.setPages(results.getTotalPages());
-        movieListDto.setMovieCount(results.getTotalElements());
-        movieListDto.setMovies(results.toList());
+        movieListDto.setMovieCount(results.getTotalElements()); // TODO - change to setSearchResultCount
+        movieListDto.setMovies(results.toList());               // TODO - set results (Change DTO to AbstractListDTO)
         movieListDto.setCurrentPage(page);
         movieListDto.setFirstElement((page * size) + 1);
-        movieListDto.setUserList(true);
+        movieListDto.setUserList(true);                         // TODO - verify which class this is in
         movieListDto.setPreviousSize(size);
         movieListDto.setPageNumbers(pagingService.getDisplayedPageNumbers(page, results.getTotalPages()));
+
+
+    }
+
+    private void updateUserDTO(UserListDTO dto, List<User> users, int page, int size, int numberOfUsers){
+        dto.setUsers(users);
+        dto.setCurrentPage(page);
+        dto.setPreviousSize(size);
+        dto.setPages(numberOfUsers/size);
+        dto.setFirstElement(page * size + 1);
+        dto.setTotalUsers(numberOfUsers);
+        dto.setUrl("/images/profilepictures/");
+        dto.setPreviousSize(size);
+        int pages = numberOfUsers % size == 0? numberOfUsers/size : numberOfUsers/size + 1;
+        dto.setPages(pages);
     }
 }
