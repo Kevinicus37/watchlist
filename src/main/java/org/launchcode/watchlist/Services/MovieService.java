@@ -124,6 +124,22 @@ public class MovieService {
         return null;
     }
 
+    public CastMember getCastMemberByTmdbId(int tmdbId){
+        PersonPeople person = people.getPersonInfo(tmdbId);
+
+        if (person != null){
+            CastMember castMember = new CastMember(person.getName(), person.getId());
+            castMember.setBiography(person.getBiography());
+            castMember.setBirthday(person.getBirthday());
+            castMember.setDeathday(person.getDeathday());
+            castMember.setPlaceOfBirth(person.getBirthplace());
+            castMember.setProfilePath(person.getProfilePath());
+            return castMember;
+        }
+
+        return null;
+    }
+
     public String getJsonResponseAsString(String url){
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(url, String.class);
@@ -309,8 +325,8 @@ public class MovieService {
                     newMember = results.get(0);
                 }
 
-                if (newMember == null){
-                    newMember = (CastMember) getProductionMemberByTmdbId(castMember.getId());
+                if (newMember.getTmdbId() < 1){
+                    newMember = getCastMemberByTmdbId(castMember.getId());
                     castMemberRepository.save(newMember);
                 }
                 cast.add(newMember);

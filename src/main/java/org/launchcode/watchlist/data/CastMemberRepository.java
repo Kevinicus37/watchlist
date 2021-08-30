@@ -13,6 +13,5 @@ public interface CastMemberRepository extends CrudRepository<CastMember, Integer
     CastMember findByName(String name);
     CastMember findById(int id);
 
-//    @Query(value = "Select * FROM watchlist.cast_member WHERE tmdb_id = :tmdbId", nativeQuery = true)
-    List<CastMember> findByTmdbId(int tmdbId);
+      List<CastMember> findByTmdbId(int tmdbId);
 }

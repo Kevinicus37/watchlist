@@ -36,6 +36,7 @@
                 <div class="col-md-2"><a th:href="@{${'/person/view/' + dto.person.tmdbId + '?creditType=cast'}}">Cast</a></div>
                 <div class="col-md-2"><a th:href="@{${'/person/view/' + dto.person.tmdbId + '?creditType=director'}}">Director</a></div>
             </div>
+
             <th:block th:if="${dto.movies != null}">
                     <form th:action="@{${dto.formAction}}" method="post">
                         <nav th:replace="fragments :: pager"></nav>

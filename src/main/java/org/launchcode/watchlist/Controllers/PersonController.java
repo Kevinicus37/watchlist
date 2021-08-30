@@ -82,7 +82,7 @@ public class PersonController extends AbstractBaseController {
     private MovieResultsPage getMovieResultsPage(String creditType, int tmdbId, int page, int size){
         MovieResultsPage results = new MovieResultsPage();
 
-        if (creditType.equals("director")){
+        if (creditType.equals("director")){ // TODO - Create ENUM for creditType
             results = movieService.searchForMovieDbsByDirector(tmdbId, page+1, size);
         }
         else {
